@@ -189,6 +189,49 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .syl small{font-size:.3em;color:var(--soft);font-family:"Segoe UI",Arial;font-style:normal;margin-top:2px}
 .syldot{font-size:2em;color:var(--lock)}
 .wbar{border-radius:14px;padding:6px 14px;margin:26px 0 8px;font-weight:bold;font-size:1.05em}
+/* ===== מפת המסע ===== */
+.guide summary{cursor:pointer;font-size:1.15em;padding:4px 0}
+.gitems p{margin:10px 0}
+.glist{margin:6px 0 10px;padding-right:22px}
+.glist li{margin:6px 0}
+.qrow{margin-top:8px}
+.maptitle{text-align:center;font-size:1.6em;margin:26px 0 6px}
+.trail{position:relative;padding-bottom:6px}
+.trail:before{content:"";position:absolute;right:46px;top:10px;bottom:10px;border-right:8px dashed #d9c39a;z-index:0}
+.tflag{position:relative;z-index:1;margin:22px 0;background:#fff4c2;border:3px dashed #e0b400;border-radius:18px;padding:12px 18px;font-weight:bold;text-align:center;font-size:1.05em}
+.tflag.start,.tflag.end{background:#fff;border-style:solid;border-color:var(--accent);font-size:1.15em}
+.stn{display:flex;gap:14px;align-items:flex-start;position:relative;z-index:1;margin:20px 0}
+.dot{width:100px;height:100px;flex-shrink:0;border-radius:50%;border:6px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.15);font-size:2.5em;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.dot small{font-size:.38em;font-weight:bold;color:var(--soft);margin-top:2px}
+.stn.done .dot{border-color:var(--ok);color:var(--ok);font-weight:bold}
+.stn.cur .dot{border-color:var(--accent);animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 10px rgba(224,138,46,.25)}}
+.stn.future{opacity:.62}
+.scard{flex:1;min-width:0;border-radius:22px;border:3px solid rgba(0,0,0,.08);padding:12px 16px}
+.stn.cur .scard{border-color:var(--accent)}
+.shead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;cursor:pointer}
+.stitle{font-size:1.2em}
+.ssub{margin-top:4px}
+.here{background:var(--accent);color:#fff;border-radius:12px;padding:2px 10px;font-size:.85em;font-weight:bold;white-space:nowrap}
+.donebadge{background:#d7f0e0;color:#1d5e3a;border-radius:12px;padding:2px 10px;font-size:.85em;font-weight:bold}
+.soon{background:#eee6d8;border-radius:12px;padding:2px 10px;font-size:.85em}
+.chev{font-size:1.2em;color:var(--soft)}
+.sbody{margin-top:10px;border-top:2px dashed rgba(0,0,0,.12);padding-top:6px}
+.sbody h4{margin:14px 0 6px;font-size:1.1em}
+.gchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.gchip{background:#fff;border:3px solid var(--line);border-radius:16px;padding:10px;text-align:right;color:var(--ink);display:flex;flex-direction:column;gap:4px;font-size:.95em}
+.gchip span{color:var(--soft);font-size:.9em}
+/* ===== האותיות ===== */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;direction:ltr;margin-top:12px}
+.ltl{background:#fff;border:3px solid #b8d4f5;border-radius:16px;padding:10px;font-family:Verdana,Arial;font-size:1.6em;color:var(--ink)}
+.ltl b{font-size:1.25em}
+.ltl.seen{background:#e1efff}
+.lcard{text-align:center}
+.lbig{display:flex;justify-content:center;gap:40px;direction:ltr;font-family:Verdana,Arial;font-size:7em;font-weight:bold;line-height:1.1;color:#1f3d7a}
+.lname{font-size:1.4em}
+.lsnd{font-size:1.2em;display:flex;flex-direction:column;gap:6px;align-items:center;margin:8px 0}
+.lex{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:10px}
+.small2{padding:8px 14px;min-width:0;font-size:.85em}
 /* ===== טולי ===== */
 .tulifab{position:fixed;left:18px;bottom:18px;width:74px;height:74px;border-radius:50%;background:#dff3d6;border:4px solid #9fd38a;font-size:2.4em;z-index:44;display:none;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:0}
 body.hasTuli .tulifab{display:block}
@@ -789,19 +832,7 @@ function bidiT(s){ if(!/[֐-׿]/.test(s)) return `<bdi dir="ltr">${s}</bdi>`; re
 function goMap(){
   if(window.speechSynthesis) speechSynthesis.cancel(); CUR_L=null;
   let h = (fileModeBanner ? `<div class="card" style="border-color:var(--accent2)">💡 <b>כדי שלא תצטרכי לאשר את המיקרופון כל פעם:</b> פתחי את המשחק דרך הקובץ <b>"פתיחת המשחק"</b> שנמצא באותה תיקייה. ההתקדמות שלך תעבור לשם לבד.</div>` : "")
-    + hud() + owlSay("שלום! אני <b>ינשופי</b> 🦉 הרוח פיזרה את כל האותיות של הספרייה שלי ביער.<br>בכל שלב את לומדת <b>חוק קריאה אחד</b> וקוראת <b>בקול</b>, ואני מקשיב ועוזר. כך מחזירים לי מדף של ספרים, לאט ובכיף.");
-  h += bridgeCard() + gamesCard() + tuliCard();
-  WORLDS.forEach((wn,wi)=>{
-    h += `<div class="wbar" style="background:${WORLD_COLORS[wi]}">${wn}</div><div class="path">`;
-    LEVELS.forEach((L,li)=>{
-      if(L.world!==wi) return;
-      const st = save.stars[L.id]||0;
-      h += L.ready
-        ? `<button class="node open" onclick="startLevel(${li})"><span class="k">${L.key}</span><span>${bidiT(L.title)}</span><span class="st">${"★".repeat(st)}${"☆".repeat(3-st)}</span></button>`
-        : `<div class="node lock"><span class="k">${L.key}</span><span>${L.title}</span><span>🔒 בקרוב</span></div>`;
-    });
-    h += `</div>`;
-  });
+    + hud() + guideCard() + quickRow() + mapHTML();
   h += `<div style="margin-top:28px"></div>` + bankCard();
   h += `<div class="card" style="text-align:center">${owlSay("<b>מילים דומות אבל שונות</b> 👀 כמו <span class='en'>hat</span> ו-<span class='en'>hot</span>. אימון קצר של העין והאוזן, לאות האמצעית.")}
     <div class="row"><button class="btn alt" onclick="startPairs()">👂👀 לאימון מילים דומות</button></div></div>`;
@@ -2253,6 +2284,10 @@ function tuliTarget(){
     if(ACTIVE==="grammar" && GR && GR.qs && GR.qs[GR.i]) return {x:GR.qs[GR.i].x, rule:GR.topic&&GR.topic.rule};
     if(ACTIVE==="tuli" && TQ && TQ.qs[TQ.i]) return {x:TQ.qs[TQ.i].x, say:TQ.qs[TQ.i].say};
     if(ACTIVE==="bridge" && BR) return brTarget();
+    if(ACTIVE==="letters" && LG && LG.items[LG.i]){ const it=LG.items[LG.i];
+      return {tip:[ "הקשיבי שוב לשם של האות 🔊. בתחנת האותיות אפשר לראות את השם של כל אות, ולחזור לכאן.",
+        "רוב האותיות הקטנות דומות לגדולות שלהן. אלה שונות: <bdi class='en'>A a, B b, D d, E e, G g, Q q, R r</bdi>. שימי לב לצורה.",
+        it.x, "אמרי את המילה לאט, ושימי לב רק לצליל הראשון. אחר כך חפשי את האות שעושה את הצליל הזה."][LG.k] }; }
     if(lastSpoken) return {w:lastSpoken.toLowerCase()};
   }catch(e){}
   return {};
@@ -2621,6 +2656,222 @@ function brFinish(){
   const mw=maxWorld(), nxt=(window.TEXTS||[]).find(x=>x.w<=mw && !txDone(x.id));
   gameEnd("zrima",`startText('${BR.id}')`,BR.good,BR.t.q.filter(q=>q[3]>=0).length,
     `<p>${first?"+3 ⭐ על טקסט חדש שקראת עד הסוף! ":""}קראת ${BR.t.s.length} משפטים. 🌿</p>${nxt?`<div class="row"><button class="btn alt" onclick="startText('${nxt.id}')">📖 לטקסט הבא: <bdi>${nxt.t}</bdi></button><button class="btn ghost" onclick="showBridge()">📚 כל הטקסטים</button></div>`:`<div class="row"><button class="btn ghost" onclick="showBridge()">📚 כל הטקסטים</button></div>`}`);
+}
+
+/* ==================================================================
+   🗺️ מפת המסע: שביל של תחנות, מהאותיות ועד קריאה מתקדמת
+   ================================================================== */
+const CHAPTERS = [
+  {id:"letters",e:"🔤",t:"האותיות",sub:"שם של כל אות, הצליל שלה, אות גדולה ואות קטנה, ואותיות שמתבלבלות",kind:"letters"},
+  {id:"c1",w:0,e:"🌱",t:"התנועות הקצרות",sub:"המילים הראשונות: <bdi>cat, pig, sun</bdi>. תנועה אחת בין עיצורים"},
+  {id:"c2",w:1,e:"🌉",t:"צמדים",sub:"שתי אותיות שנשמעות כצליל אחד: <bdi>sh, ch, th, ck</bdi>"},
+  {id:"c3",w:2,e:"⛰️",t:"צירופים",sub:"עיצורים צמודים: <bdi>stop, frog, hand</bdi>, ומילות לב ראשונות"},
+  {flag:"🎉 מכאן כבר קוראים! בכל תחנה מחכים טקסטים פשוטים: סיפורים, פתקים, מודעות"},
+  {id:"c4",w:3,e:"✨",t:"תנועה ארוכה: ה-e הקסומה",sub:"<bdi>cake, kite, home</bdi>. וגם y בסוף מילה, ו-c ו-g רכות"},
+  {id:"c5",w:4,e:"🏔️",t:"שתי אותיות תנועה",sub:"צמדי תנועות: <bdi>ee, ai, oa, igh, oo</bdi>"},
+  {id:"c6",w:5,e:"🌀",t:"r וצלילים מיוחדים",sub:"<bdi>car, bird, coin, cloud, saw</bdi>"},
+  {id:"c7",w:6,e:"🏰",t:"סיומות ותחיליות",sub:"<bdi>jumped, running, bigger, unhappy, helpful</bdi>"},
+  {id:"c8",w:7,e:"🌈",t:"מילים ארוכות",sub:"חלוקה להברות, ההברה החזקה, והתנועה הבלועה"},
+  {id:"c9",w:8,e:"🤫",t:"אותיות שקטות ומילים מתקדמות",sub:"<bdi>knife, night, phone, nature, station</bdi>"},
+  {flag:"🎓 מכאן: קריאה מתקדמת, צעד אחר צעד עד הפסיכומטרי"},
+  {id:"f1",future:1,e:"🏠",t:"שטף בחיי היום-יום",sub:"מודעות, מתכונים, מכתבים. עתיד, מילות קישור"},
+  {id:"f2",future:1,e:"🔬",t:"טקסט שמסביר משהו",sub:"רעיון מרכזי, למי מתייחסת המילה, מילות סימן"},
+  {id:"f3",future:1,e:"📝",t:"רמת בגרות",sub:"טקסטים ארוכים, שאלות באנגלית, משפטי תנאי"},
+  {id:"f4",future:1,e:"🏛️",t:"אנגלית אקדמית",sub:"לפרק משפט ארוך, הסקה, אוצר מילים אקדמי"},
+  {id:"f5",future:1,e:"🏆",t:"הכנה לפסיכומטרי",sub:"השלמת משפט, ניסוח מחדש, הבנת הנקרא"}
+];
+const chLevels = c => LEVELS.map((L,li)=>[L,li]).filter(([L])=>L.world===c.w && L.ready);
+function chState(c){
+  if(c.future) return "future";
+  if(c.kind==="letters"){ const n=(save.letters||[]).length; return n>=26?"done":n?"started":"new"; }
+  const ls=chLevels(c); const done=ls.filter(([L])=>(save.stars[L.id]||0)>0).length;
+  return done===ls.length?"done":(done||ls.some(([L])=>(save.pos||{})[L.id]))?"started":"new";
+}
+function curChapter(){ return CHAPTERS.find(c=>c.id && !c.future && chState(c)!=="done") || CHAPTERS.find(c=>c.id==="c9"); }
+let OPEN_CH=null;
+function toggleCh(id){ OPEN_CH = OPEN_CH===id ? "" : id; goMap(); const el=document.getElementById("st_"+id); if(el) el.scrollIntoView({block:"start"}); }
+function continueHere(){
+  const c=curChapter(); if(c.kind==="letters"){ showLetters(); return; }
+  const ls=chLevels(c), nx=ls.find(([L])=>!(save.stars[L.id]||0)) || ls[0]; startLevel(nx[1]);
+}
+function guideCard(){
+  const gl=GAMES.filter(g=>!["bridge","tuli"].includes(g.id));
+  return `<details class="card guide" ${save.guideSeen?"":"open"} ontoggle="if(!this.open){save.guideSeen=1;persist();}">
+    <summary><b>🧭 איך מתמצאים במסע?</b> <span class="hint">לחיצה פותחת וסוגרת</span></summary>
+    ${owlSay("שלום! אני <b>ינשופי</b> 🦉 הרוח פיזרה את האותיות של הספרייה שלי, ויחד נחזיר אותן, תחנה אחרי תחנה.")}
+    <div class="gitems">
+      <p>🗺️ <b>המפה</b> היא שביל של תחנות, מהקל לקשה. מתחילים <b>מהאותיות</b>, וממשיכים לפי הסדר. בכל תחנה לומדים חוק קריאה וקוראים בקול. לחיצה על תחנה פותחת אותה.</p>
+      <p>📍 <b>"את כאן"</b> מסמן את התחנה הבאה שלך. הכפתור <b>"להמשיך מאיפה שעצרתי"</b> לוקח ישר לשם.</p>
+      <p>📖 <b>טקסטים:</b> בכל תחנה יש טקסטים שמתאימים למה שכבר למדת. קוראים בשקט, צעד אחר צעד, ועונים על שאלות.</p>
+      <p>🎪 <b>רוצים גרסה משחקית יותר?</b> נכנסים לתחנה שלכם, ומשם לגן המשחקים. המשחקים משתמשים במילים מהשלבים שכבר התחלתם, ולכן הכי טוב לעבור קודם בתחנה ואז לשחק. בגן יש:</p>
+      <ul class="glist">${gl.map(g=>`<li>${g.e} <b>${g.name}</b>: ${g.d}</li>`).join("")}</ul>
+      <p>🐛 <b>טולי התולעת:</b> נתקעים בתרגיל? הכפתור הירוק למטה בצד קורא לה. ובפינה של טולי יש שאלות על חוקי הקריאה.</p>
+      <p>🦉 <b>ינשופי:</b> כל תשובה נכונה מביאה כוכב ובלוט. בכוכבים ינשופי גדל, ובבלוטים מאכילים אותו וקונים לו בגדים בארון.</p>
+    </div></details>`;
+}
+function quickRow(){
+  const c=curChapter();
+  return `<div class="row qrow"><button class="btn" onclick="continueHere()">📍 להמשיך מאיפה שעצרתי: ${c.e} ${c.t}</button></div>
+    <div class="row qrow"><button class="btn alt" onclick="showBridge()">📖 טקסטים</button><button class="btn alt" onclick="showGames()">🎪 גן המשחקים</button><button class="btn alt" onclick="startTuliQuiz()">🐛 הפינה של טולי</button>${wheelReady()?`<button class="btn ghost" onclick="showWheel()">🎡 גלגל המזל</button>`:""}</div>`;
+}
+function nodeHTML(L,li){ const st=save.stars[L.id]||0;
+  return `<button class="node open" onclick="startLevel(${li})"><span class="k">${L.key}</span><span>${bidiT(L.title)}</span><span class="st">${"★".repeat(st)}${"☆".repeat(3-st)}</span></button>`; }
+function mapHTML(){
+  const cur=curChapter(); if(OPEN_CH===null) OPEN_CH=cur.id;
+  let n=0, h=`<h2 class="maptitle">🗺️ מפת המסע</h2><div class="trail"><div class="tflag start">🏁 ההתחלה</div>`;
+  CHAPTERS.forEach(c=>{
+    if(c.flag){ h+=`<div class="tflag">${c.flag}</div>`; return; }
+    const st=chState(c), isCur=c.id===cur.id, open=OPEN_CH===c.id && !c.future;
+    const bg=c.w!==undefined?WORLD_COLORS[c.w]:(c.future?"#f4f1ec":"#fff1d6");
+    let prog="";
+    if(c.kind==="letters") prog=`${(save.letters||[]).length} מתוך 26 אותיות`;
+    else if(!c.future){ const ls=chLevels(c); prog=`${ls.filter(([L])=>(save.stars[L.id]||0)>0).length} מתוך ${ls.length} שלבים`; }
+    h+=`<div class="stn ${st} ${isCur?"cur":""}" id="st_${c.id}">
+      <div class="dot" style="background:${bg}">${st==="done"?"✓":c.e}<small>${c.future?"":n}</small></div>
+      <div class="scard" style="background:${bg}">
+        <div class="shead" ${c.future?"":`onclick="toggleCh('${c.id}')"`}>
+          <div><b class="stitle">תחנה ${n}: ${c.t}</b> ${isCur?`<span class="here">📍 את כאן</span>`:""}${st==="done"?` <span class="donebadge">✓ הושלם</span>`:""}${c.future?` <span class="soon">🚧 בבנייה</span>`:""}
+          <div class="ssub">${c.sub}</div>${prog?`<div class="hint" style="text-align:right">${prog}</div>`:""}</div>
+          ${c.future?"":`<span class="chev">${open?"▲":"▼"}</span>`}
+        </div>
+        ${open?chapterBody(c):""}
+      </div></div>`;
+    n++;
+  });
+  return h+`<div class="tflag end">🏆 קריאה חופשית באנגלית</div></div>`;
+}
+function chapterBody(c){
+  if(c.kind==="letters") return `<div class="sbody">
+    <p>כאן מכירים כל אות: איך קוראים לה, איך היא נשמעת, ואיך היא נראית גדולה וקטנה. גם למי שכבר מכירה, זה חיזוק טוב.</p>
+    <div class="row"><button class="btn" onclick="showLetters()">🔤 לכל האותיות</button></div>
+    <h4>🎮 משחקי אותיות</h4><div class="gchips">${LGAMES.map((g,i)=>`<button class="gchip" onclick="startLGame(${i})">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+  const ls=chLevels(c), tx=(window.TEXTS||[]).filter(t=>t.w===c.w);
+  const gl=GAMES.filter(g=>!["bridge","tuli"].includes(g.id) && (c.w>=1 || !["pyramid"].includes(g.id)));
+  return `<div class="sbody">
+    <h4>📚 השלבים של התחנה <span class="hint">לפי הסדר, מימין לשמאל</span></h4><div class="path">${ls.map(([L,li])=>nodeHTML(L,li)).join("")}</div>
+    ${tx.length?`<h4>📖 טקסטים לתחנה הזאת</h4><div class="txlist">${tx.map(txTile).join("")}</div>`:""}
+    <h4>🎪 לשחק עם המילים של התחנה</h4><p class="hint" style="text-align:right">המשחקים לוקחים מילים מהשלבים שכבר התחלת.</p>
+    <div class="gchips">${gl.map(g=>`<button class="gchip" onclick="${g.run}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+}
+
+/* ==================================================================
+   🔤 פרק האותיות
+   ================================================================== */
+// L=אות, nm=איך קוראים לה, s=צליל (או שניים), w=מילה לדוגמה, e=תמונה, tip=הערה
+const LETTERS = [
+ {L:"A",nm:"אֵיי",s:["אַ קצרה, כמו ב-apple","אֵיי ארוכה, כמו ב-cake"],w:"apple",e:"🍎"},
+ {L:"B",nm:"בִּי",s:["בּ"],w:"bus",e:"🚌"},
+ {L:"C",nm:"סִי",s:["ק, כמו ב-cat","ס לפני e, i, y, כמו ב-city"],w:"cat",e:"🐱"},
+ {L:"D",nm:"דִי",s:["ד"],w:"dog",e:"🐶"},
+ {L:"E",nm:"אִי",s:["אֶ קצרה, כמו ב-egg","אִי ארוכה, כמו ב-he"],w:"egg",e:"🥚"},
+ {L:"F",nm:"אֶף",s:["פ רפה"],w:"fish",e:"🐟"},
+ {L:"G",nm:"גִ׳י",s:["ג, כמו ב-goat","ג׳ לפעמים לפני e, i, y, כמו ב-giraffe"],w:"goat",e:"🐐"},
+ {L:"H",nm:"אֵייץ׳",s:["ה, נושפים"],w:"hat",e:"🎩"},
+ {L:"I",nm:"אַיי",s:["אִ קצרה, כמו ב-insect","אַיי ארוכה, כמו ב-ice"],w:"insect",e:"🐞"},
+ {L:"J",nm:"גֵ׳יי",s:["ג׳"],w:"juice",e:"🧃"},
+ {L:"K",nm:"קֵיי",s:["ק"],w:"kite",e:"🪁"},
+ {L:"L",nm:"אֶל",s:["ל"],w:"lion",e:"🦁"},
+ {L:"M",nm:"אֶם",s:["מ"],w:"moon",e:"🌙"},
+ {L:"N",nm:"אֶן",s:["נ"],w:"nose",e:"👃"},
+ {L:"O",nm:"אוֹ",s:["אָ עמוקה, כמו ב-octopus","אוֹ ארוכה, כמו ב-go"],w:"octopus",e:"🐙"},
+ {L:"P",nm:"פִּי",s:["פּ, תמיד דגושה"],w:"pig",e:"🐷"},
+ {L:"Q",nm:"קְיוּ",s:["קוו. כמעט תמיד באה עם u: qu"],w:"queen",e:"👑"},
+ {L:"R",nm:"אָר",s:["ר אנגלית: הלשון לא נוגעת בכלום"],w:"rabbit",e:"🐰"},
+ {L:"S",nm:"אֶס",s:["ס, ולפעמים ז, כמו ב-dogs"],w:"sun",e:"☀️"},
+ {L:"T",nm:"טִי",s:["ט"],w:"tree",e:"🌳"},
+ {L:"U",nm:"יוּ",s:["אַ רפויה, כמו ב-umbrella","יוּ ארוכה, כמו ב-unicorn"],w:"umbrella",e:"☂️"},
+ {L:"V",nm:"וִי",s:["ו, עם השיניים על השפה התחתונה"],w:"van",e:"🚐"},
+ {L:"W",nm:"דַבְּל-יוּ",s:["וו, עם שפתיים עגולות"],w:"web",e:"🕸️"},
+ {L:"X",nm:"אֶקְס",s:["קס, בעיקר בסוף מילה"],w:"box",e:"📦"},
+ {L:"Y",nm:"וַאי",s:["י בתחילת מילה, כמו ב-yes","בסוף: אִי (happy) או אַיי (my)"],w:"yo-yo",e:"🪀"},
+ {L:"Z",nm:"זִי",s:["ז"],w:"zebra",e:"🦓"}
+];
+const CONFUSE = [
+ {set:["b","d"],tip:"טריק: המילה <bdi class='en'>bed</bdi> נראית כמו מיטה. b בצד אחד ו-d בצד השני, כמו שני קצוות המיטה.",
+  items:[["bed",0],["dog",0],["bag",0],["dig",0],["bus",0],["desk",0],["big",0],["duck",0],["sad",2],["cab",2],["red",2],["web",2],["tub",2],["mad",2],["bib",0],["dad",0]]},
+ {set:["p","q"],tip:"q כמעט תמיד באה עם u אחריה: <bdi class='en'>queen, quick</bdi>. אם אין u, זו כנראה p.",
+  items:[["pen",0],["pig",0],["queen",0],["quiz",0],["pot",0],["quick",0],["pan",0],["quilt",0],["cup",2],["map",2]]},
+ {set:["b","p"],tip:"b עם הבטן למעלה, p עם הבטן למעלה והקו יורד למטה, מתחת לשורה.",
+  items:[["bat",0],["pat",0],["big",0],["pig",0],["bin",0],["pin",0],["cab",2],["cap",2],["tub",2],["tup",-1]].filter(x=>x[1]>=0)},
+ {set:["m","w"],tip:"m עומדת על שתי רגליים, כמו הר כפול. w פתוחה למעלה, כמו כוס.",
+  items:[["man",0],["map",0],["wet",0],["win",0],["mug",0],["wig",0],["web",0],["mop",0],["ham",2],["cow",2]]},
+ {set:["n","h"],tip:"h היא n עם קו ארוך למעלה, כמו כיסא עם משענת.",
+  items:[["net",0],["hen",0],["nut",0],["hut",0],["nap",0],["hat",0],["hop",0],["nod",0]]}
+];
+function letterCard(i){
+  const x=LETTERS[i]; save.letters=save.letters||[]; if(!save.letters.includes(x.L)){ save.letters.push(x.L); persist(); }
+  return `<div class="lcard">
+    <div class="lbig"><span>${x.L}</span><span>${x.L.toLowerCase()}</span></div>
+    <p class="lname">קוראים לה: <b>${x.nm}</b> <button class="btn ghost small2" onclick="speak('${x.L}',0.6)">🔊 השם</button></p>
+    <div class="lsnd">${x.s.map(s=>`<div>🗣️ <b>הצליל:</b> ${bidiT(s)}</div>`).join("")}</div>
+    <div class="lex"><span style="font-size:3em">${x.e}</span><bdi class="en" style="font-size:2em;font-weight:bold"><span class="focus">${x.w[0]}</span>${x.w.slice(1)}</bdi>
+      <button class="btn alt small2" onclick="speak('${x.w}',0.55)">🔊 ${x.w}</button></div>
+  </div>`;
+}
+let LI=0;
+function showLetters(i){
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  ACTIVE=null; document.body.classList.remove("hasTuli");
+  const seen=new Set(save.letters||[]);
+  if(i===undefined){
+    $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפה</button><span class="hint">🔤 תחנה 0: האותיות</span><span></span></div>
+      <div class="card">${sisSay("otiya","👓 ברוכה הבאה לתחנת האותיות! באנגלית יש <b>26 אותיות</b>. לכל אות יש <b>שם</b> (איך קוראים לה באלף-בית) ו<b>צליל</b> (איך היא נשמעת בתוך מילה). לחיצה על אות פותחת אותה.")}
+      <div class="lgrid">${LETTERS.map((x,j)=>`<button class="ltl ${seen.has(x.L)?"seen":""}" onclick="showLetters(${j})"><b>${x.L}</b> ${x.L.toLowerCase()}</button>`).join("")}</div>
+      <div class="row"><button class="btn" onclick="showLetters(0)">להתחיל מ-A ←</button></div></div>
+      <div class="card"><h3>🎮 משחקי אותיות</h3><div class="gchips">${LGAMES.map((g,j)=>`<button class="gchip" onclick="startLGame(${j})">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+    window.scrollTo(0,0); return;
+  }
+  LI=i;
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="showLetters()">→ לכל האותיות</button><span class="hint">אות ${i+1} מתוך 26</span><span></span></div>
+    <div class="card">${letterCard(i)}
+    <div class="row"><button class="btn ghost" onclick="${i>0?`showLetters(${i-1})`:"showLetters()"}">→ הקודמת</button><button class="btn" onclick="${i<25?`showLetters(${i+1})`:"lettersDone()"}">${i<25?`הבאה: ${LETTERS[i+1].L} ←`:"סיימתי את כל האותיות! ←"}</button></div></div>`;
+  setTimeout(()=>speak(LETTERS[i].L,0.6),300);
+  window.scrollTo(0,0);
+}
+function lettersDone(){ earn(3); confetti(); tone(SFX.gift); showLetters(); setTimeout(()=>toast("כל 26 האותיות! 🎉 +3 ⭐"),300); }
+/* ---- משחקי אותיות ---- */
+const LGAMES=[
+ {e:"👂",name:"שומעים שם, מוצאים אות",d:"שומעים איך קוראים לאות ובוחרים אותה מתוך ארבע."},
+ {e:"🔠",name:"גדולה וקטנה",d:"רואים אות גדולה ומוצאים את הקטנה שלה."},
+ {e:"🔄",name:"אותיות שמתבלבלות",d:"b או d? p או q? שומעים מילה ובוחרים את האות החסרה."},
+ {e:"🖼️",name:"באיזו אות זה מתחיל?",d:"רואים תמונה, שומעים מילה, ובוחרים את האות הראשונה."}
+];
+let LG=null;
+function lgItems(k){
+  const AB=LETTERS.map(x=>x.L), pick4=(ans,pool)=>shuffle([ans,...shuffle(pool.filter(x=>x!==ans)).slice(0,3)]);
+  if(k===0) return freshPick("lg0",AB,8).map(L=>({say:L,show:"🔊 איזו אות שמעת?",opts:pick4(L,AB),ans:L,x:`זו <b>${L}</b>, קוראים לה ${LETTERS[AB.indexOf(L)].nm}.`}));
+  if(k===1){ const near={b:"dpq",d:"bpq",p:"bdq",q:"pbd",m:"wn",w:"mv",n:"hum",u:"nv",i:"lj",l:"it",h:"nk"};
+    return freshPick("lg1",AB,8).map(L=>{ const l=L.toLowerCase(), pool=((near[l]||"")+"abcdefghijklmnopqrstuvwxyz").split(""); const o=[l]; pool.forEach(c=>{ if(o.length<4 && !o.includes(c)) o.push(c); });
+      return {show:`<div class="big-en">${L}</div><p>מה האות הקטנה של <bdi class="en">${L}</bdi>?</p>`,opts:shuffle(o),ans:l,say:L,x:`<bdi class="en">${L}</bdi> גדולה, <bdi class="en">${l}</bdi> קטנה.`}; }); }
+  if(k===2){ const all=CONFUSE.flatMap(c=>c.items.map(([w,i])=>({w,i,c})));
+    return freshPick("lg2",all,8,x=>x.w+x.i+x.c.set.join()).map(({w,i,c})=>({say:w,show:`<div class="big-en">${w.slice(0,i)}<span class="blank">&nbsp;?&nbsp;</span>${w.slice(i+1)}</div><p>🔊 הקשיבי: איזו אות חסרה?</p>`,opts:c.set,ans:w[i],x:c.tip,en:true})); }
+  const words=LETTERS.filter(x=>!/-/.test(x.w)).map(x=>[x.w,x.e]).concat(Object.entries(PIC).filter(([w])=>/^[a-z]+$/.test(w)).map(([w,v])=>[w,v[0]]));
+  return freshPick("lg3",words,8,x=>x[0]).map(([w,e])=>({say:w,show:`<div class="pic">${e}</div><p>🔊 באיזו אות מתחילה המילה?</p>`,opts:pick4(w[0].toUpperCase(),AB),ans:w[0].toUpperCase(),x:`<bdi class="en">${w}</bdi> מתחילה ב-<b>${w[0].toUpperCase()}</b>.`}));
+}
+function startLGame(k){
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  ACTIVE="letters"; document.body.classList.add("hasTuli");
+  LG={k,items:lgItems(k),i:0,good:0,tried:false}; drawLG();
+}
+function drawLG(){
+  const g=LGAMES[LG.k];
+  if(LG.i>=LG.items.length){ gameEnd("otiya",`startLGame(${LG.k})`,LG.good,LG.items.length,`<div class="row"><button class="btn ghost" onclick="showLetters()">🔤 לתחנת האותיות</button></div>`); return; }
+  const it=LG.items[LG.i]; LG.tried=false;
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="showLetters()">→ לתחנת האותיות</button><span class="hint">${g.e} ${g.name} · ${LG.i+1} מתוך ${LG.items.length}</span><span></span></div>
+    <div class="progress"><div style="width:${Math.round(100*LG.i/LG.items.length)}%"></div></div>
+    <div class="card" style="text-align:center">${it.show}
+      ${it.say?`<div class="row"><button class="btn alt" onclick="speak('${it.say}',0.6)">🔊 שוב</button></div>`:""}
+      <div class="row">${it.opts.map(o=>`<button class="opt en" style="font-size:2em;min-width:110px" onclick="lgPick(this,'${o}')">${o}</button>`).join("")}</div>
+      <div class="msg" id="msg"></div><div class="row" id="nx"></div></div>`;
+  if(it.say) setTimeout(()=>speak(it.say,0.6),350);
+  window.scrollTo(0,0);
+}
+function lgPick(b,o){
+  const it=LG.items[LG.i];
+  if(o===it.ans){ b.classList.add("right"); if(!LG.tried){ LG.good++; earn(1); } setMsg(praise()+"<br><span style='font-weight:normal'>"+it.x+"</span>","good");
+    document.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+    document.getElementById("nx").innerHTML=`<button class="btn" onclick="LG.i++;drawLG()">הבא ←</button>`; }
+  else { b.classList.add("wrong"); b.disabled=true; LG.tried=true; bad(); setMsg("לא בדיוק. "+it.x+" נסי שוב.","soft"); if(it.say) speak(it.say,0.5); }
 }
 
 /* ============ הגרסה באינטרנט ============ */
