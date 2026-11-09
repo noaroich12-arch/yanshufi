@@ -2625,7 +2625,14 @@ function brFinish(){
 
 /* ============ הגרסה באינטרנט ============ */
 const WEB_URL = "https://noaroich12-arch.github.io/yanshufi/" + encodeURIComponent("המסע של ינשופי.html");
-function sendToWeb(){ window.open(WEB_URL + "#import=" + encodeURIComponent(JSON.stringify(save)), "_blank"); }
+function sendToWeb(){
+  const data={...save}; delete data.seen; delete data.migrated; // בלי היסטוריית הסבבים, כדי שהקישור יהיה קצר
+  const json=JSON.stringify(data);
+  if(location.hostname==="localhost"){ // השרת המקומי פותח את האתר בכרום, עם ההתקדמות
+    fetch("/to-chrome",{method:"POST",body:json}).then(r=>{ if(!r.ok) throw 0; toast("נפתח בכרום עם ההתקדמות שלך 🎉"); })
+      .catch(()=>window.open(WEB_URL + "#import=" + encodeURIComponent(json), "_blank"));
+  } else window.open(WEB_URL + "#import=" + encodeURIComponent(json), "_blank");
+}
 
 /* ============ מעבר לכתובת מקומית: כך הדפדפן זוכר את אישור המיקרופון ============ */
 const LOCAL_URL = "http://localhost:8765/" + encodeURIComponent("המסע של ינשופי.html");
@@ -2671,6 +2678,7 @@ if(save.wallet===undefined) save.wallet=save.total||0; // כוכבים שנאס�
   ["goMap","showGames","showNest","showWardrobe","showAlbum","showBank","showWheel","showBridge","showRS"].forEach(n=>set(n,null));
 }
 goMap();
+if(location.hostname==="localhost" && location.hash==="#export"){ history.replaceState(null,"",location.pathname); setTimeout(sendToWeb,800); }
 </script>
 </body>
 </html>
