@@ -869,7 +869,7 @@ function goMap(){
         <button class="htile" onclick="${introOn("tuli","startTuliQuiz()")}"><span>🐛</span><b>הפינה של טולי</b></button>
         <button class="htile" onclick="showNest()"><span>🦉</span><b>הקן והארון</b></button>
         <button class="htile" onclick="showTools()"><span>🧰</span><b>המילים שלי</b></button>
-        <button class="htile" onclick="showGuide()"><span>❓</span><b>איך זה עובד?</b></button>
+        <button class="htile" onclick="showWheel()"><span>🎡</span><b>גלגל המזל</b></button>
       </div>`;
   if(location.hostname==="localhost") h += `<div class="row"><button class="btn ghost" onclick="sendToWeb()">📤 להעביר את ההתקדמות לגרסה באינטרנט</button></div>`;
   $app.innerHTML = h; window.scrollTo(0,0);
@@ -3214,9 +3214,29 @@ function treasureMap(){
   s+=`<text x="520" y="1388" font-size="0">.</text></svg>`;
   return `<div class="mapwrap">${s}<p class="hint" style="margin:6px 0 0">לחיצה על תחנה פותחת אותה · ✓ = תחנה שהושלמה · 📍 = התחנה הבאה שלך</p></div>`;
 }
-function showStation(id){
+// דף הסבר לפני שנכנסים לתחנה מהמפה: איך עובדים בתחנה, ואיך מקבלים עזרה
+function stationIntro(id){
+  const all=CHAPTERS.filter(c=>c.id), i=all.findIndex(c=>c.id===id), c=all[i];
+  const what = c.kind==="letters"
+    ? "1. לוחצים על אות, ושומעים את השם שלה ואת הצליל שלה.<br>2. עוברים אות אחרי אות, מ-A ועד Z.<br>3. בסוף יש משחקי אותיות קצרים."
+    : c.adv
+    ? "1. <b>טקסטים:</b> קוראים בשקט, צעד אחר צעד, ועונים על שאלות.<br>2. <b>מילים:</b> כרטיסיות ומשחקים עם 50 המילים של התחנה.<br>3. <b>דקדוק:</b> כרטיס חוק, ואחריו תרגול."
+    : "1. <b>שלבים:</b> בכל שלב יש חוק קריאה אחד. קוראים את החוק, ואז מילים ומשפטים בקול.<br>2. לוחצים 🎤 וקוראים, וינשופי מקשיב. אפשר גם לשמוע 🔊 ולהקליט את עצמך.<br>3. <b>טקסטים ומשחקים:</b> אחרי השלבים, קוראים טקסטים ומשחקים עם המילים של התחנה.";
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפת האוצר</button><span class="hint">תחנה ${i}</span><span></span></div>
+    <div class="card intro">
+      <div style="text-align:center"><div class="bigdot" style="margin:0 auto">${c.e}</div><h2 style="margin:10px 0 4px">תחנה ${i}: ${c.t}</h2><p style="font-size:1.1em;margin:0">${c.sub}</p></div>
+      <div class="howbox"><h3>🧭 מה עושים בתחנה?</h3><div style="font-size:1.12em;line-height:1.9">${what}</div></div>
+      <div class="howbox tulibox"><span style="font-size:2.2em">🐛</span><div><b>נתקעת?</b> למטה בצד יש כפתור ירוק עגול: זו טולי התולעת. לוחצים עליה, והיא מסבירה בדיוק את מה שמולך. ואם טועים פעמיים, היא מציעה עזרה בעצמה.</div></div>
+      <p style="text-align:center">⭐ על כל תשובה נכונה: כוכב ובלוט לינשופי. אין שעון ואין לחץ.</p>
+      <div class="row"><button class="btn big" onclick="showStation('${id}',true)">יאללה, נכנסים לתחנה ←</button></div>
+      <p style="text-align:center;margin-top:14px"><label style="cursor:pointer"><input type="checkbox" style="width:22px;height:22px;vertical-align:middle" onchange="save.skipStIntro=this.checked;persist()"> בפעם הבאה לדלג על ההסבר הזה</label></p>
+    </div>`;
+  window.scrollTo(0,0);
+}
+function showStation(id, skip){
   if(window.speechSynthesis) speechSynthesis.cancel(); CUR_L=null;
-  const all=CHAPTERS.filter(c=>c.id), i=all.findIndex(c=>c.id===id), c=all[i]; BACK=`showStation('${id}')`;
+  if(!skip && !save.skipStIntro){ stationIntro(id); return; }
+  const all=CHAPTERS.filter(c=>c.id), i=all.findIndex(c=>c.id===id), c=all[i]; BACK=`showStation('${id}',true)`;
   let prog="";
   if(c.kind==="letters") prog=`${(save.letters||[]).length} מתוך 26 אותיות`;
   else if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w); prog=`${tx.filter(t=>txDone(t.id)).length} מתוך ${tx.length} טקסטים · ${vocabKnown(c.id)} מתוך ${((window.VOCAB||{})[c.id]||[]).length} מילים`; }
@@ -3225,7 +3245,7 @@ function showStation(id){
     <div class="card sthead"><div class="bigdot">${chState(c)==="done"?"✓":c.e}</div>
       <div><h2 style="margin:0">תחנה ${i}: ${c.t}</h2><p style="margin:6px 0">${c.sub}</p><p class="hint" style="text-align:right;margin:0">${prog}</p></div></div>
     <div class="card">${chapterBody(c)}</div>
-    <div class="row">${i>0?`<button class="btn ghost" onclick="showStation('${all[i-1].id}')">→ התחנה הקודמת</button>`:""}<button class="btn alt" onclick="goMap()">🗺️ למפה</button>${i<all.length-1?`<button class="btn ghost" onclick="showStation('${all[i+1].id}')">התחנה הבאה ←</button>`:""}</div>`;
+    <div class="row">${i>0?`<button class="btn ghost" onclick="showStation('${all[i-1].id}',true)">→ התחנה הקודמת</button>`:""}<button class="btn alt" onclick="goMap()">🗺️ למפה</button>${i<all.length-1?`<button class="btn ghost" onclick="showStation('${all[i+1].id}',true)">התחנה הבאה ←</button>`:""}</div>`;
   window.scrollTo(0,0);
 }
 function showGuide(){
