@@ -1432,6 +1432,7 @@ function okGroup(g){ const s=learnedWords(); return g.every(w=>isCVC(w)||s.has(w
 function heOf(w){
   if(save.bankHe && save.bankHe[w]) return save.bankHe[w];
   if(window.BR && BR.t && BR.t.gl && BR.t.gl[w]) return BR.t.gl[w];
+  for(const L of Object.values(window.VOCAB||{})){ const f=L.find(v=>v[0]===w); if(f) return f[1]; }
   for(const L of LEVELS){ if(L.words){ const f=L.words.find(x=>x[0]===w); if(f) return f[1]; } }
   return TWIN_HE[w] || SENT_HE[w] || "";
 }
@@ -2547,16 +2548,17 @@ function drawBR(){
     h+=`<div class="card">${sisSay("zrima",`<b>חימום:</b> לפני שקוראים את הטקסט, פוגשים את המילים לבד. ככה בתוך המשפט כבר לא צריך לפענח, ונשאר כוח להבין. מילה ${BR.wi+1} מתוך ${BR.warm.length}.`)}
       <div style="text-align:center;direction:ltr">${BR.warm.map((x,i)=>`<span class="wchip ${i===BR.wi?"on":BR.okw.has(x)?"ok":""}">${x}</span>`).join("")}</div>
       ${w.length<=7&&!/[^a-z]/.test(w)?chunksHTML(w,"",true):`<div class="bigword">${w}</div>`}
-      <div class="row">${micBtn(`brMicWord('${w}')`,"אני אומרת")}<button class="btn alt" onclick="speak('${w}',0.6)">🔊 איך זה נשמע</button><button class="btn ghost" onclick="speak('${w}',0.4)">🐢</button></div>
+      <div class="row">${micBtn(`brMicWord('${w}')`,"אני אומרת")}<button class="btn alt" onclick="speak('${w}',0.6)">🔊 איך זה נשמע</button><button class="btn ghost" onclick="speak('${w}',0.4)">🐢</button>${recBtn("BR.warm[BR.wi]")}</div>
       <div class="msg" id="msg"></div>
-      <div class="mean">${he?`<span><button class="tiny" onclick="this.parentNode.innerHTML='${he.replace(/'/g,"")}'">מה זה אומר?</button></span>`:""} ${bankBtn(w)}</div>
+      <div class="mean">${meanBtn(w)} ${bankBtn(w)}</div>
       <div class="row"><button class="btn ghost" onclick="if(BR.wi>0){BR.wi--;drawBR()}">→ הקודמת</button><button class="btn" onclick="BR.okw.add('${w}');BR.wi++;drawBR()">${BR.wi===BR.warm.length-1?"סיימתי לחמם ←":"המילה הבאה ←"}</button></div></div>`;
   }
   else if(BR.step===1){ // צירופים
     const p=BR.phr[BR.pi]; if(!p){ brNextStep(); return; }
     h+=`<div class="card">${sisSay("zrima",`<b>צירופים:</b> שתיים-שלוש מילים שהולכות יחד. העין קולטת אותן כיחידה אחת, כמו מילה ארוכה. צירוף ${BR.pi+1} מתוך ${BR.phr.length}.`)}
       <div class="rtext" style="text-align:center;font-size:2.4em" id="brs"><span class="phr">${brSpans(p)}</span></div>
-      <div class="row">${micBtn(`brMicText()`)}<button class="btn alt" onclick="brSay(0.75)">🔊 להקשיב</button><button class="btn ghost" onclick="brSay(0.5)">🐢 לאט</button></div>
+      <div class="row">${micBtn(`brMicText()`)}<button class="btn alt" onclick="brSay(0.75)">🔊 להקשיב</button><button class="btn ghost" onclick="brSay(0.5)">🐢 לאט</button>${recBtn("BR.phr[BR.pi]")}</div>
+      <div class="mean"><details><summary>מה זה אומר?</summary>${brSentHe(p)}</details></div><p class="hint">🐛 לא מכירים מילה? לוחצים עליה, או שואלים את טולי. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div>
       <div class="row"><button class="btn ghost" onclick="if(BR.pi>0){BR.pi--;drawBR()}">→ הקודם</button><button class="btn" onclick="BR.pi++;drawBR()">${BR.pi===BR.phr.length-1?"לשלב הבא ←":"הצירוף הבא ←"}</button></div></div>`;
   }
@@ -2565,7 +2567,8 @@ function drawBR(){
     h+=`<div class="card">${sisSay("zrima","<b>משפט שגדל:</b> בכל שורה נוסף חלק אחד, והחלק החדש מסומן. קוראים כל שורה מההתחלה. ככה המשפט הארוך נבנה לאט, בלי עומס.")}
       <div class="rtext pyr" id="brs">${g.slice(0,n+1).map((_,i)=>{ const line=g.slice(0,i+1).join(" "); const prev=g.slice(0,i).join(" ");
         return `<div class="${i===n?"cur":"done"}">${prev?`${prev} `:""}<span class="new">${g[i]}</span></div>`; }).join("")}</div>
-      <div class="row">${micBtn(`brMicText('${n}')`)}<button class="btn alt" onclick="brSayLine(0.75)">🔊 השורה</button><button class="btn ghost" onclick="brSayLine(0.5)">🐢</button></div>
+      <div class="row">${micBtn(`brMicText('${n}')`)}<button class="btn alt" onclick="brSayLine(0.75)">🔊 השורה</button><button class="btn ghost" onclick="brSayLine(0.5)">🐢</button>${recBtn("txPlain(BR.grow.slice(0,BR.gi+1).join(' '))")}</div>
+      <div class="mean"><details><summary>מה זה אומר?</summary>${brSentHe(g[0])}</details></div><p class="hint">🐛 לא מכירים מילה? לוחצים עליה, או שואלים את טולי. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div>
       <div class="row"><button class="btn" onclick="${n<g.length-1?"BR.gi++;drawBR()":"brNextStep()"}">${n<g.length-1?"להוסיף חלק ←":"המשפט שלם! הלאה ←"}</button></div></div>`;
   }
@@ -2575,8 +2578,8 @@ function drawBR(){
       <div class="rtext" id="brs">${t.s.map((x,j)=>{ const cls=j===i?"cur":(r.win==="hide"?"gone":r.win==="dim"?"dim":"");
         return `<span class="rsent ${cls}" id="bs${j}">${j===i?brSpans(x[0],0,BR.cue):txPlain(x[0])}</span>`; }).join("")}</div>
       <div class="row">${micBtn(`brMicText()`)}<button class="btn alt" onclick="brSayHL(${i},0.75)">🔊 להקשיב</button><button class="btn ghost" onclick="brSayHL(${i},0.5)">🐢 לאט</button>
-        <button class="btn ghost" onclick="BR.cue=!BR.cue;drawBR()">${BR.cue?"בלי קווים":"עם קווים"}</button></div>
-      <div class="mean"><details><summary>מה זה אומר?</summary>${s[1]}</details></div>
+        <button class="btn ghost" onclick="BR.cue=!BR.cue;drawBR()">${BR.cue?"בלי קווים":"עם קווים"}</button>${recBtn("txPlain(BR.t.s[BR.si][0])")}</div>
+      <div class="mean"><details><summary>מה זה אומר?</summary>${s[1]}</details></div><p class="hint">🐛 לא מכירים מילה? לוחצים עליה, או שואלים את טולי. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div><div id="chk"></div>
       <div class="row" id="nav3"><button class="btn ghost" onclick="if(BR.si>0){BR.si--;drawBR()}">→ המשפט הקודם</button><button class="btn" onclick="brSentNext()">${i===t.s.length-1?"סיימתי את כל המשפטים ←":"המשפט הבא ←"}</button></div></div>`;
   }
@@ -2585,7 +2588,8 @@ function drawBR(){
     h+=`<div class="card">${sisSay("zrima","<b>כל הפסקה:</b> כל משפט בשורה משלו. הפס הצהוב מראה איפה את, ואפשר להזיז אותו בכפתורים או בלחיצה על שורה. קוראים פעם אחת עם הפס ועם הקשבה, ואז עוד פעם לבד. כל קריאה חוזרת נעשית קלה יותר.")}
       <div class="rtext" id="brs">${t.s.map((x,j)=>`<span class="rsent ${j===BR.ruler?"ruler":""}" id="bs${j}" onclick="BR.ruler=${j};brRuler()">${brSpans(x[0],j*100,false,true)}</span>`).join("")}</div>
       <div class="row"><button class="btn ghost" onclick="BR.ruler=Math.max(0,BR.ruler-1);brRuler()">⬆️ שורה למעלה</button><button class="btn ghost" onclick="BR.ruler=Math.min(${t.s.length-1},BR.ruler+1);brRuler()">⬇️ שורה למטה</button></div>
-      <div class="row"><button class="btn alt" onclick="brReadAll(0.75)">🔊 הקראה עם הדגשה</button><button class="btn ghost" onclick="brReadAll(0.55)">🐢 הקראה לאט</button>${micBtn("brMicRuler()","אני קוראת את השורה")}</div>
+      <div class="row"><button class="btn alt" onclick="brReadAll(0.75)">🔊 הקראה עם הדגשה</button><button class="btn ghost" onclick="brReadAll(0.55)">🐢 הקראה לאט</button>${micBtn("brMicRuler()","אני קוראת את השורה")}${recBtn("txPlain(BR.t.s[BR.ruler][0])")}</div>
+      <div class="mean"><details><summary>מה אומרת השורה הצהובה?</summary><span id="rulerhe">${t.s[BR.ruler][1]}</span></details></div><p class="hint">🐛 לא מכירים מילה? לוחצים עליה, או שואלים את טולי. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="runs">${BR.t0?`<button class="btn" onclick="brStop()">⏹️ סיימתי לקרוא</button>`:`<button class="btn ghost" onclick="brStart()">⏱️ למדוד קריאה ${runs.length+1} (בלי לחץ)</button>`}
         ${runs.length?`<p>${runs.map((x,i)=>`קריאה ${i+1}: ${x.toFixed(0)} שניות`).join(" · ")}${runs.length>1&&runs[runs.length-1]<runs[0]?" 🌿 נעשה זורם יותר!":""}</p>`:""}</div>
       <div class="msg" id="msg"></div>
@@ -2604,6 +2608,19 @@ function drawBR(){
   }
   $app.innerHTML=h; window.scrollTo(0,0);
 }
+
+// "מה זה אומר?": אם יש פירוש, מראים אותו. אם אין, טולי עוזרת לקרוא את המילה
+function meanBtn(w){ const he=heOf(w);
+  return he ? `<span><button class="tiny" onclick="this.parentNode.innerHTML='${he.replace(/'/g,"")}'">מה זה אומר?</button></span>`
+            : `<button class="tiny" onclick="tuliWord('${w}')">מה זה אומר? 🐛 נשאל את טולי</button>`; }
+function tuliWord(w){
+  closePeek(); const d=document.createElement("div"); d.className="pop";
+  d.innerHTML=`<div class="card" style="max-width:640px;text-align:right;background:#fbfff8;border-color:#bfe3b0">${tuliHelpHTML({w})}
+    ${heOf(w)?"":tuliSay("את הפירוש של המילה הזו עוד אין לי במילון 🙂 אבל זכרי: <b>אפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</b> קודם קוראים אותה צליל אחרי צליל, ואחר כך מנחשים מההקשר של המשפט. ובמדרגה של משפט אחרי משפט יש תרגום לכל המשפט.")}
+    <div class="row"><button class="btn" onclick="this.closest('.pop').remove()">תודה טולי 💚</button></div></div>`;
+  d.onclick=e=>{ if(e.target===d) d.remove(); }; document.body.appendChild(d);
+}
+function brSentHe(part){ const clean=txPlain(part); const s=BR.t.s.find(x=>txPlain(x[0]).includes(clean)); return s?`המשפט שבו זה מופיע: ${s[1]}`:""; }
 function brSay(rate){ speak(txPlain(BR.phr[BR.pi]),rate); }
 function brSayLine(rate){ speak(txPlain(BR.grow.slice(0,BR.gi+1).join(" ")),rate); }
 // הקראה עם הדגשה של כל מילה בזמן שהיא נשמעת
@@ -2628,7 +2645,7 @@ function brReadAll(rate){
     speakHL(txPlain(BR.t.s[i][0]),rate,[...el.querySelectorAll(".w")],()=>{ i++; if(BR.step===4) setTimeout(go,250); }); };
   go();
 }
-function brRuler(){ document.querySelectorAll("#brs .rsent").forEach((e,j)=>e.classList.toggle("ruler",j===BR.ruler)); const el=document.getElementById("bs"+BR.ruler); if(el) el.scrollIntoView({block:"center",behavior:"smooth"}); }
+function brRuler(){ document.querySelectorAll("#brs .rsent").forEach((e,j)=>e.classList.toggle("ruler",j===BR.ruler)); const rh=document.getElementById("rulerhe"); if(rh) rh.textContent=BR.t.s[BR.ruler][1]; const el=document.getElementById("bs"+BR.ruler); if(el) el.scrollIntoView({block:"center",behavior:"smooth"}); }
 function brStart(){ BR.t0=performance.now(); drawBR(); }
 function brStop(){ BR.runs.push((performance.now()-BR.t0)/1000); BR.t0=0; earn(1); drawBR(); }
 // מיקרופון
@@ -3070,7 +3087,7 @@ function drawChant(){
   if(CH.mode==="echo"){
     $app.innerHTML=gameTop("zrima","🎵 "+c.he,CH.li,L.length)+`<div class="card">${sisSay("zrima",`<b>הד:</b> לחצי 🔊, הקשיבי לשורה, ואז קראי אותה בעצמך באותו קצב. שורה ${CH.li+1} מתוך ${L.length}.`)}
       <div class="rtext" id="brs">${L.map((l,j)=>`<span class="rsent ${j===CH.li?"cur":j<CH.li?"":"dim"}" id="cl${j}">${j===CH.li?brSpans(l[0],0,false,true):l[0]}</span>`).join("")}</div>
-      <div class="row"><button class="btn alt" onclick="chSay(0.7)">🔊 להקשיב לשורה</button><button class="btn ghost" onclick="chSay(0.5)">🐢</button>${micBtn("chMic()","עכשיו אני")}</div>
+      <div class="row"><button class="btn alt" onclick="chSay(0.7)">🔊 להקשיב לשורה</button><button class="btn ghost" onclick="chSay(0.5)">🐢</button>${micBtn("chMic()","עכשיו אני")}${recBtn("CH.c.lines[CH.li][0]")}</div>
       <div class="mean"><details><summary>מה זה אומר?</summary>${L[CH.li][1]}</details></div><div class="msg" id="msg"></div>
       <div class="row"><button class="btn" onclick="${CH.li<L.length-1?"CH.li++;drawChant()":"CH.mode='together';drawChant()"}">${CH.li<L.length-1?"השורה הבאה ←":"עכשיו כל השיר יחד ←"}</button></div></div>`;
     setTimeout(()=>chSay(0.7),400);
