@@ -189,6 +189,26 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .syl small{font-size:.3em;color:var(--soft);font-family:"Segoe UI",Arial;font-style:normal;margin-top:2px}
 .syldot{font-size:2em;color:var(--lock)}
 .wbar{border-radius:14px;padding:6px 14px;margin:26px 0 8px;font-weight:bold;font-size:1.05em}
+/* ===== מפת אוצר ועמוד בית ===== */
+.welcome .bubble{font-size:1.05em}
+.btn.big{font-size:1.25em;padding:16px 30px}
+.mapwrap{background:#fff;border:3px solid var(--line);border-radius:28px;padding:10px;margin:14px 0;text-align:center}
+.tmap{width:100%;max-width:900px;height:auto;display:block;margin:0 auto}
+.mstn{cursor:pointer}
+.mstn:hover circle,.mstn:focus circle{filter:brightness(1.06)}
+.mstn:hover{transform-box:fill-box}
+.pulse{animation:pulseR 1.8s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes pulseR{50%{opacity:.25;transform:scale(1.15)}}
+.hometiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+@media (max-width:560px){.hometiles{grid-template-columns:repeat(2,1fr)}}
+.htile{background:#fff;border:3px solid var(--line);border-radius:22px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink);font-size:1.05em}
+.htile span{font-size:2.4em;line-height:1.1}
+.htile:hover{border-color:var(--accent)}
+.sthead{display:flex;gap:18px;align-items:center}
+.bigdot{width:110px;height:110px;flex-shrink:0;border-radius:50%;background:#fff4e2;border:6px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:3em}
+.howbox{background:#fff;border:3px solid rgba(0,0,0,.08);border-radius:20px;padding:14px 18px;margin:14px 0}
+.howbox h3{margin:0 0 8px}
+.tulibox{display:flex;gap:14px;align-items:center;background:#f3fbef;border-color:#bfe3b0}
 /* ===== מפת המסע ===== */
 .guide summary{cursor:pointer;font-size:1.15em;padding:4px 0}
 .gitems p{margin:10px 0}
@@ -837,15 +857,21 @@ function micBtn(fn,label){ return SR ? `<button class="btn mic" id="micb" onclic
 function bidiT(s){ if(!/[֐-׿]/.test(s)) return `<bdi dir="ltr">${s}</bdi>`; return s.replace(/[A-Za-z_][A-Za-z_ ,'\-]*[A-Za-z_]|[A-Za-z_]/g, m=>`<bdi>${m}</bdi>`); }
 function goMap(){
   if(window.speechSynthesis) speechSynthesis.cancel(); CUR_L=null;
-  let h = (fileModeBanner ? `<div class="card" style="border-color:var(--accent2)">💡 <b>כדי שלא תצטרכי לאשר את המיקרופון כל פעם:</b> פתחי את המשחק דרך הקובץ <b>"פתיחת המשחק"</b> שנמצא באותה תיקייה. ההתקדמות שלך תעבור לשם לבד.</div>` : "")
-    + hud() + guideCard() + quickRow() + mapHTML();
-  h += `<div style="margin-top:28px"></div>` + bankCard();
-  h += `<div class="card" style="text-align:center">${owlSay("<b>מילים דומות אבל שונות</b> 👀 כמו <span class='en'>hat</span> ו-<span class='en'>hot</span>. אימון קצר של העין והאוזן, לאות האמצעית.")}
-    <div class="row"><button class="btn alt" onclick="startPairs()">👂👀 לאימון מילים דומות</button></div></div>`;
-  h += myPairsCard();
-  if(location.hostname==="localhost") h += `<div class="card" style="text-align:center;border-color:var(--accent2)">${owlSay("🌐 <b>המשחק נמצא גם באינטרנט</b>, ואפשר לשחק בו מכל מחשב ומהטלפון. כדי שהכוכבים, הבלוטים והבגדים שלי יעברו לשם, לוחצים פעם אחת על הכפתור.")}
-    <div class="row"><button class="btn alt" onclick="sendToWeb()">📤 להעביר את ההתקדמות לגרסה באינטרנט</button></div></div>`;
-  h += `<p class="legend">🎤 המיקרופון עובד ב-Edge או ב-Chrome כשיש אינטרנט. בפעם הראשונה הדפדפן ישאל אם מותר להשתמש במיקרופון, וצריך ללחוץ "אפשר".<br>מילה עם קו מנוקד ירוק היא <b>מילה שזוכרים בעל פה</b> (the, is), כי היא לא לפי החוק.</p>`;
+  BACK="goMap()";
+  const c=curChapter();
+  let h = hud()
+    + `<div class="welcome">${owlSay("שלום! 🦉 זו מפת האוצר שלנו. כל תחנה היא חוק קריאה חדש. <b>לוחצים על תחנה</b> כדי להיכנס, או ממשיכים מאיפה שעצרנו.")}
+       <div class="row"><button class="btn big" onclick="continueHere()">📍 להמשיך: ${c.e} ${c.t}</button></div></div>`
+    + treasureMap()
+    + `<div class="hometiles">
+        <button class="htile" onclick="showBridge()"><span>📖</span><b>טקסטים</b></button>
+        <button class="htile" onclick="showGames()"><span>🎪</span><b>גן המשחקים</b></button>
+        <button class="htile" onclick="${introOn("tuli","startTuliQuiz()")}"><span>🐛</span><b>הפינה של טולי</b></button>
+        <button class="htile" onclick="showNest()"><span>🦉</span><b>הקן והארון</b></button>
+        <button class="htile" onclick="showTools()"><span>🧰</span><b>המילים שלי</b></button>
+        <button class="htile" onclick="showGuide()"><span>❓</span><b>איך זה עובד?</b></button>
+      </div>`;
+  if(location.hostname==="localhost") h += `<div class="row"><button class="btn ghost" onclick="sendToWeb()">📤 להעביר את ההתקדמות לגרסה באינטרנט</button></div>`;
   $app.innerHTML = h; window.scrollTo(0,0);
 }
 
@@ -1574,7 +1600,7 @@ function sisSay(k, html){ const s=SISTERS[k]; return `<div class="say">${sis(k)}
 const GAMES = [
   {id:"snakes",  e:"🐍🎲", name:"נחשים וסולמות", sis:"yanshufi", run:"startSL()",      d:"מירוץ נגד ינשופי. קוראים מילה, זורקים קובייה, מטפסים בסולמות."},
   {id:"balloons",e:"🎈",   name:"בלונים",         sis:"tzlila",   run:"startBalloons()", d:"שומעים מילה ומפוצצים את הבלון הנכון."},
-  {id:"missing", e:"🕵️",   name:"האות החסרה",     sis:"otiya",    run:"startMissing()",  d:"c_t? איזו תנועה חסרה? בדיוק בשביל hat ו-hot."},
+  {id:"missing", e:"🕵️",   name:"האות החסרה",     sis:"otiya",    run:"startMissing()",  d:"איזו תנועה חסרה במילה? בדיוק בשביל hat ו-hot."},
   {id:"baskets", e:"🧺",   name:"סלסלות הצלילים", sis:"tzlila",   run:"startBaskets()",  d:"מקשיבים למילה ומכניסים לסלסלה של הצליל."},
   {id:"build",   e:"🧩",   name:"בונים מילה",     sis:"otiya",    run:"startBuild()",    d:"שומעים, רואים תמונה, ובונים את המילה מאותיות."},
   {id:"memory",  e:"🃏",   name:"זיכרון תמונות",  sis:"zichrona", run:"startMemory()",   d:"הופכים קלפים ומחברים מילה לתמונה שלה."},
@@ -1589,7 +1615,7 @@ function gamesCard(){
 function showGames(){
   if(window.speechSynthesis) speechSynthesis.cancel(); CUR_L=null;
   let h=`<div class="card">${owlSay("ברוכה הבאה לגן המשחקים! 🎪 האחיות שלי מחכות לך. כל אחת מתמחה במשהו אחר.<br>אין כאן לחץ ואין שעון שרודף אחרייך. משחקים בקצב שלך.")}</div>
-    <div class="tiles">${GAMES.map(g=>{ const s=SISTERS[g.sis]; return `<button class="tile" style="background:${s.bg}" onclick="${g.run}">
+    <div class="tiles">${GAMES.map(g=>{ const s=SISTERS[g.sis]; return `<button class="tile" style="background:${s.bg}" onclick="${g.id==="bridge"?g.run:introOn(g.id,g.run)}">
       <span class="e">${g.e}</span><b>${g.name}</b><span>${sis(g.sis,.8)} עם ${s.name}</span><span style="color:var(--ink);font-size:.95em">${g.d}</span></button>`; }).join("")}</div>
     <div class="tiles" style="margin-top:14px">
       <button class="tile" style="background:#fff" onclick="showWheel()"><span class="e">🎡</span><b>גלגל המזל</b><span class="hint">${wheelReady()?"מחכה לך היום!":"חוזר מחר"}</span></button>
@@ -2758,9 +2784,9 @@ function chapterBody(c){
   if(c.kind==="letters") return `<div class="sbody">
     <p>כאן מכירים כל אות: איך קוראים לה, איך היא נשמעת, ואיך היא נראית גדולה וקטנה. גם למי שכבר מכירה, זה חיזוק טוב.</p>
     <div class="row"><button class="btn" onclick="showLetters()">🔤 לכל האותיות</button></div>
-    <h4>🎮 משחקי אותיות</h4><div class="gchips">${LGAMES.map((g,i)=>`<button class="gchip" onclick="startLGame(${i})">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+    <h4>🎮 משחקי אותיות</h4><div class="gchips">${LGAMES.map((g,i)=>`<button class="gchip" onclick="${introOn("lg"+i,"startLGame("+i+")")}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
   if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w), V=(window.VOCAB||{})[c.id]||[], gt=GTOPICS();
-    const gch=id=>{ const g=XGAMES.find(x=>x.id===id); return g?`<button class="gchip" onclick="${g.run.replace("$C",c.id)}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`:""; };
+    const gch=id=>{ const g=XGAMES.find(x=>x.id===id); return g?`<button class="gchip" onclick="${introOn(id,g.run.replace("$C",c.id))}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`:""; };
     return `<div class="sbody">
       <h4>📖 טקסטים לתחנה הזאת</h4><div class="txlist">${tx.map(txTile).join("")}</div>
       <h4>🃏 ${V.length} מילים של התחנה <span class="hint">${vocabKnown(c.id)} כבר יודעת</span></h4>
@@ -2773,7 +2799,7 @@ function chapterBody(c){
     <h4>📚 השלבים של התחנה <span class="hint">לפי הסדר, מימין לשמאל</span></h4><div class="path">${ls.map(([L,li])=>nodeHTML(L,li)).join("")}</div>
     ${tx.length?`<h4>📖 טקסטים לתחנה הזאת</h4><div class="txlist">${tx.map(txTile).join("")}</div>`:""}
     <h4>🎪 לשחק עם המילים של התחנה</h4><p class="hint" style="text-align:right">המשחקים לוקחים מילים מהשלבים שכבר התחלת.</p>
-    <div class="gchips">${gl.map(g=>`<button class="gchip" onclick="${g.run}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+    <div class="gchips">${gl.map(g=>`<button class="gchip" onclick="${introOn(g.id,g.run)}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
 }
 
 /* ==================================================================
@@ -2840,7 +2866,7 @@ function showLetters(i){
       <div class="card">${sisSay("otiya","👓 ברוכה הבאה לתחנת האותיות! באנגלית יש <b>26 אותיות</b>. לכל אות יש <b>שם</b> (איך קוראים לה באלף-בית) ו<b>צליל</b> (איך היא נשמעת בתוך מילה). לחיצה על אות פותחת אותה.")}
       <div class="lgrid">${LETTERS.map((x,j)=>`<button class="ltl ${seen.has(x.L)?"seen":""}" onclick="showLetters(${j})"><b>${x.L}</b> ${x.L.toLowerCase()}</button>`).join("")}</div>
       <div class="row"><button class="btn" onclick="showLetters(0)">להתחיל מ-A ←</button></div></div>
-      <div class="card"><h3>🎮 משחקי אותיות</h3><div class="gchips">${LGAMES.map((g,j)=>`<button class="gchip" onclick="startLGame(${j})">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+      <div class="card"><h3>🎮 משחקי אותיות</h3><div class="gchips">${LGAMES.map((g,j)=>`<button class="gchip" onclick="${introOn("lg"+j,"startLGame("+j+")")}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
     window.scrollTo(0,0); return;
   }
   LI=i;
@@ -3143,6 +3169,134 @@ const XGAMES=[
  {id:"tuli",e:"🐛",name:"הפינה של טולי",run:"startTuliQuiz()",d:"שאלות על חוקי הקריאה."}
 ];
 
+/* ==================================================================
+   🏝️ מפת האוצר, עמוד לכל תחנה, והסבר לפני כל משחק
+   ================================================================== */
+let BACK="goMap()";
+const SHORT={letters:"האותיות",c1:"תנועות קצרות",c2:"צמדים",c3:"צירופים",c4:"e קסומה",c5:"שתי תנועות",c6:"r ומיוחדים",c7:"סיומות",c8:"מילים ארוכות",c9:"אותיות שקטות",f1:"יום-יום",f2:"טקסט מסביר",f3:"בגרות",f4:"אקדמית",f5:"פסיכומטרי"};
+const MAP_PTS=[[850,140],[610,185],[370,150],[110,215],[300,530],[560,500],[830,580],[770,770],[500,740],[340,790],[220,1060],[470,1110],[740,1060],[840,1240],[520,1300]];
+function smoothPath(p){ let d=`M${p[0][0]} ${p[0][1]}`;
+  for(let i=0;i<p.length-1;i++){ const p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;
+    const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6], c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+    d+=` C${c1.map(Math.round)} ${c2.map(Math.round)} ${p2}`; }
+  return d; }
+function treasureMap(){
+  const st=CHAPTERS.filter(c=>c.id), cur=curChapter();
+  const deco=(e,x,y,s)=>`<text x="${x}" y="${y}" font-size="${s||52}" text-anchor="middle">${e}</text>`;
+  const plank=(x,y1,y2)=>{ let s=`<rect x="${x-34}" y="${y1}" width="68" height="${y2-y1}" fill="#a87443" rx="6"/>`; for(let y=y1+6;y<y2;y+=16) s+=`<rect x="${x-38}" y="${y}" width="76" height="9" rx="3" fill="#d9a066" stroke="#8a5a2b"/>`; return s+`<line x1="${x-38}" y1="${y1}" x2="${x-38}" y2="${y2}" stroke="#6e4a2c" stroke-width="4"/><line x1="${x+38}" y1="${y1}" x2="${x+38}" y2="${y2}" stroke="#6e4a2c" stroke-width="4"/>`; };
+  const sign=(x,y,w,txt)=>`<g><rect x="${x-w/2}" y="${y-30}" width="${w}" height="52" rx="14" fill="#fffaf0" stroke="#c9a66b" stroke-width="4"/><text x="${x}" y="${y+5}" font-size="27" font-weight="bold" text-anchor="middle" fill="#5a3a1a">${txt}</text></g>`;
+  let s=`<svg class="tmap" viewBox="0 0 1000 1400" role="img" aria-label="מפת האוצר">
+   <defs><pattern id="waves" width="80" height="40" patternUnits="userSpaceOnUse"><path d="M0 20 q20 -12 40 0 t40 0" fill="none" stroke="#86c4dc" stroke-width="3"/></pattern></defs>
+   <rect x="0" y="0" width="1000" height="1400" rx="40" fill="#a9d8ea"/><rect x="0" y="0" width="1000" height="1400" rx="40" fill="url(#waves)"/>
+   <path d="M50 100 Q60 35 200 45 L800 35 Q960 35 955 170 Q962 305 820 312 L430 305 Q300 330 220 318 Q60 330 50 220 Z" fill="#f3dfae" stroke="#c9a66b" stroke-width="6"/>
+   <path d="M55 480 Q55 425 185 432 L825 440 Q965 448 955 600 L962 800 Q955 878 820 872 L190 872 Q50 875 55 760 Z" fill="#e6efc1" stroke="#a8b97a" stroke-width="6"/>
+   <path d="M65 1030 Q75 975 225 985 L805 992 Q965 1000 952 1160 L945 1320 Q925 1392 780 1385 L200 1388 Q65 1385 65 1265 Z" fill="#f6e2c8" stroke="#c9a07a" stroke-width="6"/>
+   ${plank(225,295,470)}${plank(272,888,1012)}
+   ${sign(590,385,520,"🎉 מכאן כבר קוראים טקסטים!")}${sign(590,940,520,"🎓 מכאן: קריאה מתקדמת")}
+   ${deco("🐳",900,395,56)}${deco("⛵",95,410,50)}${deco("🐙",900,955,50)}${deco("🐠",110,960,40)}
+   ${deco("🌴",485,280,50)}${deco("🌴",950,275,40)}${deco("⛰️",390,650,60)}${deco("🌲",120,640,48)}${deco("🏰",650,700,52)}${deco("🌻",940,840,40)}
+   ${deco("🌵",340,1240,48)}${deco("🧭",140,1340,56)}${deco("🗝️",660,1200,42)}
+   <text x="500" y="90" font-size="30" font-weight="bold" text-anchor="middle" fill="#7a5320">אִי הצלילים</text>
+   <text x="800" y="478" font-size="30" font-weight="bold" text-anchor="middle" fill="#56662e">יבשת המילים</text>
+   <text x="380" y="1020" font-size="30" font-weight="bold" text-anchor="middle" fill="#7a4a20">חוף הקוראים</text>
+   <path d="${smoothPath(MAP_PTS)}" fill="none" stroke="#8a5a2b" stroke-width="9" stroke-dasharray="4 20" stroke-linecap="round"/>`;
+  st.forEach((c,i)=>{ const [x,y]=MAP_PTS[i]||[500,700], state=chState(c), isCur=c.id===cur.id, last=i===st.length-1;
+    const fill=state==="done"?"#ffe9a8":isCur?"#fff":"#fffaf0", stroke=state==="done"?"#d4a72c":isCur?"#e08a2e":"#8a5a2b";
+    s+=`<g class="mstn" onclick="showStation('${c.id}')" tabindex="0" role="button" aria-label="תחנה ${i}: ${c.t}">
+      ${isCur?`<circle cx="${x}" cy="${y}" r="62" fill="none" stroke="#e08a2e" stroke-width="6" class="pulse"/>`:""}
+      <circle cx="${x}" cy="${y}" r="48" fill="${fill}" stroke="${stroke}" stroke-width="${isCur?8:5}"/>
+      <text x="${x}" y="${y+17}" font-size="${last?54:46}" text-anchor="middle">${last?"💰":c.e}</text>
+      <circle cx="${x+38}" cy="${y-36}" r="19" fill="${state==="done"?"#2e8b57":"#5a3a1a"}"/>
+      <text x="${x+38}" y="${y-28}" font-size="${state==="done"?24:22}" font-weight="bold" text-anchor="middle" fill="#fff">${state==="done"?"✓":i}</text>
+      <text x="${x}" y="${y+84}" font-size="27" font-weight="bold" text-anchor="middle" fill="#2b1d12" stroke="#fffaf0" stroke-width="7" paint-order="stroke">${SHORT[c.id]||c.t}</text>
+      ${isCur?`<text x="${x}" y="${y-62}" font-size="40" text-anchor="middle">📍</text>`:""}
+    </g>`; });
+  s+=`<text x="520" y="1388" font-size="0">.</text></svg>`;
+  return `<div class="mapwrap">${s}<p class="hint" style="margin:6px 0 0">לחיצה על תחנה פותחת אותה · ✓ = תחנה שהושלמה · 📍 = התחנה הבאה שלך</p></div>`;
+}
+function showStation(id){
+  if(window.speechSynthesis) speechSynthesis.cancel(); CUR_L=null;
+  const all=CHAPTERS.filter(c=>c.id), i=all.findIndex(c=>c.id===id), c=all[i]; BACK=`showStation('${id}')`;
+  let prog="";
+  if(c.kind==="letters") prog=`${(save.letters||[]).length} מתוך 26 אותיות`;
+  else if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w); prog=`${tx.filter(t=>txDone(t.id)).length} מתוך ${tx.length} טקסטים · ${vocabKnown(c.id)} מתוך ${((window.VOCAB||{})[c.id]||[]).length} מילים`; }
+  else { const ls=chLevels(c); prog=`${ls.filter(([L])=>(save.stars[L.id]||0)>0).length} מתוך ${ls.length} שלבים`; }
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפת האוצר</button><span class="hint">תחנה ${i} מתוך ${all.length-1}</span><span></span></div>
+    <div class="card sthead"><div class="bigdot">${chState(c)==="done"?"✓":c.e}</div>
+      <div><h2 style="margin:0">תחנה ${i}: ${c.t}</h2><p style="margin:6px 0">${c.sub}</p><p class="hint" style="text-align:right;margin:0">${prog}</p></div></div>
+    <div class="card">${chapterBody(c)}</div>
+    <div class="row">${i>0?`<button class="btn ghost" onclick="showStation('${all[i-1].id}')">→ התחנה הקודמת</button>`:""}<button class="btn alt" onclick="goMap()">🗺️ למפה</button>${i<all.length-1?`<button class="btn ghost" onclick="showStation('${all[i+1].id}')">התחנה הבאה ←</button>`:""}</div>`;
+  window.scrollTo(0,0);
+}
+function showGuide(){
+  BACK="showGuide()";
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפת האוצר</button><span class="hint">איך זה עובד?</span><span></span></div>${guideCard().replace("<details","<details open")}`;
+  window.scrollTo(0,0);
+}
+function showTools(){
+  BACK="showTools()";
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפת האוצר</button><span class="hint">🧰 המילים שלי</span><span></span></div>`
+    + bankCard()
+    + `<div class="card" style="text-align:center">${owlSay("<b>מילים דומות אבל שונות</b> 👀 כמו <span class='en'>hat</span> ו-<span class='en'>hot</span>. אימון קצר של העין והאוזן, לאות האמצעית.")}
+      <div class="row"><button class="btn alt" onclick="${introOn("pairs","startPairs()")}">👂👀 לאימון מילים דומות</button></div></div>`
+    + myPairsCard()
+    + `<p class="legend">🎤 המיקרופון עובד ב-Edge או ב-Chrome כשיש אינטרנט. בפעם הראשונה הדפדפן ישאל אם מותר להשתמש בו, ולוחצים "אפשר".<br>מילה עם קו מנוקד ירוק היא <b>מילה שזוכרים בעל פה</b>, כמו the ו-is, כי היא לא לפי החוק.</p>`;
+  window.scrollTo(0,0);
+}
+/* ---- הסבר לפני כל משחק ---- */
+const RUNS=[];
+function introOn(id, run){ RUNS.push(run); return `showIntroG('${id}',${RUNS.length-1})`; }
+const HOW={
+ snakes:"1. לוחצים 🎤 וקוראים בקול את המילה שמופיעה.<br>2. אם קראת נכון, זורקים קובייה ומתקדמים.<br>3. סולם מעלה למעלה, נחש מוריד למטה.<br>4. ינשופי משחק נגדך. מי שמגיעה ראשונה לסוף, מנצחת.",
+ balloons:"1. שומעים מילה 🔊.<br>2. בלונים עם מילים עולים למעלה.<br>3. מפוצצים את הבלון עם המילה ששמעת.",
+ missing:"1. רואים מילה עם אות חסרה, כמו <bdi class='en'>c_t</bdi>.<br>2. שומעים את המילה 🔊.<br>3. בוחרים איזו תנועה חסרה.",
+ baskets:"1. שומעים מילה 🔊.<br>2. מחליטים איזו תנועה יש בה.<br>3. מכניסים אותה לסלסלה של הצליל הנכון.",
+ build:"1. רואים תמונה ושומעים את המילה.<br>2. לוחצים על האותיות לפי הסדר ובונים את המילה.<br>3. טעית? לוחצים על אות בשורה כדי להחזיר אותה.",
+ memory:"1. הופכים שני קלפים.<br>2. מחפשים מילה ואת התמונה שלה.<br>3. זוג נכון נשאר פתוח. ממשיכים עד שהכול פתוח.",
+ pyramid:"1. המשפט מתחיל במילה אחת, ובכל שורה נוספת עוד מילה.<br>2. קוראים כל שורה בקול מההתחלה.<br>3. בסוף קוראים את כל המשפט כמה פעמים, ורואים איך זה נעשה זורם.",
+ grammar:"1. בוחרים נושא, למשל <bdi class='en'>is / are</bdi>.<br>2. קוראים את כרטיס החוק.<br>3. בכל משפט בוחרים את המילה שמשלימה אותו, ושומעים את המשפט המלא.",
+ tuli:"1. טולי שואלת שאלה על חוקי הקריאה.<br>2. יש שאלות של נכון או לא נכון, ושאלות עם ארבע תשובות.<br>3. אחרי כל תשובה טולי מסבירה למה. כל ארבע תשובות נכונות ברצף, בונוס.",
+ nonsense:"1. בוחרים רמה.<br>2. מופיעה מילה שלא קיימת, כמו <bdi class='en'>zop</bdi>. קוראים אותה בקול, צליל אחרי צליל.<br>3. אפשר להקליט את עצמך ולהשוות להגייה הנכונה.<br>4. מסמנים בעצמך: קראתי נכון, או היה לי קשה.",
+ sbox:"1. שומעים מילה 🔊.<br>2. אומרים אותה לאט, וסופרים כמה צלילים יש בה. צלילים, לא אותיות!<br>3. בוחרים את המספר, ורואים את המילה מתחלקת לקופסאות.",
+ chain:"1. רואים מילה, למשל <bdi class='en'>hop</bdi>.<br>2. שומעים מילה אחרת, ששונה ממנה רק באות אחת.<br>3. קוראים את ארבע האפשרויות ובוחרים את המילה ששמעת.",
+ sort:"1. יש שתי קבוצות של צלילים, למשל a קצרה ו-a ארוכה.<br>2. קוראים כל מילה בקול.<br>3. מחליטים לאיזו קבוצה היא שייכת.",
+ chants:"1. בוחרים שיר.<br>2. <b>הד:</b> לוחצים 🔊, שומעים שורה, וחוזרים עליה באותו קצב.<br>3. <b>יחד:</b> בסוף קוראים את כל השיר יחד עם ההקראה, והמילה שנשמעת מודגשת.",
+ cards:"1. רואים מילה ומשפט שבו היא מופיעה.<br>2. מנסים להיזכר מה היא אומרת.<br>3. הופכים את הכרטיס ובודקים.<br>4. <b>ידעתי:</b> המילה תחזור בעוד כמה ימים. <b>עוד לא:</b> היא תחזור מחר.",
+ meaning:"1. קוראים מילה ומשפט.<br>2. בוחרים את הפירוש הנכון מתוך ארבעה.<br>3. המשפט עוזר לנחש לפי ההקשר.",
+ complete:"1. קוראים משפט שחסרה בו מילה.<br>2. מנסים להבין מה ההקשר צריך, עוד לפני שמסתכלים על התשובות.<br>3. בוחרים מתוך ארבע מילים. כמו בפסיכומטרי.",
+ connect:"1. קוראים משפט עם מקום ריק באמצע.<br>2. שואלים: האם בא כאן ניגוד, סיבה, תוצאה או דוגמה?<br>3. בוחרים את מילת הקישור שמתאימה.",
+ restate:"1. קוראים משפט אחד.<br>2. קוראים ארבעה ניסוחים.<br>3. בוחרים את הניסוח שאומר בדיוק את אותו הדבר. שימי לב למילים קטנות כמו <bdi class='en'>not, only, few</bdi>.",
+ pairs:"1. רואים או שומעים מילה.<br>2. בוחרים בינה לבין מילה דומה מאוד, כמו <bdi class='en'>hat</bdi> ו-<bdi class='en'>hot</bdi>.<br>3. שמים לב לאות האמצעית.",
+ lg0:"1. שומעים את השם של אות 🔊.<br>2. בוחרים אותה מתוך ארבע.",
+ lg1:"1. רואים אות גדולה.<br>2. בוחרים את האות הקטנה שלה.",
+ lg2:"1. שומעים מילה 🔊.<br>2. חסרה בה אות שמתבלבלת, כמו b או d.<br>3. בוחרים את האות הנכונה.",
+ lg3:"1. רואים תמונה ושומעים מילה.<br>2. בוחרים באיזו אות היא מתחילה."
+};
+function gameSpec(id){
+  const g=GAMES.find(x=>x.id===id)||XGAMES.find(x=>x.id===id);
+  if(g) return {e:g.e,name:g.name,sis:g.sis||{cards:"zichrona",meaning:"zichrona",complete:"dikduka",connect:"dikduka",restate:"zichrona",chants:"zrima",tuli:"tuli"}[id]||"yanshufi",d:g.d};
+  if(/^lg\d/.test(id)){ const x=LGAMES[+id.slice(2)]; return {e:x.e,name:x.name,sis:"otiya",d:x.d}; }
+  if(id==="pairs") return {e:"👂👀",name:"מילים דומות",sis:"otiya",d:""};
+  return {e:"🎮",name:"משחק",sis:"yanshufi",d:""};
+}
+function showIntroG(id, idx){
+  const run=RUNS[idx];
+  if((save.skipIntro||{})[id]){ Function(run)(); return; }
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  ACTIVE=null; document.body.classList.remove("hasTuli");
+  const g=gameSpec(id), s=SISTERS[g.sis]||SISTERS.yanshufi;
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="${BACK}">→ חזרה</button><span class="hint">${g.e} ${g.name}</span><span></span></div>
+    <div class="card intro" style="background:${s.bg}">
+      <div style="text-align:center">${sis(g.sis,2.2)}<h2 style="margin:8px 0">${g.e} ${g.name}</h2>${g.d?`<p style="font-size:1.1em">${g.d}</p>`:""}</div>
+      <div class="howbox"><h3>🧭 מה עושים כאן?</h3><div style="font-size:1.12em;line-height:1.9">${HOW[id]||g.d}</div></div>
+      <div class="howbox tulibox"><span style="font-size:2.2em">🐛</span><div><b>נתקעת?</b> למטה בצד יש כפתור ירוק עגול: זו טולי התולעת. לוחצים עליה, והיא מסבירה בדיוק את מה שמולך. ואם טועים פעמיים, היא מציעה עזרה בעצמה.</div></div>
+      <p style="text-align:center">⭐ על כל תשובה נכונה: כוכב ובלוט לינשופי. בסוף המשחק: מדבקה לאלבום. אין שעון ואין לחץ.</p>
+      <div class="row"><button class="btn big" onclick="Function(RUNS[${idx}])()">יאללה, מתחילים ←</button></div>
+      <p style="text-align:center;margin-top:14px"><label style="cursor:pointer"><input type="checkbox" style="width:22px;height:22px;vertical-align:middle" onchange="save.skipIntro=save.skipIntro||{};save.skipIntro['${id}']=this.checked;persist()"> בפעם הבאה לדלג על ההסבר של המשחק הזה</label></p>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
 /* ============ הגרסה באינטרנט ============ */
 const WEB_URL = "https://noaroich12-arch.github.io/yanshufi/" + encodeURIComponent("המסע של ינשופי.html");
 function sendToWeb(){
@@ -3200,7 +3354,7 @@ if(save.wallet===undefined) save.wallet=save.total||0; // כוכבים שנאס�
     window[name]=function(...a){ ACTIVE=val; tuliMiss=0; closePeek(); document.body.classList.toggle("hasTuli",!!val); return f.apply(this,a); }; };
   set("startLevel","level"); set("startGrammar",null); set("startGrTopic","grammar"); set("startTuliQuiz","tuli");
   ["startMemory","startMissing","startBaskets","startBalloons","startBuild","startPyramid","startSL","startPairs","startQuiz"].forEach(n=>set(n,n));
-  ["goMap","showGames","showNest","showWardrobe","showAlbum","showBank","showWheel","showBridge","showRS"].forEach(n=>set(n,null));
+  ["goMap","showGames","showNest","showWardrobe","showAlbum","showBank","showWheel","showBridge","showRS","showStation","showGuide","showTools"].forEach(n=>set(n,null));
 }
 goMap();
 if(location.hostname==="localhost" && location.hash==="#export"){ history.replaceState(null,"",location.pathname); setTimeout(sendToWeb,800); }
