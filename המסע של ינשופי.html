@@ -3317,10 +3317,8 @@ function goLocal(){
   else location.replace(LOCAL_URL);
 }
 if(location.protocol==="file:"){
-  if(/[?&]go=1/.test(location.search)) goLocal();           // נפתח דרך "פתיחת המשחק": השרת בטוח פועל
-  else { fileModeBanner = true;                             // נפתח בלחיצה על הקובץ: בודקים אם השרת פועל
-    const pr=document.createElement("script"); pr.src="http://localhost:8765/probe.js?"+Date.now();
-    pr.onload=()=>{ if(window.__owlServer) goLocal(); }; document.head.appendChild(pr); }
+  // מאז שהמשחק באינטרנט: פתיחה של הקובץ מהתיקייה עוברת לגרסה באינטרנט, כדי שההתקדמות תהיה תמיד במקום אחד
+  if(decodeURIComponent(location.pathname).endsWith("המסע של ינשופי.html")) location.replace(WEB_URL);
 } else if(location.hash.startsWith("#import=")){
   try{
     const data = JSON.parse(decodeURIComponent(location.hash.slice(8)));
