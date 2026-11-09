@@ -76,6 +76,10 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .hud .gp{flex:1;min-width:180px}
 .pop{position:fixed;inset:0;background:rgba(40,30,20,.35);display:flex;align-items:center;justify-content:center;z-index:50}
 .pop .card{max-width:520px;text-align:center;animation:popin .35s}
+/* חלון קופץ (טולי ועוד): לא גבוה מהמסך, גלילה בפנים, והכפתור לסגירה תמיד נראה למטה */
+.pop:not(.balloon){padding:10px;box-sizing:border-box}
+.pop:not(.balloon)>.card{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);overflow-y:auto;box-sizing:border-box;width:100%}
+.pop:not(.balloon)>.card>.row:last-child{position:sticky;bottom:-16px;background:inherit;padding:10px 0 12px;margin-bottom:-6px;z-index:2;box-shadow:0 -8px 12px -10px rgba(0,0,0,.25)}
 @keyframes popin{from{transform:scale(.6);opacity:0}}
 .plus{position:fixed;top:70px;left:50%;transform:translateX(-50%);font-size:1.6em;font-weight:bold;color:#d39a00;z-index:40;animation:up 1s forwards;pointer-events:none}
 @keyframes up{to{transform:translate(-50%,-50px);opacity:0}}
@@ -2322,6 +2326,12 @@ function tuliTarget(){
     if(ACTIVE==="bridge" && BR) return brTarget();
     if(ACTIVE==="qz" && QZ && QZ.items[QZ.i]) return {tip:(QZ.items[QZ.i].tip||QZ.intro||"קראי שוב לאט, ונסי לפסול קודם את התשובות שבטוח לא נכונות.")+(QZ.items[QZ.i].hint?"<br>"+QZ.items[QZ.i].hint:"")};
     if(ACTIVE==="nonsense" && NWS && NWS.ws[NWS.i]) return {w:NWS.ws[NWS.i]};
+    // נחשים וסולמות: המילה שמולך עכשיו (ולא המילה הקודמת שהושמעה)
+    if(ACTIVE==="startSL" && SLG){
+      if(SLG.phase==="snake" && SLG.st) return {w:SLG.st};
+      if(SLG.phase==="read") return {w:slWord()};
+      return {tip:"עכשיו הקובייה מתגלגלת או שזה התור של ינשופי. כשתופיע המילה הבאה שלך, אפשר לקרוא לי שוב, ואעזור בדיוק עם המילה הזו 🐛"};
+    }
     if(ACTIVE==="chant" && CH) return {s:CH.c.lines[CH.mode==="echo"?CH.li:0][0], he:CH.c.lines[CH.mode==="echo"?CH.li:0][1]};
     if(ACTIVE==="cards" && FC && FC.deck[FC.i]) return {tip:"לא זוכרת? זה בסדר גמור, בשביל זה יש כרטיסיות. קראי את המשפט לאט, ונסי לנחש מההקשר. אחר כך הפכי את הכרטיס ולחצי <b>עוד לא</b>, והמילה תחזור אלייך מחר."};
     if(ACTIVE==="letters" && LG && LG.items[LG.i]){ const it=LG.items[LG.i];
