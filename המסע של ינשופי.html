@@ -221,6 +221,10 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .gchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .gchip{background:#fff;border:3px solid var(--line);border-radius:16px;padding:10px;text-align:right;color:var(--ink);display:flex;flex-direction:column;gap:4px;font-size:.95em}
 .gchip span{color:var(--soft);font-size:.9em}
+.gchip.on{border-color:var(--accent);background:#fff4e2}
+.fcard{background:#fffdf5;border:4px solid #f3d8ae;border-radius:24px;padding:18px;margin:10px auto;max-width:640px;box-shadow:0 4px 0 #ecd2a4}
+.sboxes .chunks{gap:10px}
+.sboxes .ch{border:3px solid #b8d4f5;border-radius:14px;padding:4px 10px;background:#f4f9ff}
 /* ===== האותיות ===== */
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;direction:ltr;margin-top:12px}
 .ltl{background:#fff;border:3px solid #b8d4f5;border-radius:16px;padding:10px;font-family:Verdana,Arial;font-size:1.6em;color:var(--ink)}
@@ -284,6 +288,8 @@ body.hasTuli .tulifab{display:block}
 <script src="data-grammar.js"></script>
 <script src="data-texts.js"></script>
 <script src="data-tuli.js"></script>
+<script src="data-texts2.js"></script>
+<script src="data-advanced.js"></script>
 <script>
 /* ============ צלילים: כך כל אות או צירוף נשמעים, באותיות עבריות ============ */
 const SOUND = {
@@ -2284,6 +2290,10 @@ function tuliTarget(){
     if(ACTIVE==="grammar" && GR && GR.qs && GR.qs[GR.i]) return {x:GR.qs[GR.i].x, rule:GR.topic&&GR.topic.rule};
     if(ACTIVE==="tuli" && TQ && TQ.qs[TQ.i]) return {x:TQ.qs[TQ.i].x, say:TQ.qs[TQ.i].say};
     if(ACTIVE==="bridge" && BR) return brTarget();
+    if(ACTIVE==="qz" && QZ && QZ.items[QZ.i]) return {tip:(QZ.items[QZ.i].tip||QZ.intro||"קראי שוב לאט, ונסי לפסול קודם את התשובות שבטוח לא נכונות.")+(QZ.items[QZ.i].hint?"<br>"+QZ.items[QZ.i].hint:"")};
+    if(ACTIVE==="nonsense" && NWS && NWS.ws[NWS.i]) return {w:NWS.ws[NWS.i]};
+    if(ACTIVE==="chant" && CH) return {s:CH.c.lines[CH.mode==="echo"?CH.li:0][0], he:CH.c.lines[CH.mode==="echo"?CH.li:0][1]};
+    if(ACTIVE==="cards" && FC && FC.deck[FC.i]) return {tip:"לא זוכרת? זה בסדר גמור, בשביל זה יש כרטיסיות. קראי את המשפט לאט, ונסי לנחש מההקשר. אחר כך הפכי את הכרטיס ולחצי <b>עוד לא</b>, והמילה תחזור אלייך מחר."};
     if(ACTIVE==="letters" && LG && LG.items[LG.i]){ const it=LG.items[LG.i];
       return {tip:[ "הקשיבי שוב לשם של האות 🔊. בתחנת האותיות אפשר לראות את השם של כל אות, ולחזור לכאן.",
         "רוב האותיות הקטנות דומות לגדולות שלהן. אלה שונות: <bdi class='en'>A a, B b, D d, E e, G g, Q q, R r</bdi>. שימי לב לצורה.",
@@ -2427,10 +2437,11 @@ function showBridge(){
   let h=`<div class="nav"><button class="small" onclick="goMap()">→ למפה</button><span class="hint">מהמילה לפסקה</span><button class="small" onclick="showRS()">⚙️ הגדרות קריאה</button></div>
     <div class="card">${sisSay("zrima","כאן קוראים טקסטים אמיתיים, <b>בשש מדרגות</b>: חימום מילים, צירופים קטנים, משפט שגדל, משפט אחרי משפט כשרק השורה שלך גלויה, כל הפסקה, ושאלות על הטקסט. אפשר לדלג על מדרגה כשמרגישים בטוחים.")}</div>`;
   if(next.length) h+=`<h3>✨ מתאים לך עכשיו</h3><div class="txlist">${next.slice(0,6).map(txTile).join("")}</div>`;
-  WORLDS.forEach((wn,wi)=>{
-    const list=T.filter(t=>t.w===wi); if(!list.length) return;
-    h+=`<div class="wbar" style="background:${WORLD_COLORS[wi]}">${wn}${wi>mw?" · מתקדם יותר":""}</div><div class="txlist">${list.map(txTile).join("")}</div>`;
-  });
+  for(let wi=0; wi<=13; wi++){
+    const list=T.filter(t=>t.w===wi); if(!list.length) continue;
+    const ch=CHAPTERS.find(c=>c.w===wi), wn=ch?`${ch.e} ${ch.t}`:(WORLDS[wi]||"");
+    h+=`<div class="wbar" style="background:${WORLD_COLORS[wi]||"#f1ecff"}">${wn}${wi>mw?" · מתקדם יותר":""}</div><div class="txlist">${list.map(txTile).join("")}</div>`;
+  }
   h+=`<div class="row"><button class="btn" onclick="goMap()">🗺️ חזרה למפה</button></div>`;
   $app.innerHTML=h; window.scrollTo(0,0);
 }
@@ -2674,16 +2685,18 @@ const CHAPTERS = [
   {id:"c8",w:7,e:"🌈",t:"מילים ארוכות",sub:"חלוקה להברות, ההברה החזקה, והתנועה הבלועה"},
   {id:"c9",w:8,e:"🤫",t:"אותיות שקטות ומילים מתקדמות",sub:"<bdi>knife, night, phone, nature, station</bdi>"},
   {flag:"🎓 מכאן: קריאה מתקדמת, צעד אחר צעד עד הפסיכומטרי"},
-  {id:"f1",future:1,e:"🏠",t:"שטף בחיי היום-יום",sub:"מודעות, מתכונים, מכתבים. עתיד, מילות קישור"},
-  {id:"f2",future:1,e:"🔬",t:"טקסט שמסביר משהו",sub:"רעיון מרכזי, למי מתייחסת המילה, מילות סימן"},
-  {id:"f3",future:1,e:"📝",t:"רמת בגרות",sub:"טקסטים ארוכים, שאלות באנגלית, משפטי תנאי"},
-  {id:"f4",future:1,e:"🏛️",t:"אנגלית אקדמית",sub:"לפרק משפט ארוך, הסקה, אוצר מילים אקדמי"},
-  {id:"f5",future:1,e:"🏆",t:"הכנה לפסיכומטרי",sub:"השלמת משפט, ניסוח מחדש, הבנת הנקרא"}
+  {id:"f1",w:9,adv:1,e:"🏠",t:"שטף בחיי היום-יום",sub:"מיילים, מתכונים, ביקורות ופתקים. עתיד, to או ing, ו-50 מילים מהיום-יום",gram:["future","gerund"],games:["cards","meaning","complete","connect"]},
+  {id:"f2",w:10,adv:1,e:"🔬",t:"טקסט שמסביר משהו",sub:"רעיון מרכזי, למי מתייחסת המילה, מילות קישור. סביל והווה מושלם",gram:["passive","perfect"],games:["cards","meaning","complete","connect"]},
+  {id:"f3",w:11,adv:1,e:"📝",t:"רמת בגרות",sub:"כתבות ומאמרי דעה, שאלות באנגלית. משפטי תנאי, who/which, must/should",gram:["cond","rel","modal"],games:["cards","meaning","complete","connect"]},
+  {id:"f4",w:12,adv:1,e:"🏛️",t:"אנגלית אקדמית",sub:"קטעים אקדמיים, לפרק משפט ארוך, הסקה, אוצר מילים אקדמי. דיבור עקיף",gram:["reported"],games:["cards","meaning","complete","connect","restate"]},
+  {id:"f5",w:13,adv:1,e:"🏆",t:"הכנה לפסיכומטרי",sub:"השלמת משפט, ניסוח מחדש והבנת הנקרא, עם מילים ברמה גבוהה",gram:[],games:["cards","meaning","complete","restate"]}
 ];
 const chLevels = c => LEVELS.map((L,li)=>[L,li]).filter(([L])=>L.world===c.w && L.ready);
 function chState(c){
   if(c.future) return "future";
   if(c.kind==="letters"){ const n=(save.letters||[]).length; return n>=26?"done":n?"started":"new"; }
+  if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w), d=tx.filter(t=>txDone(t.id)).length, lw=vocabKnown(c.id);
+    return (d===tx.length && lw>=25)?"done":(d||lw)?"started":"new"; }
   const ls=chLevels(c); const done=ls.filter(([L])=>(save.stars[L.id]||0)>0).length;
   return done===ls.length?"done":(done||ls.some(([L])=>(save.pos||{})[L.id]))?"started":"new";
 }
@@ -2722,9 +2735,10 @@ function mapHTML(){
   CHAPTERS.forEach(c=>{
     if(c.flag){ h+=`<div class="tflag">${c.flag}</div>`; return; }
     const st=chState(c), isCur=c.id===cur.id, open=OPEN_CH===c.id && !c.future;
-    const bg=c.w!==undefined?WORLD_COLORS[c.w]:(c.future?"#f4f1ec":"#fff1d6");
+    const bg=c.w!==undefined?(WORLD_COLORS[c.w]||["#f1ecff","#e8f4ff","#fff0e6","#eef7ee","#fdf2d8"][c.w-9]||"#f4f1ec"):(c.future?"#f4f1ec":"#fff1d6");
     let prog="";
     if(c.kind==="letters") prog=`${(save.letters||[]).length} מתוך 26 אותיות`;
+    else if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w); prog=`${tx.filter(t=>txDone(t.id)).length} מתוך ${tx.length} טקסטים · ${vocabKnown(c.id)} מתוך ${((window.VOCAB||{})[c.id]||[]).length} מילים`; }
     else if(!c.future){ const ls=chLevels(c); prog=`${ls.filter(([L])=>(save.stars[L.id]||0)>0).length} מתוך ${ls.length} שלבים`; }
     h+=`<div class="stn ${st} ${isCur?"cur":""}" id="st_${c.id}">
       <div class="dot" style="background:${bg}">${st==="done"?"✓":c.e}<small>${c.future?"":n}</small></div>
@@ -2745,8 +2759,16 @@ function chapterBody(c){
     <p>כאן מכירים כל אות: איך קוראים לה, איך היא נשמעת, ואיך היא נראית גדולה וקטנה. גם למי שכבר מכירה, זה חיזוק טוב.</p>
     <div class="row"><button class="btn" onclick="showLetters()">🔤 לכל האותיות</button></div>
     <h4>🎮 משחקי אותיות</h4><div class="gchips">${LGAMES.map((g,i)=>`<button class="gchip" onclick="startLGame(${i})">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`).join("")}</div></div>`;
+  if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w), V=(window.VOCAB||{})[c.id]||[], gt=GTOPICS();
+    const gch=id=>{ const g=XGAMES.find(x=>x.id===id); return g?`<button class="gchip" onclick="${g.run.replace("$C",c.id)}">${g.e} <b>${g.name}</b><span>${g.d}</span></button>`:""; };
+    return `<div class="sbody">
+      <h4>📖 טקסטים לתחנה הזאת</h4><div class="txlist">${tx.map(txTile).join("")}</div>
+      <h4>🃏 ${V.length} מילים של התחנה <span class="hint">${vocabKnown(c.id)} כבר יודעת</span></h4>
+      <div class="gchips">${c.games.map(gch).join("")}</div>
+      ${c.gram.length?`<h4>✏️ דקדוק לתחנה</h4><div class="gchips">${c.gram.map(id=>{ const i=gt.findIndex(t=>t.id===id); return i<0?"":`<button class="gchip" onclick="startGrTopic(${i})">${gIcon(gt[i])} <b>${gName(gt[i])}</b><span>${gt[i].qs.length} משפטים</span></button>`; }).join("")}</div>`:""}
+      <h4>🎵 ועוד</h4><div class="gchips">${gch("chants")}${gch("tuli")}</div></div>`; }
   const ls=chLevels(c), tx=(window.TEXTS||[]).filter(t=>t.w===c.w);
-  const gl=GAMES.filter(g=>!["bridge","tuli"].includes(g.id) && (c.w>=1 || !["pyramid"].includes(g.id)));
+  const gl=GAMES.filter(g=>!["bridge","tuli"].includes(g.id) && (c.w>=1 || !["pyramid"].includes(g.id)) && (g.minW||0)<=c.w);
   return `<div class="sbody">
     <h4>📚 השלבים של התחנה <span class="hint">לפי הסדר, מימין לשמאל</span></h4><div class="path">${ls.map(([L,li])=>nodeHTML(L,li)).join("")}</div>
     ${tx.length?`<h4>📖 טקסטים לתחנה הזאת</h4><div class="txlist">${tx.map(txTile).join("")}</div>`:""}
@@ -2874,6 +2896,253 @@ function lgPick(b,o){
   else { b.classList.add("wrong"); b.disabled=true; LG.tried=true; bad(); setMsg("לא בדיוק. "+it.x+" נסי שוב.","soft"); if(it.say) speak(it.say,0.5); }
 }
 
+/* ==================================================================
+   🎮 משחקים חדשים: מנוע שאלות כללי, מילות תפל, קופסאות צלילים, שרשרת מילים,
+   מיון מילים, שירי קריאה, כרטיסיות עם חזרה במרווחים, השלמת משפט, מילות קישור, ניסוח מחדש
+   ================================================================== */
+// מנוע שאלות כללי: items = [{show, opts, ans, x, say, en, tip}]
+let QZ=null;
+function startQZ(cfg){
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  ACTIVE="qz"; document.body.classList.add("hasTuli");
+  QZ=Object.assign({i:0,good:0,tried:false},cfg);
+  if(!QZ.items.length){ $app.innerHTML=`<div class="card">${owlSay(cfg.empty||"עוד אין כאן מספיק מילים. כדאי להתחיל עוד כמה שלבים במפה 🙂")}<div class="row"><button class="btn" onclick="goMap()">🗺️ למפה</button></div></div>`; return; }
+  drawQZ();
+}
+function drawQZ(){
+  if(QZ.i>=QZ.items.length){ gameEnd(QZ.sis,QZ.again,QZ.good,QZ.items.length,QZ.extra||""); return; }
+  const it=QZ.items[QZ.i]; QZ.tried=false;
+  const order=it.keep?it.opts.map((o,i)=>i):shuffle(it.opts.map((o,i)=>i));
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="${QZ.back||"showGames()"}">→ חזרה</button><span class="hint">${QZ.title} · ${QZ.i+1} מתוך ${QZ.items.length}</span><span></span></div>
+    <div class="progress"><div style="width:${Math.round(100*QZ.i/QZ.items.length)}%"></div></div>
+    <div class="card">${QZ.intro&&QZ.i===0?sisSay(QZ.sis,QZ.intro):""}<div style="text-align:center">${it.show}</div>
+      ${it.say?`<div class="row"><button class="btn alt" onclick="speak(\`${it.say.replace(/`/g,"")}\`,0.7)">🔊 להקשיב</button></div>`:""}
+      <div class="row">${order.map(i=>`<button class="opt ${it.en||/^[A-Za-z0-9 ,.'!?;:-]+$/.test(it.opts[i])?"en":""}" style="${it.big?"font-size:1.6em;min-width:110px":""}" onclick="qzPick(this,${i})">${it.opts[i]}</button>`).join("")}</div>
+      <div class="msg" id="msg"></div><div id="qzafter"></div><div class="row" id="nx"></div></div>`;
+  if(it.autoSay) setTimeout(()=>speak(it.say,0.7),350);
+  window.scrollTo(0,0);
+}
+function qzPick(b,i){
+  const it=QZ.items[QZ.i];
+  if(i===it.ans){ b.classList.add("right"); if(!QZ.tried){ QZ.good++; earn(1); }
+    setMsg(praise()+(it.x?"<br><span style='font-weight:normal'>"+it.x+"</span>":""),"good");
+    if(it.after) document.getElementById("qzafter").innerHTML=it.after;
+    if(it.sayAfter) speak(it.sayAfter,0.75);
+    document.querySelectorAll(".opt").forEach(o=>o.disabled=true);
+    document.getElementById("nx").innerHTML=`<button class="btn" onclick="QZ.i++;drawQZ()">הבא ←</button>`; }
+  else { b.classList.add("wrong"); b.disabled=true; QZ.tried=true; bad(); setMsg("לא בדיוק. "+(it.hint||it.x||"נסי שוב 🙂"),"soft"); }
+}
+const pickN=(arr,n,not)=>shuffle(arr.filter(x=>!not||!not.includes(x))).slice(0,n);
+const realWords=()=>{ const s=new Set(Object.keys(allKnown())); Object.keys(PIC).forEach(w=>s.add(w)); Object.values(window.VOCAB||{}).forEach(L=>L.forEach(v=>s.add(v[0]))); (window.TEXTS||[]).forEach(t=>t.s.forEach(x=>txWords(x[0]).forEach(w=>s.add(cleanW(w))))); return s; };
+
+/* ---- 🔊 מילות תפל ---- */
+const NW={C:"bcdfghjklmnprstvz".split(""),V:"aeiou".split(""),D1:["sh","ch","th","wh"],D2:["sh","ch","th","ck","ng","ll","ss","ff"],
+  B1:["bl","cl","fl","gl","pl","sl","br","cr","dr","fr","gr","pr","tr","sk","sm","sn","sp","st","sw"],B2:["nd","nt","mp","st","sk","lk","ft"],
+  T:["ee","ea","ai","oa","oo","igh"],R:["ar","or","er","ir","ur"],SUF:["ing","ed","er","y"]};
+const NW_LV=[{n:"תנועות קצרות",ex:"zop, mib"},{n:"צמדים",ex:"shom, vack"},{n:"צירופים",ex:"blim, sprand"},{n:"e קסומה",ex:"bape, tike"},{n:"צמדי תנועות",ex:"meep, joam"},{n:"r",ex:"varp, tirn"},{n:"מילים ארוכות",ex:"mibton, plimming"}];
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const NW_BLOCK=new Set(["fuk","fuc","sht","dik","dic","cok","cum","tit","fag","nig","gay","sex","pis","pus","ass","cuk"]);
+function nonsense(lv){
+  const C=()=>rnd(NW.C), V=()=>rnd(NW.V);
+  switch(lv){
+    case 0: return C()+V()+C();
+    case 1: return Math.random()<.5 ? rnd(NW.D1)+V()+C() : C()+V()+rnd(NW.D2);
+    case 2: return Math.random()<.5 ? rnd(NW.B1)+V()+C() : C()+V()+rnd(NW.B2);
+    case 3: return C()+rnd(["a","i","o","u"])+C()+"e";
+    case 4: return C()+rnd(NW.T)+(Math.random()<.7?C():"");
+    case 5: return C()+rnd(NW.R)+C();
+    default: return (C()+V()+C())+(Math.random()<.5?(C()+V()+rnd(["n","t","d","m"])):rnd(NW.SUF));
+  }
+}
+let NWS=null;
+function startNonsense(lv){
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  ACTIVE="nonsense"; document.body.classList.add("hasTuli");
+  if(lv===undefined){
+    const mw=maxWorld(), def=Math.min(6,mw);
+    $app.innerHTML=gameTop("tzlila","מילות תפל")+`<div class="card">${sisSay("tzlila","🔊 <b>מילות תפל</b> הן מילים שלא קיימות, כמו <bdi class='en'>zop</bdi> או <bdi class='en'>mib</bdi>. אי אפשר לנחש אותן מהזיכרון, ולכן הן מאמנות את <b>הפענוח עצמו</b>: צליל אחרי צליל. קוראים בקול, מקליטים, ומשווים להגייה הנכונה.")}
+      <h3>באיזו רמה?</h3><div class="gchips">${NW_LV.map((x,i)=>`<button class="gchip ${i===def?"on":""}" onclick="startNonsense(${i})"><b>${i+1}. ${x.n}</b><span class="en" style="direction:ltr">${x.ex}</span></button>`).join("")}</div></div>`;
+    window.scrollTo(0,0); return;
+  }
+  const real=realWords(), out=[], seen=new Set(save.nwSeen||[]);
+  let guard=0; while(out.length<10 && guard++<500){ const w=nonsense(lv); if(real.has(w)||out.includes(w)||NW_BLOCK.has(w.slice(0,3))||seen.has(w)) continue; out.push(w); }
+  save.nwSeen=(save.nwSeen||[]).concat(out).slice(-400); persist();
+  NWS={lv,ws:out,i:0,good:0,hint:false}; drawNonsense();
+}
+function drawNonsense(){
+  const w=NWS.ws[NWS.i];
+  if(!w){ gameEnd("tzlila",`startNonsense(${NWS.lv})`,NWS.good,NWS.ws.length,`<p>מילות תפל הן אימון קשה במיוחד, כי אין למה להיאחז חוץ מהחוקים. כל הכבוד! 🌟</p><div class="row"><button class="btn ghost" onclick="startNonsense()">לבחור רמה אחרת</button></div>`); return; }
+  $app.innerHTML=gameTop("tzlila","מילות תפל · "+NW_LV[NWS.lv].n,NWS.i,NWS.ws.length)+`<div class="card" style="text-align:center">
+    <p>קראי בקול, צליל אחרי צליל. זו מילה שלא קיימת, אז אין צורך לחפש לה פירוש 🙂</p>
+    ${NWS.hint?chunksHTML(w,NWS.lv===3?"@magic":"",true):`<div class="bigword">${w}</div>`}
+    <div class="row">${recBtn("NWS.ws[NWS.i]")}<button class="btn alt" onclick="speak('${w}',0.55)">🔊 לשמוע איך זה נשמע</button>${NWS.hint?"":`<button class="btn ghost" onclick="NWS.hint=true;drawNonsense()">💡 רמז: לחלק לצלילים</button>`}</div>
+    <div class="msg" id="msg"></div>
+    <div class="row"><button class="btn" onclick="NWS.good++;earn(1);NWS.i++;NWS.hint=false;drawNonsense()">✔ קראתי נכון</button><button class="btn ghost" onclick="NWS.i++;NWS.hint=false;drawNonsense()">🔁 היה לי קשה, הלאה</button></div></div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---- 📦 קופסאות צלילים ---- */
+function sboxPool(){
+  const ok=w=>/^[a-z]{2,7}$/.test(w) && !/e$|y$|x|q|gh|kn|wr|mb|ar|or|er|ir|ur|aw|ow|ou|oi|oy|tion|ture|le$/.test(w);
+  return [...new Set([...Object.keys(PIC).filter(ok), ...[...learnedWords()].filter(ok)])].filter(w=>{ const n=chunk(w).length; return n>=2&&n<=6; });
+}
+function startSoundBox(){
+  const items=freshPick("sbox",sboxPool(),8).map(w=>{ const n=chunk(w).length, pic=PIC[w]?PIC[w][0]:"";
+    const opts=["2","3","4","5","6"];
+    return {show:`${pic?`<div class="pic">${pic}</div>`:`<div class="pic">👂</div>`}<p>🔊 כמה צלילים יש במילה ששמעת? <span class="hint">אפשר להגיד אותה לאט ולספור באצבעות</span></p>`,
+      opts,ans:opts.indexOf(String(n)),say:w,autoSay:true,keep:true,big:true,
+      x:`<bdi class="en">${w}</bdi>: ${n} צלילים, צליל בכל קופסה:`, after:`<div class="sboxes">${chunksHTML(w,"",true)}</div>`}; });
+  startQZ({title:"📦 קופסאות צלילים",sis:"tzlila",again:"startSoundBox()",items,intro:"שומעים מילה, וסופרים כמה <b>צלילים</b> יש בה. לא אותיות! ב-<bdi class='en'>ship</bdi> יש 4 אותיות אבל 3 צלילים: ש, אִ, פּ. אחרי התשובה, המילה מתחלקת לקופסאות."});
+}
+
+/* ---- ⛓️ שרשרת מילים: מחליפים אות אחת ---- */
+function chainPairs(){
+  const ws=[...new Set([...learnedWords(),...Object.keys(PIC),...Object.keys(TWIN_HE)])].filter(w=>/^[a-z]{3,4}$/.test(w));
+  const set=new Set(ws), pairs=[];
+  ws.forEach(a=>ws.forEach(b=>{ if(a<b && a.length===b.length){ let d=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) d++; if(d===1) pairs.push([a,b]); } }));
+  return {pairs,set};
+}
+function startChain(){
+  const {pairs,set}=chainPairs();
+  const items=freshPick("chain",pairs,8,p=>p.join("-")).map(p=>{ const [a,b]=Math.random()<.5?p:[p[1],p[0]];
+    const k=[...a].findIndex((c,i)=>c!==b[i]);
+    const others=[...set].filter(x=>x!==b&&x!==a&&x.length===a.length&&[...x].filter((c,i)=>c!==a[i]).length===1);
+    const fake=[]; "abcdefghijklmnopqrstuvwxyz".split("").forEach(c=>{ const f=a.slice(0,k)+c+a.slice(k+1); if(f!==a&&f!==b) fake.push(f); });
+    const opts=[...new Set([b,...pickN(others,2),...pickN(fake,5)])].slice(0,4);
+    return {show:`<div class="big-en">${a}</div><p>🔊 החליפי <b>אות אחת</b> ב-<bdi class="en">${a}</bdi> כדי לקבל את המילה ששמעת. איזו מילה זו?</p>`,
+      opts,ans:0,say:b,autoSay:true,en:true,x:`<bdi class="en">${a}</bdi> ← <bdi class="en">${b.slice(0,k)}<span class="focus">${b[k]}</span>${b.slice(k+1)}</bdi>: השתנתה רק האות ${k+1}.`};
+  });
+  startQZ({title:"⛓️ שרשרת מילים",sis:"otiya",again:"startChain()",items,intro:"משנים <b>אות אחת</b> ומקבלים מילה חדשה: מ-<bdi class='en'>cat</bdi> ל-<bdi class='en'>hat</bdi>, ומשם ל-<bdi class='en'>hot</bdi>. זה מאמן את העין לשים לב לכל אות, לא רק לראשונה."});
+}
+
+/* ---- 🗂️ מיון מילים לפי צליל ---- */
+function startSort(){
+  const ls=learnedLevels().filter(L=>L.words&&L.words.length>=4&&!/^r\d|heart/.test(L.id));
+  if(ls.length<2){ startQZ({title:"🗂️ מיון מילים",sis:"otiya",items:[]}); return; }
+  const pairs=[]; ls.forEach((a,i)=>ls.slice(i+1).forEach(b=>{ if(Math.abs(a.world-b.world)<=1) pairs.push([a,b]); }));
+  const [A,B]=rnd(pairs.length?pairs:[[ls[0],ls[1]]]);
+  const wa=pickN(A.words.map(x=>x[0]),4), wb=pickN(B.words.map(x=>x[0]).filter(w=>!wa.includes(w)),4);
+  const items=shuffle(wa.map(w=>[w,0]).concat(wb.map(w=>[w,1]))).map(([w,k])=>({show:`<div class="big-en">${hlWord(w,[A,B][k].focus)}</div><p>לאיזו קבוצה שייכת המילה?</p>`,
+    opts:[`${A.key}: ${A.title}`,`${B.key}: ${B.title}`],keep:true,ans:k,say:w,x:`<bdi class="en">${w}</bdi> שייכת ל-<b>${bidiT([A,B][k].title)}</b>.`}));
+  startQZ({title:`🗂️ מיון: ${A.key} מול ${B.key}`,sis:"otiya",again:"startSort()",items,intro:`ממיינים מילים לשתי קבוצות לפי <b>הצליל</b>: <b>${bidiT(A.title)}</b> או <b>${bidiT(B.title)}</b>. קוראים את המילה בקול לפני שבוחרים. בכל סיבוב, זוג קבוצות אחר.`});
+}
+
+/* ---- 🎵 שירי קריאה: הד, ואז יחד ---- */
+let CH=null;
+function showChants(){
+  if(window.speechSynthesis) speechSynthesis.cancel(); ACTIVE=null; document.body.classList.remove("hasTuli");
+  const mw=maxWorld(), C=window.CHANTS||[];
+  $app.innerHTML=gameTop("zrima","שירי קריאה")+`<div class="card">${sisSay("zrima","🎵 <b>שירי קריאה</b>: חרוזים קצרים ומצחיקים, כל אחד עם הצלילים של תחנה אחרת. קודם <b>הד</b>: אני קוראת שורה, ואת חוזרת אחריי. אחר כך קוראות <b>יחד</b>. החרוז והקצב עוזרים לזכור, והקריאה החוזרת בונה שטף.")}
+    <div class="txlist">${C.map((c,i)=>`<button class="txt ${(save.chDone||[]).includes(c.t)?"done":""}" onclick="startChant(${i})"><span>🎵 ${c.w<=mw?"מתאים לך":"מתקדם יותר"} ${(save.chDone||[]).includes(c.t)?"· ✓":""}</span><bdi class="en">${c.t}</bdi><span>${c.he}</span></button>`).join("")}</div></div>`;
+  window.scrollTo(0,0);
+}
+function startChant(i){ CH={c:window.CHANTS[i],idx:i,li:0,mode:"echo"}; ACTIVE="chant"; document.body.classList.add("hasTuli"); drawChant(); }
+function drawChant(){
+  const c=CH.c, L=c.lines;
+  if(CH.mode==="echo"){
+    $app.innerHTML=gameTop("zrima","🎵 "+c.he,CH.li,L.length)+`<div class="card">${sisSay("zrima",`<b>הד:</b> לחצי 🔊, הקשיבי לשורה, ואז קראי אותה בעצמך באותו קצב. שורה ${CH.li+1} מתוך ${L.length}.`)}
+      <div class="rtext" id="brs">${L.map((l,j)=>`<span class="rsent ${j===CH.li?"cur":j<CH.li?"":"dim"}" id="cl${j}">${j===CH.li?brSpans(l[0],0,false,true):l[0]}</span>`).join("")}</div>
+      <div class="row"><button class="btn alt" onclick="chSay(0.7)">🔊 להקשיב לשורה</button><button class="btn ghost" onclick="chSay(0.5)">🐢</button>${micBtn("chMic()","עכשיו אני")}</div>
+      <div class="mean"><details><summary>מה זה אומר?</summary>${L[CH.li][1]}</details></div><div class="msg" id="msg"></div>
+      <div class="row"><button class="btn" onclick="${CH.li<L.length-1?"CH.li++;drawChant()":"CH.mode='together';drawChant()"}">${CH.li<L.length-1?"השורה הבאה ←":"עכשיו כל השיר יחד ←"}</button></div></div>`;
+    setTimeout(()=>chSay(0.7),400);
+  } else {
+    $app.innerHTML=gameTop("zrima","🎵 "+c.he)+`<div class="card">${sisSay("zrima","<b>יחד:</b> לחצי 🔊 וקראי בקול <b>יחד איתי</b>. המילה שאני אומרת מודגשת, והעיניים הולכות אחריה. אפשר לחזור כמה פעמים שרוצים.")}
+      <div class="rtext" id="brs">${L.map((l,j)=>`<span class="rsent" id="cl${j}">${brSpans(l[0],j*100,false,true)}</span>`).join("")}</div>
+      <div class="row"><button class="btn alt" onclick="chAll(0.7)">🔊 קוראות יחד</button><button class="btn ghost" onclick="chAll(0.5)">🐢 לאט</button></div>
+      <div class="row"><button class="btn" onclick="chDone()">סיימנו! 🎉</button></div></div>`;
+  }
+  window.scrollTo(0,0);
+}
+function chSay(r){ const el=document.getElementById("cl"+CH.li); speakHL(CH.c.lines[CH.li][0],r,[...el.querySelectorAll(".w")]); }
+function chAll(r){ let i=0; const n=CH.c.lines.length; const go=()=>{ if(i>=n||CH.mode!=="together") return; const el=document.getElementById("cl"+i); if(!el) return; speakHL(CH.c.lines[i][0],r,[...el.querySelectorAll(".w")],()=>{ i++; setTimeout(go,200); }); }; go(); }
+function chMic(){ setMsg("מקשיב... 👂"); listenMic(alts=>{ if(!alts){ setMsg("לא שמעתי. לחצי שוב על 🎤.","soft"); return; }
+  const [g,a]=brMarkHeard(document.getElementById("cl"+CH.li),alts); if(g===a){ setMsg("בדיוק כמו ההד! 🌟","good"); earn(1,true); } else setMsg(`${g} מתוך ${a} מילים נשמעו ברור.`,"soft"); }); }
+function chDone(){ save.chDone=save.chDone||[]; const first=!save.chDone.includes(CH.c.t); if(first) save.chDone.push(CH.c.t); persist();
+  gameEnd("zrima",`startChant(${CH.idx})`,0,0,`<p>${first?"שיר חדש באוסף! ":""}שירים קוראים שוב ושוב, וכל פעם זה זורם יותר 🎵</p><div class="row"><button class="btn ghost" onclick="showChants()">🎵 עוד שירים</button></div>`); }
+
+/* ---- 🃏 אוצר מילים: כרטיסיות עם חזרה במרווחים (לייטנר) ---- */
+const LEIT_GAP=[0,1,2,4,8,16];
+const dayNum=()=>Math.floor(Date.now()/864e5);
+function leit(){ return save.leit=save.leit||{}; }
+function vocabKnown(set){ const V=(window.VOCAB||{})[set]||[], L=leit(); return V.filter(v=>(L[v[0]]||{}).box>=3).length; }
+let FC=null;
+function startCards(set){
+  if(window.speechSynthesis) speechSynthesis.cancel(); ACTIVE="cards"; document.body.classList.add("hasTuli");
+  const V=(window.VOCAB||{})[set]||[], L=leit(), today=dayNum();
+  const due=V.filter(v=>L[v[0]] && L[v[0]].due<=today).sort((a,b)=>L[a[0]].box-L[b[0]].box);
+  const fresh=shuffle(V.filter(v=>!L[v[0]]));
+  const deck=due.slice(0,10).concat(fresh.slice(0,Math.max(4,12-due.length))).slice(0,12);
+  FC={set,deck:shuffle(deck),i:0,flip:false,good:0,again:[]};
+  drawCard();
+}
+function exHTML(ex,w){ return ex.replace(new RegExp("\\b("+w+"\\w*)","i"),'<b class="focus">$1</b>'); }
+function drawCard(){
+  const v=FC.deck[FC.i], ch=CHAPTERS.find(c=>c.id===FC.set)||{t:""};
+  if(!v){
+    if(FC.again.length){ FC.deck=shuffle(FC.again); FC.again=[]; FC.i=0; FC.flip=false; drawCard(); return; }
+    gameEnd("zichrona",`startCards('${FC.set}')`,FC.good,0,`<p>מילים שידעת יחזרו בעוד כמה ימים, ומילים שהיו קשות יחזרו מחר. ככה הן נשמרות בזיכרון לאורך זמן 🧠</p><p>${vocabKnown(FC.set)} מילים כבר "בכיס" בתחנה הזאת.</p>`); return; }
+  const b=(leit()[v[0]]||{}).box||0;
+  $app.innerHTML=`<div class="nav"><button class="small" onclick="goMap()">→ למפה</button><span class="hint">🃏 כרטיסיות · ${ch.t} · ${FC.i+1} מתוך ${FC.deck.length}</span><span></span></div>
+    <div class="card" style="text-align:center">
+      ${FC.i===0&&!FC.flip?sisSay("zichrona","קוראים את המילה ואת המשפט, מנסים להיזכר מה היא אומרת, ורק אז הופכים את הכרטיס. <b>ידעתי</b> = המילה תחזור בעוד כמה ימים. <b>עוד לא</b> = היא תחזור עוד מעט."):""}
+      <div class="fcard">${"⭐".repeat(b)}<div class="bigword" style="font-size:3em">${v[0]}</div>
+        <p class="en" style="font-size:1.35em;text-align:center">${exHTML(v[2],v[0])}</p>
+        ${FC.flip?`<p style="font-size:1.6em"><b>${v[1]}</b></p>`:""}</div>
+      <div class="row"><button class="btn alt" onclick="speak('${v[0].replace(/'/g,"")}',0.7)">🔊 המילה</button><button class="btn ghost" onclick="speak(\`${v[2].replace(/`/g,"")}\`,0.75)">🔊 המשפט</button></div>
+      <div class="row">${FC.flip?`<button class="btn" onclick="cardMark(1)">✔ ידעתי</button><button class="btn ghost" onclick="cardMark(0)">🔁 עוד לא</button>`:`<button class="btn" onclick="FC.flip=true;drawCard()">🔄 להפוך את הכרטיס</button>`}</div></div>`;
+  window.scrollTo(0,0);
+}
+function cardMark(ok){
+  const v=FC.deck[FC.i], L=leit(), e=L[v[0]]||{box:0};
+  if(ok){ e.box=Math.min(5,e.box+1); e.due=dayNum()+LEIT_GAP[e.box]; FC.good++; earn(1,true); }
+  else { e.box=1; e.due=dayNum()+1; FC.again.push(v); }
+  L[v[0]]=e; persist(); FC.i++; FC.flip=false; drawCard();
+}
+function vocabPool(set){ return ((window.VOCAB||{})[set]||[]); }
+function startMeaning(set){
+  const V=vocabPool(set);
+  const items=freshPick("mean_"+set,V,8,v=>v[0]).map(v=>({show:`<div class="bigword" style="font-size:3em">${v[0]}</div><p class="en" style="text-align:center">${exHTML(v[2],v[0])}</p><p>מה פירוש המילה?</p>`,
+    opts:[v[1],...pickN([...new Set(V.map(x=>x[1]))].filter(h=>h!==v[1]),3)],ans:0,say:v[0],x:`<bdi class="en">${v[0]}</bdi> = ${v[1]}`}));
+  startQZ({title:"🔤 מה פירוש המילה?",sis:"zichrona",again:`startMeaning('${set}')`,back:"goMap()",items,intro:"קוראים את המילה ואת המשפט שלה, ובוחרים פירוש. המשפט עוזר לנחש לפי ההקשר."});
+}
+function startComplete(set){
+  const V=vocabPool(set);
+  const items=freshPick("comp_"+set,V,8,v=>v[0]).map(v=>{ const re=new RegExp("\\b"+v[0]+"\\w*","i"), m=v[2].match(re);
+    const shown=m?v[2].replace(re,'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>'):v[2];
+    return {show:`<p class="en" style="font-size:1.6em;text-align:center;line-height:1.8">${shown}</p><p>איזו מילה משלימה את המשפט?</p>`,
+      opts:[v[0],...pickN(V.filter(x=>x!==v).map(x=>x[0]),3)],ans:0,en:true,x:`<bdi class="en">${v[0]}</bdi> = ${v[1]}`,sayAfter:v[2]}; });
+  startQZ({title:"🧩 השלמת משפט",sis:"dikduka",again:`startComplete('${set}')`,back:"goMap()",items,intro:"כמו בפסיכומטרי: משפט עם מילה חסרה, וארבע אפשרויות. קוראים את כל המשפט, ומנסים להבין מה <b>ההקשר</b> דורש לפני שמסתכלים על התשובות."});
+}
+function startConnect(){
+  const items=freshPick("connect",window.CONNECT||[],8,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.6em;text-align:center;line-height:1.8">${q.s.replace("___",'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')}</p><p>איזו מילת קישור מתאימה?</p>`,
+    opts:q.o,ans:q.a,en:true,x:q.x,sayAfter:q.s.replace("___",q.o[q.a])}));
+  startQZ({title:"🔗 מילות קישור",sis:"dikduka",again:"startConnect()",back:"goMap()",items,intro:"מילות קישור הן <b>שלטי הדרכים</b> של הטקסט: <bdi class='en'>but, so, because, however, although</bdi>. הן אומרות אם בא עכשיו ניגוד, סיבה, תוצאה או דוגמה. מי שמזהה אותן, מבין טקסט ארוך הרבה יותר בקלות."});
+}
+function startRestate(){
+  const items=freshPick("restate",window.RESTATE||[],6,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.5em;text-align:center;line-height:1.8"><b>${q.s}</b></p><p>איזה משפט אומר <b>אותו דבר</b> במילים אחרות?</p>`,
+    opts:q.o,ans:q.a,en:true,x:q.x}));
+  startQZ({title:"🔁 ניסוח מחדש",sis:"zichrona",again:"startRestate()",back:"goMap()",items,intro:"כמו בפסיכומטרי: משפט אחד, וארבעה ניסוחים. רק אחד אומר <b>בדיוק</b> את אותו הדבר. טיפ: שימי לב למילים קטנות שמשנות הכול: <bdi class='en'>not, only, few, never, unless</bdi>."});
+}
+// משחקים חדשים בגן המשחקים
+GAMES.push(
+ {id:"nonsense",e:"🔊❓",name:"מילות תפל",sis:"tzlila",run:"startNonsense()",d:"מילים שלא קיימות, כמו zop. אי אפשר לנחש, אז מאמנים פענוח אמיתי. מקליטים ומשווים."},
+ {id:"sbox",e:"📦",name:"קופסאות צלילים",sis:"tzlila",run:"startSoundBox()",d:"שומעים מילה וסופרים כמה צלילים יש בה. ואז היא מתחלקת לקופסאות."},
+ {id:"chain",e:"⛓️",name:"שרשרת מילים",sis:"otiya",run:"startChain()",d:"משנים אות אחת, למשל מ-cat ל-hat. בוחרים את המילה ששמעת."},
+ {id:"sort",e:"🗂️",name:"מיון מילים",sis:"otiya",run:"startSort()",d:"ממיינים מילים לשתי קבוצות לפי הצליל. בכל סיבוב זוג אחר."},
+ {id:"chants",e:"🎵",name:"שירי קריאה",sis:"zrima",run:"showChants()",d:"חרוזים מצחיקים. קודם הד: שומעים וחוזרים, ואז קוראים יחד."}
+);
+// משחקים לתחנות המתקדמות ($C = התחנה)
+const XGAMES=[
+ {id:"cards",e:"🃏",name:"כרטיסיות מילים",run:"startCards('$C')",d:"מילה, משפט, ולהפוך. מה שידעת חוזר בעוד כמה ימים."},
+ {id:"meaning",e:"🔤",name:"מה פירוש המילה?",run:"startMeaning('$C')",d:"מילה במשפט, ובוחרים את הפירוש."},
+ {id:"complete",e:"🧩",name:"השלמת משפט",run:"startComplete('$C')",d:"משפט עם מילה חסרה וארבע אפשרויות, כמו בפסיכומטרי."},
+ {id:"connect",e:"🔗",name:"מילות קישור",run:"startConnect()",d:"but, so, however, although: מה מחבר נכון?"},
+ {id:"restate",e:"🔁",name:"ניסוח מחדש",run:"startRestate()",d:"איזה משפט אומר אותו דבר? כמו בפסיכומטרי."},
+ {id:"chants",e:"🎵",name:"שירי קריאה",run:"showChants()",d:"חרוזים לקריאת הד ולקריאה יחד."},
+ {id:"tuli",e:"🐛",name:"הפינה של טולי",run:"startTuliQuiz()",d:"שאלות על חוקי הקריאה."}
+];
+
 /* ============ הגרסה באינטרנט ============ */
 const WEB_URL = "https://noaroich12-arch.github.io/yanshufi/" + encodeURIComponent("המסע של ינשופי.html");
 function sendToWeb(){
@@ -2917,6 +3186,11 @@ if(location.protocol==="file:"){
   const used=new Set(Object.values(PIC).map(v=>v[0]));
   Object.entries(window.MORE_PIC||{}).forEach(([k,v])=>{ if(!PIC[k] && !used.has(v[0])){ PIC[k]=v; used.add(v[0]); } });
   MAGIC_WORDS=null;
+  // דקדוק מתקדם מצטרף לנושאים של דקדוקה
+  (window.ADV_GRAMMAR||[]).forEach(t=>{ window.GRAMMAR_TOPICS=window.GRAMMAR_TOPICS||[]; if(!window.GRAMMAR_TOPICS.some(x=>x.id===t.id)) window.GRAMMAR_TOPICS.push(t); });
+  Object.assign(GNAME,{future:["עתיד","will · going to","🔮"],perfect:["הווה מושלם","have done · since · for","🕰️"],passive:["סביל","is made · was built","🏭"],
+    cond:["משפטי תנאי","if ... will · if ... would","🔀"],rel:["משפט זיקה","who · which · that · where","🔗"],reported:["דיבור עקיף","he said that...","💬"],
+    modal:["חייב, כדאי, אולי","must · should · might","🚦"],gerund:["to או ing","want to · enjoy -ing","🎯"]});
 })();
 applyPresets();
 if(save.wallet===undefined) save.wallet=save.total||0; // כוכבים שנאספו עד היום הופכים גם לאוכל
