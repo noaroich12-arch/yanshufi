@@ -40,6 +40,7 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .ch .l{font-family:Verdana,Arial,sans-serif;font-size:3.4em;font-weight:bold;line-height:1.1}
 .ch .hs{font-size:.95em;color:var(--soft);direction:rtl;min-height:1.4em;font-weight:bold}
 .ch.f .l,.ch.f .hs{color:var(--focus)}
+.ch.now,.syl.now{background:#fff2a8;border-radius:12px;box-shadow:0 0 0 3px #f2c230}
 .ch.silent .l{color:#9a8f80}
 .ar{font-family:"Segoe UI",Tahoma,Arial;font-size:1.35em;direction:rtl;unicode-bidi:isolate;font-weight:bold}
 .twin{background:#fff8d6;border:2px dashed #e0b400;border-radius:14px;padding:10px 14px;margin-top:14px;font-size:.95em}
@@ -2349,6 +2350,48 @@ function autoCue(s){ // משפט בלי חלוקה: חלקים של 2-3 מילי
   ws.forEach((w,i)=>{ cur.push(w); if(cur.length>=3 || /[,.!?]$/.test(w) || (cur.length>=2 && /^(and|but|in|on|at|to|with|the|a|of)$/i.test(ws[i+1]||""))){ out.push(cur.join(" ")); cur=[]; } });
   if(cur.length) out.push(cur.join(" ")); return out;
 }
+/* הקראה בהילוך איטי: כל צליל לבד, החלק שנשמע מודגש, ואז המילה לאט ואז רגיל */
+const SLOW_C = {b:"buh",c:"kuh",k:"kuh",ck:"kuh",d:"duh",f:"fff",ff:"fff",ph:"fff",g:"guh",h:"huh",j:"juh",l:"luh",ll:"luh",m:"mmm",n:"nnn",
+  p:"puh",r:"ruh",s:"sss",ss:"sss",t:"tuh",v:"vuh",w:"wuh",wh:"wuh",x:"ks",y:"yuh",z:"zzz",zz:"zzz",qu:"kwuh",sh:"shh",ch:"chuh",tch:"chuh",
+  th:"thuh",ng:"ng",nk:"nk",dge:"juh",kn:"nnn",wr:"ruh",mb:"mmm",gh:"guh"};
+const SLOW_SHORT = {a:"aa",e:"eh",i:"ih",o:"ah",u:"uh"};
+const SLOW_LONG = {a:"ay",e:"ee",i:"eye",o:"oh",u:"you"};
+const SLOW_VT = {ee:"ee",ea:"ee",ai:"ay",ay:"ay",oa:"oh",oe:"oh",ow:"oh",ie:"eye",igh:"eye",eigh:"ay",oo:"oo",ew:"oo",ue:"oo",
+  ar:"ar",or:"or",er:"er",ir:"er",ur:"er",oi:"oy",oy:"oy",ou:"ow",aw:"aw",au:"aw",all:"all",alk:"awk",air:"air",are:"air",ear:"ear",ey:"ee",
+  ture:"cher",tion:"shun",sion:"zhun"};
+function slowParts(w){ // לכל חלק: מה להשמיע, או null אם הוא שקט
+  const cs=chunk(w), n=cs.length, mg=magicIdx(cs);
+  return cs.map((c,i)=>{
+    if(mg.length && i===mg[1]) return null;
+    if(mg.length && i===mg[0]) return SLOW_LONG[c]||c;
+    if(c==="e" && i===n-1 && n>=3 && !/[aeiouy]/.test(cs[i-1])) return null;
+    if(c==="y" && i===n-1 && i>0) return cs.slice(0,i).some(x=>/[aeiou]/.test(x)) ? "ee" : "eye";
+    if(/^[aeiou]$/.test(c) && i===n-1 && n<=3) return SLOW_LONG[c];
+    if(c==="c" && /^[eiy]/.test(cs[i+1]||"")) return "sss";
+    if(c.length===2 && c[0]===c[1] && SLOW_C[c[0]]) return SLOW_C[c[0]]; // אות כפולה = צליל אחד
+    return SLOW_VT[c] || SLOW_SHORT[c] || SLOW_C[c] || c;
+  });
+}
+let slowTok=0;
+function speakSlow(w, btn){
+  const tok=++slowTok, card=btn && btn.closest(".card");
+  const syl=card && card.querySelector(".syls"), box=card && card.querySelector(".chunks");
+  let els=[], says=[];
+  if(syl){ els=[...syl.querySelectorAll(".syl")]; says=els.map(e=>e.classList.contains("sc")?"uh":e.childNodes[0].textContent); }
+  else if(!IRREG[w]){ says=slowParts(w); els=box?[...box.querySelectorAll(".ch")]:[]; if(els.length!==says.length) els=[]; }
+  const mark=k=>els.forEach((e,j)=>e.classList.toggle("now", k==="all" || j===k));
+  const say=(t,r,cb)=>{ let done=false; const f=()=>{ if(!done){done=true; if(tok===slowTok) cb();} };
+    speak(t,r,f); setTimeout(f, 2600+t.length*250); };
+  const finish=()=>{ mark("all"); setTimeout(()=>{ if(tok!==slowTok) return;
+      say(w,0.5,()=>setTimeout(()=>{ if(tok!==slowTok) return; say(w,0.9,()=>mark(-1)); },700)); },500); };
+  const step=k=>{
+    if(tok!==slowTok) return;
+    while(k<says.length && !says[k]) k++;
+    if(k>=says.length){ finish(); return; }
+    mark(k); say(says[k],0.6,()=>setTimeout(()=>step(k+1),450));
+  };
+  if(says.length) step(0); else finish();
+}
 function tuliHelpHTML(tg){
   let h="";
   if(tg.w){
@@ -2356,7 +2399,7 @@ function tuliHelpHTML(tg){
     const v=(w.match(/[aeiou]/)||[])[0];
     h+=tuliSay(`בואי נפרק את <bdi class="en">${w}</bdi> לאט, צליל אחרי צליל. מתחת לכל חלק כתוב איך הוא נשמע.`);
     h+=(L&&(L.words.find(x=>x[0]===w)||[])[2]) ? sylHTML(L.words.find(x=>x[0]===w)[2]) : chunksHTML(w, L?L.focus:(v||""), true);
-    h+=`<div class="row"><button class="btn alt" onclick="speak('${w}',0.45)">🐢 לאט מאוד</button><button class="btn ghost" onclick="speak('${w}',0.8)">🔊 רגיל</button></div>`;
+    h+=`<div class="row"><button class="btn alt" onclick="speakSlow('${w}',this)">🐢 לאט מאוד, צליל אחרי צליל</button><button class="btn ghost" onclick="slowTok++;speak('${w}',0.9)">🔊 רגיל</button></div>`;
     if(he) h+=`<div class="arbox" style="font-size:1.2em;text-align:center"><b>פירוש:</b> ${he}</div>`;
     if(L) h+=`<div class="arbox"><b>החוק שעוזר כאן</b>, מהשלב ${bidiT(L.title)}:<br>${L.rule}</div>`;
     else if(v && ANCHOR[v]) h+=`<div class="arbox">התנועה כאן היא <bdi class="en">${v}</bdi>, כמו ב-<bdi class="en">${ANCHOR[v][0]}</bdi>. <button class="tiny" onclick="speak('${ANCHOR[v][0]}',0.6)">🔊</button></div>`;
