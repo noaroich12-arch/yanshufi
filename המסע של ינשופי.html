@@ -3521,7 +3521,7 @@ function checkMore(){
   const tw=document.querySelector("#app .twin"), below=el=>el.getBoundingClientRect().top > innerHeight-60;
   let target=null, label="";
   if(!document.querySelector(".pop")){
-    if(tw && below(tw)){ target=tw; label="👇 עוד למטה: ⭐ שימי לב"; }
+    if(tw && below(tw)){ target=tw; label="👇 יש עוד למטה"; }
     else if(ACTIVE && document.documentElement.scrollHeight-(scrollY+innerHeight) > 160){ target="end"; label="👇 יש עוד למטה"; }
   }
   if(!target){ if(p) p.remove(); return; }
