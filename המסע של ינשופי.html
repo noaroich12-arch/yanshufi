@@ -3508,8 +3508,48 @@ if(save.wallet===undefined) save.wallet=save.total||0; // כוכבים שנאס�
   ["startMemory","startMissing","startBaskets","startBalloons","startBuild","startPyramid","startSL","startPairs","startQuiz"].forEach(n=>set(n,n));
   ["goMap","showGames","showNest","showWardrobe","showAlbum","showBank","showWheel","showBridge","showRS","showStation","showGuide","showTools"].forEach(n=>set(n,null));
 }
-goMap();
 if(location.hostname==="localhost" && location.hash==="#export"){ history.replaceState(null,"",location.pathname); setTimeout(sendToWeb,800); }
+/* ============ אחורה, קדימה ורענון: כל מסך מקבל כתובת משלו ============ */
+let NAV_DEPTH=0, NAV_RESTORING=false;
+const NAV_FNS=["goMap","startLevel","startPairs","showNest","showBank","startQuiz","showGames","startMemory","startMissing","startBaskets",
+  "startBalloons","startBuild","startPyramid","startGrammar","startGrTopic","startSL","showAlbum","showShop","showWardrobe","showWheel",
+  "startTuliQuiz","showBridge","showRS","startText","showLetters","startLGame","startNonsense","startSoundBox","startChain","startSort",
+  "showChants","startChant","startCards","startMeaning","startComplete","startConnect","startRestate","stationIntro","showStation",
+  "showGuide","showTools","showIntroG"];
+function navURL(route){ return route[0]==="goMap" ? location.pathname+location.search : "#s="+encodeURIComponent(JSON.stringify(route)); }
+NAV_FNS.forEach(n=>{ const f=window[n]; if(typeof f!=="function") return;
+  window[n]=function(...a){
+    if(NAV_DEPTH>0) return f.apply(this,a); // מסך שנפתח מתוך מסך אחר נחשב לאותו צעד
+    let route=[n,...a.map(x=>(x===null||typeof x==="object"||typeof x==="function")?null:x)];
+    if(n==="startLevel") route=[n,a[0]];               // ברענון לא מתחילים מחדש: חוזרים לאותה מילה
+    if(n==="showIntroG") route=["intro",a[0],RUNS[a[1]]];
+    NAV_DEPTH++; let r;
+    try{ r=f.apply(this,a); } finally{ NAV_DEPTH--; }
+    if(!NAV_RESTORING){ const u=navURL(route), now=location.pathname+location.search+location.hash;
+      if(u!==now && !(route[0]==="goMap" && !location.hash)) history.pushState({route},"",u); }
+    return r;
+  };
+});
+function navRestore(route){
+  NAV_RESTORING=true;
+  try{
+    if(route[0]==="intro"){ RUNS.push(route[2]); window.showIntroG(route[1],RUNS.length-1); }
+    else if(NAV_FNS.includes(route[0]) && typeof window[route[0]]==="function") window[route[0]](...route.slice(1));
+    else window.goMap();
+  }catch(e){ try{ window.goMap(); }catch(_){} }
+  finally{ NAV_RESTORING=false; }
+  window.scrollTo(0,0);
+}
+function navFromHash(){
+  if(location.hash.startsWith("#s=")){ try{ return JSON.parse(decodeURIComponent(location.hash.slice(3))); }catch(e){} }
+  return ["goMap"];
+}
+window.addEventListener("popstate", e=>{
+  document.querySelectorAll(".pop").forEach(p=>p.remove());
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  navRestore((e.state&&e.state.route)||navFromHash());
+});
+{ const r=navFromHash(); history.replaceState({route:r},"",navURL(r)); navRestore(r); }
 </script>
 </body>
 </html>
