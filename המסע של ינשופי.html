@@ -323,6 +323,7 @@ body.hasTuli:has(#app .tulib) .tulifab{display:none} /* כשיש כפתור טו
 <script src="data-advanced.js"></script>
 <script src="data-texts3.js"></script>
 <script src="data-texts4.js"></script>
+<script src="data-vocab.js"></script>
 <script>
 /* ============ צלילים: כך כל אות או צירוף נשמעים, באותיות עבריות ============ */
 const SOUND = {
@@ -3492,6 +3493,9 @@ if(location.protocol==="file:"){
 (function mergeMore(){
   const ML=window.MORE_LEVELS||{};
   LEVELS.forEach(L=>{ const m=ML[L.id]; if(m){ Object.assign(L,m); L.ready=true; if(m.irreg) Object.assign(IRREG,m.irreg); } });
+  // אוצר מילים מורחב: מילים בודדות אחרות מהמילים שבמשפטים
+  const RW=window.LEVEL_REWRITE||{}; LEVELS.forEach(L=>{ if(RW[L.id]) Object.assign(L,RW[L.id]); });
+  Object.entries(window.MORE_SENT_HE||{}).forEach(([k,v])=>{ if(!SENT_HE[k]) SENT_HE[k]=v; });
   (window.MORE_PAIRS||[]).forEach(g=>{ if(!PAIRS.some(p=>p.join()===g.join())) PAIRS.push(g); });
   Object.entries(window.MORE_TWIN||{}).forEach(([k,v])=>{ if(!TWIN_HE[k]) TWIN_HE[k]=v; });
   const used=new Set(Object.values(PIC).map(v=>v[0]));
