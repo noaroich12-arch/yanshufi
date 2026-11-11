@@ -265,6 +265,11 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .tiny.tulib{background:#eaf7e4;border:2px solid #9fd38a;border-radius:12px;color:#2b4a1f;text-decoration:none;padding:6px 14px;font-size:.95em;font-weight:bold}
 .tulifab{position:fixed;left:18px;bottom:18px;width:74px;height:74px;border-radius:50%;background:#dff3d6;border:4px solid #9fd38a;font-size:2.4em;z-index:44;display:none;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:0}
 body.hasTuli .tulifab{display:block}
+body.hasTuli:has(#app .tulib) .tulifab{display:none} /* כשיש כפתור טולי ליד המילה, לא צריך גם את טולי בצד */
+.morepill{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff8d6;border:3px solid #e0b400;border-radius:30px;
+  padding:6px 18px;font-size:1em;font-weight:bold;color:#3a2e00;z-index:45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;
+  font-family:inherit;animation:bob 1.6s ease-in-out infinite;max-width:calc(100vw - 40px)}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-7px)}}
 .tulipeek{position:fixed;left:18px;bottom:104px;max-width:340px;background:#fff;border:3px solid #9fd38a;border-radius:20px;padding:14px;z-index:46;box-shadow:0 6px 18px rgba(0,0,0,.18);animation:popin .35s;font-size:1em}
 .tf{min-width:200px;font-size:1.2em}
 /* ===== מהמילה לפסקה ===== */
@@ -3509,6 +3514,26 @@ if(save.wallet===undefined) save.wallet=save.total||0; // כוכבים שנאס�
   ["goMap","showGames","showNest","showWardrobe","showAlbum","showBank","showWheel","showBridge","showRS","showStation","showGuide","showTools"].forEach(n=>set(n,null));
 }
 if(location.hostname==="localhost" && location.hash==="#export"){ history.replaceState(null,"",location.pathname); setTimeout(sendToWeb,800); }
+/* ============ "יש עוד למטה": פתק קופץ כשמשהו חשוב מתחבא מתחת לקצה המסך ============ */
+let moreT=null;
+function checkMore(){
+  let p=document.getElementById("morepill");
+  const tw=document.querySelector("#app .twin"), below=el=>el.getBoundingClientRect().top > innerHeight-60;
+  let target=null, label="";
+  if(!document.querySelector(".pop")){
+    if(tw && below(tw)){ target=tw; label="👇 עוד למטה: ⭐ שימי לב"; }
+    else if(ACTIVE && document.documentElement.scrollHeight-(scrollY+innerHeight) > 160){ target="end"; label="👇 יש עוד למטה"; }
+  }
+  if(!target){ if(p) p.remove(); return; }
+  if(!p){ p=document.createElement("button"); p.id="morepill"; p.className="morepill"; document.body.appendChild(p); }
+  if(p.textContent!==label) p.textContent=label;
+  p.onclick=()=>{ if(target==="end") window.scrollTo({top:document.documentElement.scrollHeight,behavior:"smooth"});
+    else target.scrollIntoView({behavior:"smooth",block:"center"}); };
+}
+function checkMoreSoon(){ clearTimeout(moreT); moreT=setTimeout(checkMore,250); }
+window.addEventListener("scroll",checkMoreSoon,{passive:true}); window.addEventListener("resize",checkMoreSoon);
+new MutationObserver(checkMoreSoon).observe(document.getElementById("app"),{childList:true,subtree:true});
+document.addEventListener("click",checkMoreSoon);
 /* ============ אחורה, קדימה ורענון: כל מסך מקבל כתובת משלו ============ */
 let NAV_DEPTH=0, NAV_RESTORING=false;
 const NAV_FNS=["goMap","startLevel","startPairs","showNest","showBank","startQuiz","showGames","startMemory","startMissing","startBaskets",
@@ -3549,7 +3574,7 @@ window.addEventListener("popstate", e=>{
   if(window.speechSynthesis) speechSynthesis.cancel();
   navRestore((e.state&&e.state.route)||navFromHash());
 });
-{ const r=navFromHash(); history.replaceState({route:r},"",navURL(r)); navRestore(r); }
+{ const r=navFromHash(); history.replaceState({route:r},"",navURL(r)); navRestore(r); }
 </script>
 </body>
 </html>
