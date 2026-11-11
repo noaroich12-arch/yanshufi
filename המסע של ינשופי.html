@@ -765,15 +765,66 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 // מספרים ומילים שהזיהוי נוטה לכתוב אחרת
 const SAME = {"10":"ten","6":"six","2":"to","too":"to","two":"to","1":"a","penn":"pen","pin":"pin","hen":"hen","bet":"bet","fit":"fit","ham":"ham"};
 const norm = s=>s.toLowerCase().replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(Boolean).map(w=>SAME[w]||w);
-let micBusy=false;
+let micBusy=false, lastMicErr="";
+// הסבר אמיתי למה לא שמעתי, לפי מה שהדפדפן אומר
+function micFailMsg(orig){
+  const e=lastMicErr, tools=`<br><button class="btn ghost" style="padding:6px 14px;font-size:.85em" onclick="micTest()">🛠️ בדיקת מיקרופון</button> <button class="btn ghost" style="padding:6px 14px;font-size:.85em" onclick="selfOk()">✔ קראתי בקול, ממשיכה</button>`;
+  let t;
+  if(e==="not-allowed"||e==="service-not-allowed") t="הדפדפן חוסם את המיקרופון באתר הזה. לוחצים על הסמל שמשמאל לכתובת האתר למעלה, ליד <bdi>github.io</bdi>, ושם ליד \"מיקרופון\" בוחרים \"אפשר\". אחר כך מרעננים את הדף.";
+  else if(e==="audio-capture") t="הדפדפן לא מוצא מיקרופון. אולי הוא לא מחובר, או שתוכנה אחרת, כמו זום, משתמשת בו עכשיו.";
+  else if(e==="network") t="זיהוי הדיבור של כרום עובד דרך האינטרנט, והפעם החיבור נכשל. אפשר לנסות שוב בעוד רגע.";
+  else if(e==="no-speech") t="המיקרופון נפתח, אבל לא הגיע ממנו קול. ייתכן שכרום מקשיב למיקרופון אחר מזה שאת מדברת אליו. בבדיקת המיקרופון אפשר לראות את זה.";
+  else if(e==="language-not-supported") t="כרום לא מצליח להפעיל זיהוי דיבור באנגלית במחשב הזה.";
+  else if(e) t=orig+` <span class="hint">(קוד: <bdi>${e}</bdi>)</span>`;
+  else t=orig;
+  return t+tools;
+}
+function micTest(){
+  document.querySelectorAll(".pop.mict").forEach(p=>p.remove());
+  const d=document.createElement("div"); d.className="pop mict";
+  d.innerHTML=`<div class="card" style="max-width:640px;text-align:right">
+    <h3>🛠️ בדיקת מיקרופון</h3>
+    <p>דברי עכשיו בקול, למשל ספרי מאחת עד עשר. אם המיקרופון שומע אותך, הפס הירוק זז.</p>
+    <div style="background:#eee;border-radius:10px;height:26px;overflow:hidden;border:2px solid #999"><div id="mtBar" style="height:100%;width:0;background:#2e9e5a"></div></div>
+    <p id="mtDev" class="hint" style="font-size:1em"></p>
+    <p>שלב שני: לוחצים על הכפתור ואומרים באנגלית <b class="en">hello</b>.</p>
+    <div class="row"><button class="btn mic" id="micb" onclick="micTestSR()">🎤 לומר hello</button></div>
+    <p id="mtSR" style="font-size:1.1em"></p>
+    <div class="row"><button class="btn" onclick="micTestStop()">סגירה</button></div></div>`;
+  document.body.appendChild(d);
+  const dev=document.getElementById("mtDev");
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{
+    MT.st=st; const tr=st.getAudioTracks()[0];
+    dev.innerHTML="כרום מקשיב עכשיו למיקרופון: <b>"+(tr&&tr.label||"לא ידוע")+"</b>";
+    navigator.mediaDevices.enumerateDevices().then(ds=>{ const ins=ds.filter(x=>x.kind==="audioinput"&&x.deviceId!=="default"&&x.deviceId!=="communications");
+      if(ins.length>1) dev.innerHTML+=`<br>במחשב יש ${ins.length} מיקרופונים. אם הפס לא זז, אפשר לבחור מיקרופון אחר: לוחצים על הסמל שמשמאל לכתובת האתר, ונכנסים ל"הגדרות אתר".`; });
+    const ac=new (window.AudioContext||window.webkitAudioContext)(), an=ac.createAnalyser(); MT.ac=ac;
+    ac.createMediaStreamSource(st).connect(an); const buf=new Uint8Array(an.fftSize);
+    const loop=()=>{ if(!MT.st) return; an.getByteTimeDomainData(buf); let m=0; for(const v of buf) m=Math.max(m,Math.abs(v-128));
+      const b=document.getElementById("mtBar"); if(b) b.style.width=Math.min(100,m*1.6)+"%"; MT.raf=requestAnimationFrame(loop); };
+    loop();
+  }).catch(e=>{ dev.innerHTML="❌ הדפדפן לא נותן גישה למיקרופון: <bdi>"+e.name+"</bdi>. לוחצים על הסמל שמשמאל לכתובת האתר, ושם ליד \"מיקרופון\" בוחרים \"אפשר\"."; });
+}
+const MT={};
+function micTestStopStream(){ if(MT.st){ MT.st.getTracks().forEach(t=>t.stop()); MT.st=null; } if(MT.ac){ MT.ac.close(); MT.ac=null; } cancelAnimationFrame(MT.raf); }
+function micTestStop(){ micTestStopStream(); document.querySelectorAll(".pop.mict").forEach(p=>p.remove()); }
+function micTestSR(){
+  const o=document.getElementById("mtSR");
+  if(!SR){ o.innerHTML="הדפדפן הזה לא יודע לזהות דיבור. בכרום זה אמור לעבוד."; return; }
+  micTestStopStream(); o.textContent="מקשיב... 👂";
+  listenMic(alts=>{ o.innerHTML = alts ? "✅ שמעתי: <b class='en'>"+alts[0]+"</b>. זיהוי הדיבור עובד!" : "❌ "+micFailMsg("לא שמעתי כלום.").split("<br><button")[0]; });
+}
 function listenMic(onDone){
   if(!SR){ onDone(null); return; }
   if(micBusy) return; micBusy=true;
   const b=document.getElementById("micb"); if(b) b.classList.add("on");
+  // מיקרופון של "הקלטי את עצמך" שנשאר פתוח עלול להפריע לזיהוי הדיבור, אז סוגרים אותו לפני שמקשיבים
+  if(micStream){ clearTimeout(micTimer); micStream.getTracks().forEach(t=>t.stop()); micStream=null; }
+  if(window.speechSynthesis) speechSynthesis.cancel();
   const r = new SR(); r.lang="en-US"; r.interimResults=false; r.maxAlternatives=5;
-  let got=false;
+  let got=false; lastMicErr="";
   r.onresult = e=>{ got=true; onDone([...e.results[0]].map(a=>a.transcript)); };
-  r.onerror = ()=>{};
+  r.onerror = e=>{ lastMicErr=e.error||"unknown"; };
   r.onend = ()=>{ micBusy=false; if(b) b.classList.remove("on"); if(!got) onDone(null); };
   try{ r.start(); }catch(e){ micBusy=false; onDone(null); }
 }
@@ -857,7 +908,7 @@ function wordsSpans(text, focus){
     return `<span class="w${sight?' sight':''}" data-w="${clean}" onclick="wordTip('${clean}')">${sight?w:hlWord(w,focus)}</span>`;
   }).join(" ");
 }
-function setMsg(t,cls){ const m=document.getElementById("msg"); if(m){m.className="msg "+(cls||"");m.innerHTML=t;} }
+function setMsg(t,cls){ if(/^לא שמעתי/.test(t)) t=micFailMsg(t); const m=document.getElementById("msg"); if(m){m.className="msg "+(cls||"");m.innerHTML=t;} }
 function micBtn(fn,label){ return SR ? `<button class="btn mic" id="micb" onclick="${fn}">🎤 ${label||"אני קוראת"}</button>` : `<button class="btn mic" onclick="selfOk()">✔ קראתי בקול</button>`; }
 
 /* ============ מפה ============ */
