@@ -263,9 +263,9 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .small2{padding:8px 14px;min-width:0;font-size:.85em}
 /* ===== טולי ===== */
 .tiny.tulib{background:#eaf7e4;border:2px solid #9fd38a;border-radius:12px;color:#2b4a1f;text-decoration:none;padding:6px 14px;font-size:.95em;font-weight:bold}
-.tulifab{position:fixed;left:18px;bottom:18px;width:74px;height:74px;border-radius:50%;background:#dff3d6;border:4px solid #9fd38a;font-size:2.4em;z-index:44;display:none;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:0}
+.tulifab{position:fixed;left:18px;bottom:18px;width:74px;height:74px;border-radius:50%;background:#dff3d6;border:4px solid #9fd38a;font-size:40px;line-height:1;overflow:hidden;z-index:44;display:none;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:0}
 body.hasTuli .tulifab{display:block}
-body.hasTuli:has(#app .tulib) .tulifab{display:none} /* כשיש כפתור טולי ליד המילה, לא צריך גם את טולי בצד */
+#app .tulib,#app .tulihint{display:none !important} /* עזרה של טולי רק דרך הציור שלה בפינה, אחיד בכל המסכים */
 .morepill{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff8d6;border:3px solid #e0b400;border-radius:30px;
   padding:6px 18px;font-size:1em;font-weight:bold;color:#3a2e00;z-index:45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;
   font-family:inherit;animation:bob 1.6s ease-in-out infinite;max-width:calc(100vw - 40px)}
@@ -465,8 +465,8 @@ const LEVELS = [
   words:[["on","על"],["ox","שור"],["hot","חם"],["dog","כלב"],["box","קופסה"],["fox","שועל"],["pot","סיר"],["mop","מגב"],["top","למעלה, סביבון"],["log","בול עץ"],["job","עבודה"],["rod","מוט"]],
   listen:[["hot",["hat","hot","hit"]],["mop",["map","mop"]],["dog",["dig","dog","dug"]],["pot",["pat","pet","pot"]]],
   ladder:["hat","hot","pot","pop","mop","map"],
-  reads:[["a hot pot","סיר חם"],["a fox in a box","שועל בתוך קופסה"],["The dog is hot.","לכלב חם."],["Tom got a big box.","טום קיבל קופסה גדולה."],["The fox sat on a log.","השועל ישב על בול עץ."]],
-  para:[["Tom has a dog.","לטום יש כלב."],["The dog is hot.","לכלב חם."],["Tom gets a pot.","טום מביא סיר."],["The pot is not hot.","הסיר לא חם."],["The dog naps on a log.","הכלב נמנם על בול עץ."],["The dog is not hot. Top job, Tom!","לכלב כבר לא חם. עבודה מעולה, טום!"]]
+  reads:[["a hot pot","סיר חם"],["a fox in a box","שועל בתוך קופסה"],["The dog is hot.","הכלב חם."],["Tom got a big box.","טום קיבל קופסה גדולה."],["The fox sat on a log.","השועל ישב על בול עץ."]],
+  para:[["Tom has a dog.","לטום יש כלב."],["The dog is hot.","הכלב חם."],["Tom gets a pot.","טום מביא סיר."],["The pot is not hot.","הסיר לא חם."],["The dog naps on a log.","הכלב נמנם על בול עץ."],["The dog is not hot. Top job, Tom!","הכלב כבר לא חם. עבודה מעולה, טום!"]]
  },
  {id:"u", world:0, title:"u קצרה", key:"u", ready:true, focus:"u",
   rule:"האות <b class='en'>u</b> הקצרה נשמעת כמו ה-u ב-<b class='en'>umbrella</b>, ב-<b class='en'>fun</b> או ב-<b class='en'>lucky</b>.<br>זו <b>לא</b> אוּ! זו אַ קצרה ורפויה, כמו \"אַה\" של עייפות.<br>מלכודת נפוצה: <span class='en'>cup</span> נשמעת \"קַאפּ\", ולא \"קוּפּ\".",
@@ -710,8 +710,25 @@ function pickVoice(){
   voice = vs.find(v=>/natural/i.test(v.name)&&/en-US/i.test(v.lang)) || vs.find(v=>/natural/i.test(v.name)) || vs.find(v=>/en-US/i.test(v.lang)) || vs[0] || null;
 }
 if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+// כל עצירה של הקול (מעבר מסך וכו') עוצרת גם הקראה של מילה אחרי מילה
+if("speechSynthesis" in window){ const _cancel=speechSynthesis.cancel.bind(speechSynthesis); speechSynthesis.cancel=()=>{ seqTok++; _cancel(); }; }
+// "לאט" במשפט: הקול לבד כמעט לא מאט, אז מקריאים מילה אחרי מילה עם הפסקה קטנה ביניהן
+let seqTok=0;
+function speakSeq(parts, onIdx, cb){
+  speechSynthesis.cancel(); const tok=++seqTok; let i=0;
+  const go=()=>{ if(tok!==seqTok) return;
+    if(i>=parts.length){ if(onIdx) onIdx(-1); if(cb) cb(); return; }
+    if(onIdx) onIdx(i);
+    const u=new SpeechSynthesisUtterance(parts[i]); u.lang="en-US"; if(voice) u.voice=voice; u.rate=0.7;
+    let done=false; const nx=()=>{ if(done) return; done=true; i++; setTimeout(go,420); };
+    u.onend=nx; u.onerror=nx; setTimeout(nx, 2500+parts[i].length*200);
+    speechSynthesis.speak(u); };
+  go();
+}
 function speak(t, rate, cb){
   if(!("speechSynthesis" in window)){ if(cb) cb(); return; }
+  if(rate && rate<0.6 && /\s/.test(String(t).trim())){ speakSeq(String(t).trim().split(/\s+/), null, cb); return; }
+  seqTok++;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(t);
   u.lang="en-US"; if(voice) u.voice=voice; u.rate = rate||0.85;
@@ -1508,9 +1525,28 @@ const bank = ()=> (save.bank = save.bank||[]);
 const inBank = w => bank().some(b=>b.w===w);
 function addToBank(w, he){
   w=strip(w); if(!w) return;
+  save.bankDone=(save.bankDone||[]).filter(b=>b.w!==w); // מילה שסומנה "למדתי" ונכנסת שוב: חוזרת לתרגול
   if(!inBank(w)) bank().push({w, he: he||heOf(w), lvl:0});
-  persist();
-  document.querySelectorAll(`[data-bank="${w}"]`).forEach(b=>{ b.textContent="✓ בבנק"; b.disabled=true; });
+  persist(); refreshBankBtns(w);
+}
+// לחיצה שנייה על "✓ בבנק" מוציאה את המילה (למשל אם נכנסה בטעות)
+function removeFromBank(w){
+  const i=bank().findIndex(b=>b.w===w); if(i>=0) bank().splice(i,1);
+  persist(); refreshBankBtns(w); toast(`<bdi>${w}</bdi> יצאה מהבנק`);
+}
+function refreshBankBtns(w){
+  document.querySelectorAll(`[data-bank="${w}"]`).forEach(b=>{ const t=document.createElement("div"); t.innerHTML=bankBtn(w); b.replaceWith(t.firstChild); });
+}
+// "למדתי": המילה יוצאת מהחזרות ונשמרת ברשימת המילים שלמדתי. אפשר להחזיר אותה
+function graduate(i){
+  const b=bank().splice(i,1)[0]; if(!b) return;
+  save.bankDone=save.bankDone||[]; save.bankDone.push({w:b.w,he:b.he,day:new Date().toISOString().slice(0,10)});
+  persist(); earn(1); toast(`🎓 כל הכבוד! <bdi>${b.w}</bdi> עברה למילים שלמדתי`); showBank();
+}
+function ungraduate(i){
+  const b=(save.bankDone||[]).splice(i,1)[0]; if(!b) return;
+  if(!inBank(b.w)) bank().push({w:b.w,he:b.he,lvl:1});
+  persist(); showBank();
 }
 // מילים שנועה ביקשה בצ'אט להכניס לבנק. נכנסות פעם אחת, ואם תמחק אותן הן לא יחזרו
 const PRESET_BANK = [
@@ -1528,7 +1564,7 @@ function applyPresets(){
   });
   persist();
 }
-function bankBtn(w){ return inBank(w) ? `<button class="tiny" disabled data-bank="${w}">✓ בבנק</button>` : `<button class="tiny" data-bank="${w}" onclick="addToBank('${w}')">➕ לבנק המילים</button>`; }
+function bankBtn(w){ return inBank(w) ? `<button class="tiny" data-bank="${w}" onclick="removeFromBank('${w}')" title="לחיצה מוציאה את המילה מהבנק">✓ בבנק · ✖ להוציא</button>` : `<button class="tiny" data-bank="${w}" onclick="addToBank('${w}')">➕ לבנק המילים</button>`; }
 // לחיצה על מילה במשפט: משמיעה, מראה פירוש ומציעה להוסיף לבנק
 function wordTip(w){
   speak(w,0.7);
@@ -1546,9 +1582,17 @@ function showBank(){
       <button class="anc" onclick="speak('${b.w}',0.6)">🔊 <bdi>${b.w}</bdi></button>
       ${b.he?`<span>${b.he}</span>`:`<input class="inp" placeholder="מה זה בעברית?" onchange="bank()[${i}].he=this.value;persist()">`}
       <span title="כמה היא כבר יושבת" style="color:#d39a00">${"●".repeat(b.lvl)}${"○".repeat(3-b.lvl)}</span>
-      <button class="tiny" onclick="bank().splice(${i},1);persist();showBank()">מחיקה</button></div>`).join("");
-  $app.innerHTML = `<div class="card">${owlSay("<b>📒 בנק המילים שלי.</b> העיגולים מראים כמה כל מילה כבר יושבת: ○○○ חדשה, ●●● יושבת טוב.")}
+      <button class="tiny" style="${b.lvl>=3?"background:#2e9e5a;color:#fff;border-color:#2e9e5a;font-weight:bold":""}" onclick="graduate(${i})" title="המילה יוצאת מהחזרות">🎓 למדתי</button>
+      <button class="tiny" onclick="bank().splice(${i},1);persist();showBank()" title="להוציא מהבנק, למשל אם נכנסה בטעות">✖ להוציא</button></div>`).join("");
+  const done=save.bankDone||[], ripe=bank().filter(b=>b.lvl>=3).length;
+  const doneList = done.length ? `<details style="margin-top:18px"><summary style="cursor:pointer;font-size:1.1em;font-weight:bold">🎓 מילים שכבר למדתי: ${done.length}</summary>
+      <p class="hint" style="text-align:right">הן לא מופיעות יותר בחזרות. אם מילה נשכחה, אפשר להחזיר אותה לתרגול.</p>
+      ${done.map((b,i)=>`<div class="twinrow"><button class="anc" onclick="speak('${b.w}',0.6)">🔊 <bdi>${b.w}</bdi></button><span>${b.he||""}</span>
+        <button class="tiny" onclick="ungraduate(${i})">↩ להחזיר לתרגול</button></div>`).join("")}</details>` : "";
+  $app.innerHTML = `<div class="card">${owlSay("<b>📒 בנק המילים שלי.</b> העיגולים מראים כמה כל מילה כבר יושבת: ○○○ חדשה, ●●● יושבת טוב.<br>מילה שכבר יושבת טוב אפשר לסמן <b>🎓 למדתי</b>, והיא תצא מהחזרות. כך הבנק נשאר קל, ויש מקום למילים חדשות.")}
+    ${ripe?`<div class="arbox" style="font-size:1.05em">🌟 ${ripe} מילים כבר יושבות טוב (●●●). הכפתור <b>🎓 למדתי</b> ${ripe===1?"שלה":"שלהן"} צבוע בירוק.</div>`:""}
     ${rows||'<p class="hint">הבנק עוד ריק. במשחק, לחצי "➕ לבנק" ליד מילה שלא הכרת, או הוסיפי כאן למטה.</p>'}
+    ${doneList}
     <h3 style="margin-top:22px">הוספת מילה בעצמי</h3>
     <p class="hint" style="text-align:right">אפשר לכתוב רק בעברית (למשל "ברז"), ואם אני מכיר את המילה אמצא אותה באנגלית. אפשר גם רק באנגלית, או את שתיהן.</p>
     <div class="row" style="justify-content:flex-start;align-items:center">
@@ -2390,6 +2434,7 @@ function tuliTarget(){
       if(SLG.phase==="read") return {w:slWord()};
       return {tip:"עכשיו הקובייה מתגלגלת או שזה התור של ינשופי. כשתופיע המילה הבאה שלך, אפשר לקרוא לי שוב, ואעזור בדיוק עם המילה הזו 🐛"};
     }
+    if(ACTIVE==="startPyramid" && PY && PY.p) return {s:PY.p.l[PY.line]||PY.p.l[PY.p.l.length-1], he:PY.line>=PY.p.l.length-1?PY.p.he:""};
     if(ACTIVE==="chant" && CH) return {s:CH.c.lines[CH.mode==="echo"?CH.li:0][0], he:CH.c.lines[CH.mode==="echo"?CH.li:0][1]};
     if(ACTIVE==="cards" && FC && FC.deck[FC.i]) return {tip:"לא זוכרת? זה בסדר גמור, בשביל זה יש כרטיסיות. קראי את המשפט לאט, ונסי לנחש מההקשר. אחר כך הפכי את הכרטיס ולחצי <b>עוד לא</b>, והמילה תחזור אלייך מחר."};
     if(ACTIVE==="letters" && LG && LG.items[LG.i]){ const it=LG.items[LG.i];
@@ -2669,7 +2714,7 @@ function drawBR(){
     h+=`<div class="card">${sisSay("zrima",`<b>צירופים:</b> שתיים-שלוש מילים שהולכות יחד. העין קולטת אותן כיחידה אחת, כמו מילה ארוכה. צירוף ${BR.pi+1} מתוך ${BR.phr.length}.`)}
       <div class="rtext" style="text-align:center;font-size:2.4em" id="brs"><span class="phr">${brSpans(p)}</span></div>
       <div class="row">${micBtn(`brMicText()`)}<button class="btn alt" onclick="brSay(0.75)">🔊 להקשיב</button><button class="btn ghost" onclick="brSay(0.5)">🐢 לאט</button>${recBtn("BR.phr[BR.pi]")}</div>
-      <div class="mean">${tsBtn(p,brSentHe(p))}</div><p class="hint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
+      <div class="mean">${tsBtn(p,brSentHe(p))}</div><p class="hint tulihint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div>
       <div class="row"><button class="btn ghost" onclick="if(BR.pi>0){BR.pi--;drawBR()}">→ הקודם</button><button class="btn" onclick="BR.pi++;drawBR()">${BR.pi===BR.phr.length-1?"לשלב הבא ←":"הצירוף הבא ←"}</button></div></div>`;
   }
@@ -2679,7 +2724,7 @@ function drawBR(){
       <div class="rtext pyr" id="brs">${g.slice(0,n+1).map((_,i)=>{ const line=g.slice(0,i+1).join(" "); const prev=g.slice(0,i).join(" ");
         return `<div class="${i===n?"cur":"done"}">${prev?`${prev} `:""}<span class="new">${g[i]}</span></div>`; }).join("")}</div>
       <div class="row">${micBtn(`brMicText('${n}')`)}<button class="btn alt" onclick="brSayLine(0.75)">🔊 השורה</button><button class="btn ghost" onclick="brSayLine(0.5)">🐢</button>${recBtn("txPlain(BR.grow.slice(0,BR.gi+1).join(' '))")}</div>
-      <div class="mean">${tsBtn(BR.grow.join(" "),brSentHe(g[0]))}</div><p class="hint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
+      <div class="mean">${tsBtn(BR.grow.join(" "),brSentHe(g[0]))}</div><p class="hint tulihint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div>
       <div class="row"><button class="btn" onclick="${n<g.length-1?"BR.gi++;drawBR()":"brNextStep()"}">${n<g.length-1?"להוסיף חלק ←":"המשפט שלם! הלאה ←"}</button></div></div>`;
   }
@@ -2690,7 +2735,7 @@ function drawBR(){
         return `<span class="rsent ${cls}" id="bs${j}">${j===i?brSpans(x[0],0,BR.cue):txPlain(x[0])}</span>`; }).join("")}</div>
       <div class="row">${micBtn(`brMicText()`)}<button class="btn alt" onclick="brSayHL(${i},0.75)">🔊 להקשיב</button><button class="btn ghost" onclick="brSayHL(${i},0.5)">🐢 לאט</button>
         <button class="btn ghost" onclick="BR.cue=!BR.cue;drawBR()">${BR.cue?"בלי קווים":"עם קווים"}</button>${recBtn("txPlain(BR.t.s[BR.si][0])")}</div>
-      <div class="mean">${tsBtn(s[0],s[1])}</div><p class="hint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
+      <div class="mean">${tsBtn(s[0],s[1])}</div><p class="hint tulihint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="msg" id="msg"></div><div id="chk"></div>
       <div class="row" id="nav3"><button class="btn ghost" onclick="if(BR.si>0){BR.si--;drawBR()}">→ המשפט הקודם</button><button class="btn" onclick="brSentNext()">${i===t.s.length-1?"סיימתי את כל המשפטים ←":"המשפט הבא ←"}</button></div></div>`;
   }
@@ -2700,7 +2745,7 @@ function drawBR(){
       <div class="rtext" id="brs">${t.s.map((x,j)=>`<span class="rsent ${j===BR.ruler?"ruler":""}" id="bs${j}" onclick="BR.ruler=${j};brRuler()">${brSpans(x[0],j*100,false,true)}</span>`).join("")}</div>
       <div class="row"><button class="btn ghost" onclick="BR.ruler=Math.max(0,BR.ruler-1);brRuler()">⬆️ שורה למעלה</button><button class="btn ghost" onclick="BR.ruler=Math.min(${t.s.length-1},BR.ruler+1);brRuler()">⬇️ שורה למטה</button></div>
       <div class="row"><button class="btn alt" onclick="brReadAll(0.75)">🔊 הקראה עם הדגשה</button><button class="btn ghost" onclick="brReadAll(0.55)">🐢 הקראה לאט</button>${micBtn("brMicRuler()","אני קוראת את השורה")}${recBtn("txPlain(BR.t.s[BR.ruler][0])")}</div>
-      <div class="mean"><button class="tiny tulib" onclick="tuliSentence(-2)">🐛 לא מבינה את השורה הצהובה? נשאל את טולי</button></div><p class="hint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
+      <div class="mean"><button class="tiny tulib" onclick="tuliSentence(-2)">🐛 לא מבינה את השורה הצהובה? נשאל את טולי</button></div><p class="hint tulihint">🐛 לא מכירים מילה? שואלים את טולי, והיא מתרגמת. ואפשר לקרוא מילה גם בלי לדעת מה היא אומרת.</p>
       <div class="runs">${BR.t0?`<button class="btn" onclick="brStop()">⏹️ סיימתי לקרוא</button>`:`<button class="btn ghost" onclick="brStart()">⏱️ למדוד קריאה ${runs.length+1} (בלי לחץ)</button>`}
         ${runs.length?`<p>${runs.map((x,i)=>`קריאה ${i+1}: ${x.toFixed(0)} שניות`).join(" · ")}${runs.length>1&&runs[runs.length-1]<runs[0]?" 🌿 נעשה זורם יותר!":""}</p>`:""}</div>
       <div class="msg" id="msg"></div>
@@ -2747,6 +2792,10 @@ function brSayLine(rate){ speak(txPlain(BR.grow.slice(0,BR.gi+1).join(" ")),rate
 // הקראה עם הדגשה של כל מילה בזמן שהיא נשמעת
 function speakHL(text, rate, spans, cb){
   if(!("speechSynthesis" in window)){ if(cb) cb(); return; }
+  if(rate && rate<0.6){ // לאט: מילה אחרי מילה, והמילה שנשמעת מודגשת
+    const ws=text.trim().split(/\s+/);
+    speakSeq(ws, i=>spans.forEach((s,j)=>s.classList.toggle("hl", spans.length===ws.length ? j===i : false)), cb); return; }
+  seqTok++;
   speechSynthesis.cancel();
   const toks=text.split(" "), starts=[]; let p=0; toks.forEach(w=>{ const i=text.indexOf(w,p); starts.push(i); p=i+w.length; });
   const mark=i=>spans.forEach((s,j)=>s.classList.toggle("hl",j===i));
