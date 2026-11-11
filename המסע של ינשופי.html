@@ -324,6 +324,9 @@ body.hasTuli .tulifab{display:block}
 <script src="data-texts3.js"></script>
 <script src="data-texts4.js"></script>
 <script src="data-vocab.js"></script>
+<script src="data-vocab2.js"></script>
+<script src="data-vocab3.js"></script>
+<script src="data-vocab-he.js"></script>
 <script>
 /* ============ צלילים: כך כל אות או צירוף נשמעים, באותיות עבריות ============ */
 const SOUND = {
@@ -3543,7 +3546,7 @@ if(location.protocol==="file:"){
   const ML=window.MORE_LEVELS||{};
   LEVELS.forEach(L=>{ const m=ML[L.id]; if(m){ Object.assign(L,m); L.ready=true; if(m.irreg) Object.assign(IRREG,m.irreg); } });
   // אוצר מילים מורחב: מילים בודדות אחרות מהמילים שבמשפטים
-  const RW=window.LEVEL_REWRITE||{}; LEVELS.forEach(L=>{ if(RW[L.id]) Object.assign(L,RW[L.id]); });
+  const RW=window.LEVEL_REWRITE||{}; LEVELS.forEach(L=>{ const r=RW[L.id]; if(r){ const {irreg,...rest}=r; Object.assign(L,rest); if(irreg){ L.irreg=Object.assign({},L.irreg||{},irreg); Object.assign(IRREG,irreg); } } });
   Object.entries(window.MORE_SENT_HE||{}).forEach(([k,v])=>{ if(!SENT_HE[k]) SENT_HE[k]=v; });
   (window.MORE_PAIRS||[]).forEach(g=>{ if(!PAIRS.some(p=>p.join()===g.join())) PAIRS.push(g); });
   Object.entries(window.MORE_TWIN||{}).forEach(([k,v])=>{ if(!TWIN_HE[k]) TWIN_HE[k]=v; });
