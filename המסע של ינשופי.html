@@ -327,6 +327,8 @@ body.hasTuli .tulifab{display:block}
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
 <script src="data-vocab-he.js"></script>
+<script src="data-phonemes.js"></script>
+<script src="audio/en/map.js"></script>
 <script>
 /* ============ צלילים: כך כל אות או צירוף נשמעים, באותיות עבריות ============ */
 const SOUND = {
@@ -707,6 +709,25 @@ document.documentElement.style.setProperty("--fs",save.fs);
 function zoom(d){ save.fs = Math.min(1.6,Math.max(.8,+(save.fs+d*.1).toFixed(2))); document.documentElement.style.setProperty("--fs",save.fs); persist(); }
 
 /* ============ קול ============ */
+/* הקלטות מוכנות בקול טבעי (Emma): audio/en/map.js. אם אין הקלטה למילה או שהקובץ לא נטען, חוזרים לקול של הדפדפן */
+var enAudio=null;
+function enKey(t){ return String(t).toLowerCase().replace(/\s+/g," ").trim(); }
+function hasClip(t){ return typeof EN_AUDIO!=="undefined" && !!EN_AUDIO[enKey(t)]; }
+function stopClip(){ if(enAudio){ enAudio.onended=null; enAudio.onerror=null; try{enAudio.pause();}catch(e){} enAudio=null; } }
+// מנגן הקלטה. onend: בסיום. onfail: אם הקובץ לא נטען. onmeta(sec): אורך ההשמעה בפועל
+function playClip(t, rate, onend, onfail, onmeta){
+  if(!hasClip(t)) return false;
+  stopClip();
+  const a=new Audio("audio/en/"+EN_AUDIO[enKey(t)]); enAudio=a;
+  try{ a.preservesPitch=true; }catch(e){}
+  a.playbackRate=Math.min(1.5,Math.max(.5,(rate||0.85)/0.9));
+  let ended=false;
+  a.onended=()=>{ if(ended) return; ended=true; if(enAudio===a) enAudio=null; if(onend) onend(); };
+  a.onerror=()=>{ if(ended) return; ended=true; if(enAudio===a) enAudio=null; if(onfail) onfail(); else if(onend) onend(); };
+  if(onmeta) a.onloadedmetadata=()=>onmeta(a.duration/a.playbackRate);
+  const p=a.play(); if(p&&p.catch) p.catch(()=>{ if(!ended){ ended=true; if(onfail) onfail(); else if(onend) onend(); } });
+  return true;
+}
 let voice=null;
 function pickVoice(){
   const vs = speechSynthesis.getVoices().filter(v=>/^en[-_](US|GB)/i.test(v.lang));
@@ -714,7 +735,7 @@ function pickVoice(){
 }
 if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 // כל עצירה של הקול (מעבר מסך וכו') עוצרת גם הקראה של מילה אחרי מילה
-if("speechSynthesis" in window){ const _cancel=speechSynthesis.cancel.bind(speechSynthesis); speechSynthesis.cancel=()=>{ seqTok++; _cancel(); }; }
+if("speechSynthesis" in window){ const _cancel=speechSynthesis.cancel.bind(speechSynthesis); speechSynthesis.cancel=()=>{ seqTok++; stopClip(); _cancel(); }; }
 // "לאט" במשפט: הקול לבד כמעט לא מאט, אז מקריאים מילה אחרי מילה עם הפסקה קטנה ביניהן
 let seqTok=0;
 function speakSeq(parts, onIdx, cb){
@@ -722,10 +743,11 @@ function speakSeq(parts, onIdx, cb){
   const go=()=>{ if(tok!==seqTok) return;
     if(i>=parts.length){ if(onIdx) onIdx(-1); if(cb) cb(); return; }
     if(onIdx) onIdx(i);
-    const u=new SpeechSynthesisUtterance(parts[i]); u.lang="en-US"; if(voice) u.voice=voice; u.rate=0.7;
     let done=false; const nx=()=>{ if(done) return; done=true; i++; setTimeout(go,420); };
-    u.onend=nx; u.onerror=nx; setTimeout(nx, 2500+parts[i].length*200);
-    speechSynthesis.speak(u); };
+    const viaTts=()=>{ const u=new SpeechSynthesisUtterance(parts[i]); u.lang="en-US"; if(voice) u.voice=voice; u.rate=0.7;
+      u.onend=nx; u.onerror=nx; speechSynthesis.speak(u); };
+    setTimeout(nx, 2500+parts[i].length*200);
+    if(!playClip(parts[i],0.7,nx,viaTts)) viaTts(); };
   go();
 }
 function speak(t, rate, cb){
@@ -733,10 +755,12 @@ function speak(t, rate, cb){
   if(rate && rate<0.6 && /\s/.test(String(t).trim())){ speakSeq(String(t).trim().split(/\s+/), null, cb); return; }
   seqTok++;
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(t);
-  u.lang="en-US"; if(voice) u.voice=voice; u.rate = rate||0.85;
-  if(cb){ let done=false; const f=()=>{ if(!done){done=true;cb();} }; u.onend=f; u.onerror=f; }
-  speechSynthesis.speak(u);
+  let done=false; const f=()=>{ if(!done){done=true; if(cb) cb();} };
+  const viaTts=()=>{ const u = new SpeechSynthesisUtterance(t);
+    u.lang="en-US"; if(voice) u.voice=voice; u.rate = rate||0.85;
+    if(cb){ u.onend=f; u.onerror=f; }
+    speechSynthesis.speak(u); };
+  if(!playClip(t, rate||0.85, cb?f:null, viaTts)) viaTts();
 }
 
 /* ============ הקלטי את עצמך: הקלטה ואז השוואה להגייה הנכונה ============ */
@@ -2477,7 +2501,12 @@ function slowParts(w){ // לכל חלק: מה להשמיע, או null אם הו�
     return SLOW_VT[c] || SLOW_SHORT[c] || SLOW_C[c] || c;
   });
 }
-let slowTok=0;
+let slowTok=0, phAudio=null;
+function playPhoneme(t, cb){
+  if(phAudio){ try{phAudio.pause();}catch(e){} }
+  phAudio=new Audio(PH_WAV[t]); phAudio.onended=cb; phAudio.onerror=cb;
+  const p=phAudio.play(); if(p&&p.catch) p.catch(cb);
+}
 function speakSlow(w, btn){
   const tok=++slowTok, card=btn && btn.closest(".card");
   const syl=card && card.querySelector(".syls"), box=card && card.querySelector(".chunks");
@@ -2487,13 +2516,17 @@ function speakSlow(w, btn){
   const mark=k=>els.forEach((e,j)=>e.classList.toggle("now", k==="all" || j===k));
   const say=(t,r,cb)=>{ let done=false; const f=()=>{ if(!done){done=true; if(tok===slowTok) cb();} };
     speak(t,r,f); setTimeout(f, 2600+t.length*250); };
+  // צליל בודד: הקלטה אמיתית של הצליל עצמו (בלי ״אה״ שהקול הממוחשב מוסיף). אם אין הקלטה, חוזרים לקול הרגיל
+  const sound=(t,cb)=>{ if(syl || typeof PH_WAV==="undefined" || !PH_WAV[t]){ say(t,0.6,cb); return; }
+    let done=false; const f=()=>{ if(!done){done=true; if(tok===slowTok) cb();} };
+    try{ speechSynthesis.cancel(); playPhoneme(t,f); }catch(e){ f(); } setTimeout(f,1500); };
   const finish=()=>{ mark("all"); setTimeout(()=>{ if(tok!==slowTok) return;
       say(w,0.5,()=>setTimeout(()=>{ if(tok!==slowTok) return; say(w,0.9,()=>mark(-1)); },700)); },500); };
   const step=k=>{
     if(tok!==slowTok) return;
     while(k<says.length && !says[k]) k++;
     if(k>=says.length){ finish(); return; }
-    mark(k); say(says[k],0.6,()=>setTimeout(()=>step(k+1),450));
+    mark(k); sound(says[k],()=>setTimeout(()=>step(k+1),450));
   };
   if(says.length) step(0); else finish();
 }
@@ -2798,6 +2831,24 @@ function speakHL(text, rate, spans, cb){
   if(rate && rate<0.6){ // לאט: מילה אחרי מילה, והמילה שנשמעת מודגשת
     const ws=text.trim().split(/\s+/);
     speakSeq(ws, i=>spans.forEach((s,j)=>s.classList.toggle("hl", spans.length===ws.length ? j===i : false)), cb); return; }
+  seqTok++;
+  speechSynthesis.cancel();
+  const toks=text.split(" "), starts=[]; let p=0; toks.forEach(w=>{ const i=text.indexOf(w,p); starts.push(i); p=i+w.length; });
+  const mark=i=>spans.forEach((s,j)=>s.classList.toggle("hl",j===i));
+  if(hasClip(text)){ // הקלטה מוכנה: המילה המודגשת זזה לפי אורך כל מילה
+    const tok=seqTok; let timers=[], finished=false;
+    const clear=()=>{ timers.forEach(clearTimeout); timers=[]; };
+    const fin=()=>{ if(finished) return; finished=true; clear(); mark(-1); if(cb){ const c=cb; cb=null; c(); } };
+    const viaTts=()=>{ clear(); mark(-1); finished=true; speakHLtts(text, rate, spans, cb); };
+    playClip(text, rate||0.8, fin, viaTts, sec=>{
+      const w=toks.map(x=>x.length+2), tot=w.reduce((a,b)=>a+b,0); let acc=0;
+      toks.forEach((x,i)=>{ timers.push(setTimeout(()=>{ if(tok===seqTok && !finished) mark(i); }, 120+sec*1000*0.96*acc/tot)); acc+=w[i]; });
+    });
+    return;
+  }
+  speakHLtts(text, rate, spans, cb);
+}
+function speakHLtts(text, rate, spans, cb){
   seqTok++;
   speechSynthesis.cancel();
   const toks=text.split(" "), starts=[]; let p=0; toks.forEach(w=>{ const i=text.indexOf(w,p); starts.push(i); p=i+w.length; });
