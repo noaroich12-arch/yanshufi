@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>המסע של ינשופי</title>
 <style>
 :root{
@@ -24,8 +24,8 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .en{direction:ltr;font-family:Verdana,Arial,sans-serif;letter-spacing:.03em;word-spacing:.25em}
 .focus{color:var(--focus)}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px}
-.btn{background:var(--accent);color:#fff;padding:14px 22px;font-weight:bold;min-width:120px}
-.btn.alt{background:var(--accent2)}
+.btn{background:var(--accent);color:#1f1a14;padding:14px 22px;font-weight:bold;min-width:120px}
+.btn.alt{background:#2c7358;color:#fff}
 .btn.ghost{background:#f1e7d6;color:var(--ink)}
 .btn.mic{background:var(--focus);color:#fff;font-size:1.15em;padding:16px 30px}
 .btn.mic.on{animation:pulse 1s infinite}
@@ -270,6 +270,7 @@ body.hasTuli .tulifab{display:block}
   padding:6px 18px;font-size:1em;font-weight:bold;color:#3a2e00;z-index:45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;
   font-family:inherit;animation:bob 1.6s ease-in-out infinite;max-width:calc(100vw - 40px)}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-7px)}}
+@keyframes bobside{0%,100%{transform:translate(0,0)}50%{transform:translate(0,-7px)}}
 .tulipeek{position:fixed;left:18px;bottom:104px;max-width:340px;background:#fff;border:3px solid #9fd38a;border-radius:20px;padding:14px;z-index:46;box-shadow:0 6px 18px rgba(0,0,0,.18);animation:popin .35s;font-size:1em}
 .tf{min-width:200px;font-size:1.2em}
 /* ===== מהמילה לפסקה ===== */
@@ -300,6 +301,44 @@ body.hasTuli .tulifab{display:block}
 .rsrow b{min-width:160px}
 .rsopt{background:#fff;border:3px solid var(--line);border-radius:12px;padding:8px 14px;color:var(--ink)}
 .rsopt.on{border-color:var(--accent);background:#fff4e2;font-weight:bold}
+
+@media (pointer:coarse){.small,.anc,.tiny{min-height:44px}}
+.stlist{display:none}
+.stbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:#fff;color:var(--ink);border:3px solid var(--line);border-radius:18px;padding:10px 14px;min-height:68px}
+.stbtn .e{font-size:2em;line-height:1;flex:none}
+.stbtn .t{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stbtn .t b{font-size:1.05em}
+.stbtn .t small{font-size:.8em;color:var(--soft)}
+.stbtn .mk{font-size:1.5em;flex:none}
+.stbtn.done{background:#e6f5ec;border-color:var(--ok)}
+.stbtn.cur{border-color:var(--accent);border-width:4px;background:#fff4e2}
+
+/* ---------- טלפון: שום דבר לא רחב מהמסך, כפתורים וטקסט גדולים ---------- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden}
+img,svg,video,canvas{max-width:100%}
+@media (max-width:640px){
+  /* הפס העליון עטף לשורות במקום לצאת מהמסך (זה מה שגרם לטלפון לכווץ את כל הדף) */
+  .top{flex-wrap:wrap;gap:6px;padding:8px 10px;position:static}
+  .top h1{flex:1 1 55%;min-width:0;font-size:1.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .top .owl{font-size:1.3em!important}
+  .small{min-height:46px;min-width:46px;padding:6px 12px}
+  #app{padding:10px}
+  .card{padding:16px;border-radius:18px}
+  .btn{min-height:52px}
+  .opt{min-width:0}
+  .row{gap:10px}
+  .text{font-size:1.7em;line-height:1.9}
+  .ladder{font-size:1.9em}
+  .node{width:calc(50% - 8px)}
+  /* הכפתור הירוק של טולי והכפתור הצהוב לא יושבים אחד על השני */
+  .tulifab{width:60px;height:60px;font-size:32px;left:10px;bottom:10px}
+  .morepill{left:auto;right:10px;transform:none;bottom:12px;max-width:calc(100% - 90px);animation-name:bobside}
+  .say{gap:10px}
+  .say .owl{font-size:2.3em}
+  .mapwrap{display:none}
+  .stlist{display:grid;gap:10px;margin:14px 0}
+}
 </style>
 </head>
 <body>
@@ -3455,7 +3494,10 @@ function treasureMap(){
       ${isCur?`<text x="${x}" y="${y-62}" font-size="40" text-anchor="middle">📍</text>`:""}
     </g>`; });
   s+=`<text x="520" y="1388" font-size="0">.</text></svg>`;
-  return `<div class="mapwrap">${s}<p class="hint" style="margin:6px 0 0">לחיצה על תחנה פותחת אותה · ✓ = תחנה שהושלמה · 📍 = התחנה הבאה שלך</p></div>`;
+  // בטלפון המפה המצוירת קטנה מדי (השמות נהיים בגודל של 9 פיקסלים), ולכן שם מוצגת רשימת תחנות גדולה במקומה
+  const list=st.map((c,i)=>{ const state=chState(c), isCur=c.id===cur.id;
+    return `<button class="stbtn${state==="done"?" done":""}${isCur?" cur":""}" onclick="showStation('${c.id}')"><span class="e">${i===st.length-1?"💰":c.e}</span><span class="t"><b>תחנה ${i}: ${SHORT[c.id]||c.t}</b><small>${c.sub||""}</small></span><span class="mk">${state==="done"?"✓":isCur?"📍":""}</span></button>`; }).join("");
+  return `<div class="mapwrap">${s}<p class="hint" style="margin:6px 0 0">לחיצה על תחנה פותחת אותה · ✓ = תחנה שהושלמה · 📍 = התחנה הבאה שלך</p></div><div class="stlist">${list}</div>`;
 }
 // דף הסבר לפני שנכנסים לתחנה מהמפה: איך עובדים בתחנה, ואיך מקבלים עזרה
 function stationIntro(id){
