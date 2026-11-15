@@ -101,7 +101,7 @@ button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radiu
 .node .st{color:#d39a00;font-size:1.1em;letter-spacing:2px}
 .hint{color:var(--soft);font-size:.9em;text-align:center}
 .legend{font-size:.85em;color:var(--soft)}
-.tiny{background:none;color:var(--soft);text-decoration:underline;font-size:.85em;padding:4px}
+.tiny{background:none;color:var(--soft);text-decoration:underline;font-size:.9em;padding:4px}
 /* ===== גן המשחקים ===== */
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
 .tile{border:3px solid rgba(0,0,0,.08);border-radius:24px;padding:16px 12px;text-align:center;color:var(--ink);font-size:.95em;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .15s}
@@ -366,6 +366,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
 <script src="data-vocab-he.js"></script>
+<script src="data-pairs.js"></script>
 <script src="data-phonemes.js"></script>
 <script src="audio/en/map.js"></script>
 <script>
@@ -2983,6 +2984,7 @@ function brFinish(){
 const CHAPTERS = [
   {id:"letters",e:"🔤",t:"האותיות",sub:"שם של כל אות, הצליל שלה, אות גדולה ואות קטנה, ואותיות שמתבלבלות",kind:"letters"},
   {id:"c1",w:0,e:"🌱",t:"התנועות הקצרות",sub:"המילים הראשונות: <bdi>cat, pig, sun</bdi>. תנועה אחת בין עיצורים"},
+  {id:"c1b",w:0.5,e:"🔗",bg:"#e3f0ff",t:"זוגות תנועות",sub:"שתי תנועות שהולכות יחד: <bdi>rain, bee, boat, night, moon</bdi>"},
   {id:"c2",w:1,e:"🌉",t:"צמדים",sub:"שתי אותיות שנשמעות כצליל אחד: <bdi>sh, ch, th, ck</bdi>"},
   {id:"c3",w:2,e:"⛰️",t:"צירופים",sub:"עיצורים צמודים: <bdi>stop, frog, hand</bdi>, ומילות לב ראשונות"},
   {flag:"🎉 מכאן כבר קוראים! בכל תחנה מחכים טקסטים פשוטים: סיפורים, פתקים, מודעות"},
@@ -3043,7 +3045,7 @@ function mapHTML(){
   CHAPTERS.forEach(c=>{
     if(c.flag){ h+=`<div class="tflag">${c.flag}</div>`; return; }
     const st=chState(c), isCur=c.id===cur.id, open=OPEN_CH===c.id && !c.future;
-    const bg=c.w!==undefined?(WORLD_COLORS[c.w]||["#f1ecff","#e8f4ff","#fff0e6","#eef7ee","#fdf2d8"][c.w-9]||"#f4f1ec"):(c.future?"#f4f1ec":"#fff1d6");
+    const bg=c.bg||(c.w!==undefined?(WORLD_COLORS[c.w]||["#f1ecff","#e8f4ff","#fff0e6","#eef7ee","#fdf2d8"][c.w-9]||"#f4f1ec"):(c.future?"#f4f1ec":"#fff1d6"));
     let prog="";
     if(c.kind==="letters") prog=`${(save.letters||[]).length} מתוך 26 אותיות`;
     else if(c.adv){ const tx=(window.TEXTS||[]).filter(t=>t.w===c.w); prog=`${tx.filter(t=>txDone(t.id)).length} מתוך ${tx.length} טקסטים · ${vocabKnown(c.id)} מתוך ${((window.VOCAB||{})[c.id]||[]).length} מילים`; }
@@ -3455,8 +3457,8 @@ const XGAMES=[
    🏝️ מפת האוצר, עמוד לכל תחנה, והסבר לפני כל משחק
    ================================================================== */
 let BACK="goMap()";
-const SHORT={letters:"האותיות",c1:"תנועות קצרות",c2:"צמדים",c3:"צירופים",c4:"e קסומה",c5:"שתי תנועות",c6:"r ומיוחדים",c7:"סיומות",c8:"מילים ארוכות",c9:"אותיות שקטות",f1:"יום-יום",f2:"טקסט מסביר",f3:"בגרות",f4:"אקדמית",f5:"פסיכומטרי"};
-const MAP_PTS=[[850,140],[610,185],[370,150],[110,215],[300,530],[560,500],[830,580],[770,770],[500,740],[340,790],[220,1060],[470,1110],[740,1060],[840,1240],[520,1300]];
+const SHORT={letters:"האותיות",c1:"תנועות קצרות",c1b:"זוגות תנועות",c2:"צמדים",c3:"צירופים",c4:"e קסומה",c5:"שתי תנועות",c6:"r ומיוחדים",c7:"סיומות",c8:"מילים ארוכות",c9:"אותיות שקטות",f1:"יום-יום",f2:"טקסט מסביר",f3:"בגרות",f4:"אקדמית",f5:"פסיכומטרי"};
+const MAP_PTS=[[880,165],[700,220],[520,165],[340,225],[150,175],[300,530],[560,500],[830,580],[770,770],[500,740],[340,790],[220,1060],[470,1110],[740,1060],[840,1240],[520,1300]];
 function smoothPath(p){ let d=`M${p[0][0]} ${p[0][1]}`;
   for(let i=0;i<p.length-1;i++){ const p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;
     const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6], c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
@@ -3476,7 +3478,7 @@ function treasureMap(){
    ${plank(225,295,470)}${plank(272,888,1012)}
    ${sign(590,385,520,"🎉 מכאן כבר קוראים טקסטים!")}${sign(590,940,520,"🎓 מכאן: קריאה מתקדמת")}
    ${deco("🐳",900,395,56)}${deco("⛵",95,410,50)}${deco("🐙",900,955,50)}${deco("🐠",110,960,40)}
-   ${deco("🌴",485,280,50)}${deco("🌴",950,275,40)}${deco("⛰️",390,650,60)}${deco("🌲",120,640,48)}${deco("🏰",650,700,52)}${deco("🌻",940,840,40)}
+   ${deco("🌴",640,95,46)}${deco("🌴",950,275,40)}${deco("⛰️",390,650,60)}${deco("🌲",120,640,48)}${deco("🏰",650,700,52)}${deco("🌻",940,840,40)}
    ${deco("🌵",340,1240,48)}${deco("🧭",140,1340,56)}${deco("🗝️",660,1200,42)}
    <text x="500" y="90" font-size="30" font-weight="bold" text-anchor="middle" fill="#7a5320">אִי הצלילים</text>
    <text x="800" y="478" font-size="30" font-weight="bold" text-anchor="middle" fill="#56662e">יבשת המילים</text>
@@ -3637,6 +3639,10 @@ if(location.protocol==="file:"){
 /* ============ טעינת התוכן מהקבצים הנוספים: כל השלבים פתוחים ============ */
 (function mergeMore(){
   const ML=window.MORE_LEVELS||{};
+  // שלבים חדשים שנכנסים באמצע (שדה after = אחרי איזה שלב), בלי לשנות את הקיימים
+  (window.NEW_LEVELS||[]).forEach(n=>{ if(LEVELS.some(L=>L.id===n.id)) return;
+    const {after,...nl}=n, at=LEVELS.findIndex(x=>x.id===after); LEVELS.splice(at<0?LEVELS.length:at+1,0,nl); });
+  (window.MORE_EXTRA_PAIRS||[]).forEach(p=>{ if(!EXTRA_PAIRS.some(x=>x.a===p.a&&x.b===p.b)) EXTRA_PAIRS.push(p); });
   LEVELS.forEach(L=>{ const m=ML[L.id]; if(m){ Object.assign(L,m); L.ready=true; if(m.irreg) Object.assign(IRREG,m.irreg); } });
   // אוצר מילים מורחב: מילים בודדות אחרות מהמילים שבמשפטים
   const RW=window.LEVEL_REWRITE||{}; LEVELS.forEach(L=>{ const r=RW[L.id]; if(r){ const {irreg,...rest}=r; Object.assign(L,rest); if(irreg){ L.irreg=Object.assign({},L.irreg||{},irreg); Object.assign(IRREG,irreg); } } });
