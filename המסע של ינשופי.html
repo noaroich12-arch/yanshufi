@@ -364,6 +364,8 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-texts3.js"></script>
 <script src="data-texts4.js"></script>
 <script src="data-texts5.js"></script>
+<script src="data-texts6.js"></script>
+<script src="data-texts7.js"></script>
 <script src="data-vocab.js"></script>
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
@@ -372,6 +374,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-pairs.js"></script>
 <script src="data-station-fix.js"></script>
 <script src="data-station-more.js"></script>
+<script src="data-sent-vowels.js"></script>
 <script src="data-phonemes.js"></script>
 <script src="audio/en/map.js"></script>
 <script>
@@ -2755,7 +2758,7 @@ function textsList(mode){
       :"כאן קוראים טקסטים אמיתיים, <b>בשש מדרגות</b>: חימום מילים, צירופים קטנים, משפט שגדל, משפט אחרי משפט כשרק השורה שלך גלויה, כל הפסקה, ושאלות על הטקסט. אפשר לדלג על מדרגה כשמרגישים בטוחים.")}
       ${full?`<div class="row"><button class="btn ghost" onclick="showBridge()">👣 לקרוא צעד אחר צעד (מהמילה לפסקה)</button></div>`:""}</div>`;
   if(next.length) h+=`<h3>✨ מתאים לך עכשיו</h3><div class="txlist">${next.slice(0,6).map(tile).join("")}</div>`;
-  for(let wi=0; wi<=13; wi++){
+  for(const wi of [0,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13]){
     const list=T.filter(t=>t.w===wi); if(!list.length) continue;
     const ch=CHAPTERS.find(c=>c.w===wi), wn=ch?`${ch.e} ${ch.t}`:(WORLDS[wi]||"");
     h+=`<div class="wbar" style="background:${WORLD_COLORS[wi]||"#f1ecff"}">${wn}${wi>mw?" · מתקדם יותר":""}</div><div class="txlist">${list.map(tile).join("")}</div>`;
