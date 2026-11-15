@@ -57,3 +57,11 @@ Object.assign(window.SENT_REWRITE = window.SENT_REWRITE || {}, {
     para:[["Mark and Clare go to the farm.","מארק וקלייר הולכים אל החווה."],["A horse is in the barn.","סוס באסם."],["A cow is in the yard.","פרה בחצר."],["A bird is on the wall.","ציפור על הקיר."],["Roy has a coin.","לרוי יש מטבע."],["Clare and Mark share a pear.","קלייר ומארק חולקים אגס."]]
   }
 });
+
+/* הסרת "Mom" ושמות רגילים (Tom) משלב "מילים שזוכרים 2" בתחנת שתי אותיות תנועה */
+Object.assign(window.SENT_REWRITE, {
+  heart2:{
+    reads:[["one blue glove","כפפה כחולה אחת"],["two of them","שניים מהם"],["Come in! said Dean.","״תיכנס!״ אמר דין."],["Who has some milk?","למי יש קצת חלב?"],["Does the dog love the cat?","האם הכלב אוהב את החתול?"]],
+    para:[["Once, Jean lost a glove.","פעם אחת, ג׳ין איבדה כפפה."],["Jean looked in her room, but the glove was gone.","ג׳ין חיפשה בחדר שלה, אבל הכפפה נעלמה."],["Who took my glove? said Jean.","״מי לקח את הכפפה שלי?״ אמרה ג׳ין."],["Dean said: Come and look by the front door.","דין אמר: בוא תסתכל ליד דלת הכניסה."],["There was the glove, under the dog!","שם הייתה הכפפה, מתחת לכלב!"],["The dog loves the glove too!","גם הכלב אוהב את הכפפה!"]]
+  }
+});

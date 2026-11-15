@@ -106,6 +106,8 @@ window.WSND_PATCH = {
 /* פירושים למילים שבמשפטים החדשים (לחיצה על מילה) */
 Object.assign(window.MORE_SENT_HE = window.MORE_SENT_HE || {}, {
   stays:"נשארת, נשאר", boats:"סירות", sighs:"נאנח, נאנחת", swoop:"לצלול (כמו ציפור)", clues:"רמזים",
+  smallest:"הכי קטן", brightest:"הכי בהיר", needle:"מחט", hammer:"פטיש", papers:"ניירות",
+  dan:"דן", lets:"נותן, מניח", wigs:"פאות", don:"דון", russ:"ראס", shep:"שפ", shuts:"סוגר", chuck:"צ׳אק", thank:"להודות", gong:"גונג", ding:"דינג", dong:"דונג", stan:"סטן", ken:"קן", pups:"גורים", cups:"כוסות", yummy:"טעים", pretty:"יפה",
   plate:"צלחת", hopes:"מקווה", tunes:"מנגינות", carl:"קארל", sorts:"ממיין", perches:"מתיישבת על ענף או מוט", boils:"רותח"
 });
 

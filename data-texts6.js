@@ -173,3 +173,13 @@
   ];
   window.TEXTS = (window.TEXTS||[]).filter(t=>!REPL.includes(t.id)).concat(NEW);
 })();
+
+/* הסרת "Mom" מטקסטים של תחנות e קסומה ו-r (המשפט מוחלף, שאר הטקסט נשאר) */
+(function(){
+  const fix=(id,i,s)=>{ const t=(window.TEXTS||[]).find(x=>x.id===id); if(t&&t.s[i]){ const old=t.s[i]; t.s[i]=[s[0],s[1]].concat(old.slice(2)); } };
+  fix("w3b",4,["The rule / is to / put on a helmet.","הכלל הוא לשים קסדה."]);
+  fix("w5a",0,["Carl / lives on a farm / with a herd of cows.","קרל גר בחווה עם עדר פרות."]);
+  fix("w5d",1,["Paul: / What toy / do you have / in mind?","פול: איזה צעצוע אתה חושב עליו?"]);
+  fix("w5d",3,["Paul: / It costs / twelve coins.","פול: היא עולה שנים עשר מטבעות."]);
+  fix("w5d",5,["Paul: / You can choose / a toy / for ten, / or save / and come back / next week.","פול: אתה יכול לבחור צעצוע בעשרה, או לחסוך ולחזור בשבוע הבא."]);
+})();
