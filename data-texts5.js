@@ -2,44 +2,40 @@
    מבנה כמו בשאר הטקסטים: s = [משפט עם / בין חלקים, תרגום, (בדיקת הבנה אופציונלית)], q = שאלות בסוף, gl = מילון. */
 window.TEXTS = (window.TEXTS||[]).concat([
 {id:"e11a",w:11,type:"opinion",t:"Should Voting Be Mandatory?",he:"האם ההצבעה צריכה להיות חובה?",
- gl:{mandatory:"חובה, מחייב",eligible:"זכאי",controversial:"שנוי במחלוקת",turnout:"שיעור ההשתתפות בבחירות",incentive:"תמריץ",perspective:"נקודת מבט",outweigh:"לגבור על",implements:"מיישמת",ensure:"להבטיח"},
+ gl:{mandatory:"חובה, מחייב",eligible:"זכאי",advocates:"תומכים",accountable:"אחראי, נושא באחריות",enforce:"לאכוף",undermine:"לערער",autonomy:"אוטונומיה",compromise:"פשרה",empower:"להעצים",dignity:"כבוד",consensus:"הסכמה כללית",deteriorate:"להידרדר"},
  s:[
   ["In several countries, / voting is mandatory / for every eligible citizen.","בכמה מדינות ההצבעה היא חובה לכל אזרח זכאי."],
-  ["The idea / is highly controversial: / some see it as a duty, / others as a limit on freedom.","הרעיון שנוי מאוד במחלוקת: יש הרואים בו חובה, ואחרים מגבלה על החופש.",
-    ["Why is the idea controversial?",["People disagree about whether it limits freedom","Nobody wants to vote","It is too expensive"],0]],
-  ["Supporters argue / that high turnout / makes governments / more representative.","התומכים טוענים ששיעור השתתפות גבוה הופך ממשלות לייצוגיות יותר."],
-  ["Critics reply / that forcing people to vote / does not create / informed citizens.","המבקרים משיבים שלכפות על אנשים להצביע לא יוצר אזרחים מיודעים."],
-  ["A softer alternative / is to offer an incentive, / such as a small tax benefit, / to those who vote.","חלופה עדינה יותר היא להציע תמריץ, כמו הטבת מס קטנה, למי שמצביע."],
-  ["From this perspective, / the benefits of higher participation / may outweigh / the loss of choice.","מנקודת מבט זו, היתרונות של השתתפות גבוהה עשויים לגבור על אובדן הבחירה.",
-    ["What does 'outweigh' mean here?",["be more important than","be heavier than","be the same as"],0]],
-  ["However, / before any country implements / such a law, / it must ensure / that voting is easy and fair.","אולם לפני שמדינה כלשהי מיישמת חוק כזה, עליה להבטיח שההצבעה קלה והוגנת."],
-  ["Otherwise, / the rule / would punish citizens / for the failures of the system.","אחרת הכלל יעניש אזרחים על כשלים של המערכת."]
+  ["Advocates / say / that it makes / governments / more accountable / to the people.","תומכים אומרים שזה הופך ממשלות לאחראיות יותר כלפי העם."],
+  ["Others / argue / that the state / should not enforce / a personal choice.","אחרים טוענים שהמדינה לא צריכה לאכוף בחירה אישית.",["What do the others argue?",["The state should not force a personal choice","Voting is too easy","Governments are too small"],0]],
+  ["Critics say / such a law / would undermine / personal autonomy.","המבקרים אומרים שחוק כזה יערער את האוטונומיה האישית."],
+  ["A compromise / is / to offer / a small reward / to those / who vote.","פשרה היא להציע פרס קטן למי שמצביע."],
+  ["That approach / could empower / citizens / without / hurting / their dignity.","גישה כזאת יכולה להעצים אזרחים בלי לפגוע בכבודם.",["What does 'empower' mean here?",["to give people more power","to scare people","to ignore people"],0]],
+  ["Whatever / the decision, / a broad consensus / is important.","תהיה ההחלטה אשר תהיה, קונצנזוס רחב חשוב."],
+  ["Otherwise, / the law / may deteriorate / into / an empty rule.","אחרת החוק עלול להידרדר לכלל ריק."]
  ],
  q:[
-  ["רעיון","What is the writer's main point?",["Compulsory voting has benefits, but it requires a fair system","Voting should never be required","Everyone loves to vote"],0],
-  ["פרט","What alternative to compulsion does the writer mention?",["A small tax benefit for voters","A fine for non-voters","A longer election day"],0],
-  ["מילה","'Eligible' in the first sentence means...",["allowed to take part","unwilling to take part","too young to take part"],0],
-  ["הסקה","Which condition does the writer set for such a law?",["That voting is easy and fair","That it is cheap","That it applies only to young people"],0]
+  ["רעיון","What is the writer's main point?",["Compulsory voting is a debated idea that needs broad agreement","Voting should always be forced","Nobody should vote"],0],
+  ["פרט","What compromise is suggested?",["A small reward for voters","A fine for non-voters","A longer election day"],0],
+  ["מילה","'undermine' means...",["to weaken gradually","to support strongly","to measure"],0],
+  ["הסקה","Why might a broad consensus matter?",["A law without wide support may fail","Because voting is easy","Because elections are expensive"],0]
  ]},
 {id:"e11b",w:11,type:"article",t:"The Town That Embraced Change",he:"העיירה שאימצה שינוי",
- gl:{collapse:"להתמוטט",dilemma:"דילמה",initiative:"יוזמה",negotiate:"לנהל משא ומתן",embrace:"לאמץ בהתלהבות",transformed:"שינו מהותית",viable:"בר-קיימא",substantial:"ניכר, משמעותי",reputation:"מוניטין",thrive:"לשגשג"},
+ gl:{immense:"עצום",burden:"נטל",dilemma:"דילמה",endure:"לשאת, להחזיק מעמד",dedicated:"מסור",collaborate:"לשתף פעולה",viable:"בר-קיימא",strive:"לשאוף",heritage:"מורשת תרבותית",substantial:"ניכר, משמעותי",thrive:"לשגשג",legacy:"מורשת"},
  s:[
-  ["Ten years ago, / the factory / that employed half the town / began to collapse.","לפני עשר שנים המפעל שהעסיק חצי מהעיירה החל להתמוטט."],
-  ["Families faced / a dilemma: / leave their homes / or find a new future.","משפחות עמדו בפני דילמה: לעזוב את בתיהן או למצוא עתיד חדש."],
-  ["The mayor / took the initiative / and began to negotiate / with several energy companies.","ראש העיר נטל יוזמה והחל לנהל משא ומתן עם כמה חברות אנרגיה.",
-    ["What did the mayor do?",["Started talks with energy companies","Closed the factory","Moved to another town"],0]],
-  ["Many residents / were doubtful, / but the town / chose to embrace the change.","תושבים רבים היו ספקנים, אך העיירה בחרה לאמץ את השינוי."],
-  ["Within five years, / solar panels / had transformed / the old factory / into a viable power plant.","בתוך חמש שנים הפכו לוחות סולאריים את המפעל הישן לתחנת כוח בת-קיימא.",
-    ["What does 'viable' mean here?",["able to work in practice","very expensive","temporary"],0]],
-  ["The project / created / a substantial number / of new jobs.","הפרויקט יצר מספר ניכר של משרות חדשות."],
-  ["Today, / the town / has a reputation / as a model / for green energy.","כיום יש לעיירה מוניטין של מופת לאנרגיה ירוקה."],
-  ["Young families / are returning, / and local businesses / thrive again.","משפחות צעירות חוזרות, ועסקים מקומיים שוב משגשגים."]
+  ["Ten years ago, / the factory / that employed half the town / closed, / and the loss / was an immense burden.","לפני עשר שנים המפעל שהעסיק חצי מהעיירה נסגר, וההפסד היה נטל עצום."],
+  ["Families / faced / a dilemma: / leave their homes / or endure / the hard years.","משפחות עמדו בפני דילמה: לעזוב את בתיהן או לשאת את השנים הקשות."],
+  ["A dedicated mayor / chose / to collaborate / with / energy companies.","ראש עיר מסור בחר לשתף פעולה עם חברות אנרגיה.",["What did the mayor choose to do?",["Work together with energy companies","Close the town","Leave the town"],0]],
+  ["Many residents / doubted / that the plan / was viable.","תושבים רבים פקפקו בכך שהתוכנית ישימה."],
+  ["Yet / the town / continued / to strive / to protect / its heritage.","ועם זאת העיירה המשיכה לשאוף לשמור על מורשתה."],
+  ["Within five years, / solar panels / had brought / a substantial / number / of new jobs.","בתוך חמש שנים הביאו לוחות סולאריים מספר ניכר של משרות חדשות."],
+  ["The community / that / seemed / doomed / began / to thrive.","הקהילה שנראתה נידונה לכישלון החלה לשגשג.",["What does 'thrive' mean?",["to grow and be successful","to disappear","to move away"],0]],
+  ["Its story / is now / a legacy / of hope.","הסיפור שלה הוא כיום מורשת של תקווה."]
  ],
  q:[
-  ["רעיון","What is the main idea of the article?",["A town recovered by accepting a bold new plan","A factory made big profits","Energy companies left the town"],0],
-  ["פרט","What happened to the old factory?",["It became a solar power plant","It was sold to a foreign company","It was torn down"],0],
-  ["מילה","'Substantial' in sentence 6 means...",["large and important","small","uncertain"],0],
-  ["הסקה","Why does the writer call the town 'a model'?",["Other places can learn from its success","It is the largest town in the country","It has the most factories"],0]
+  ["רעיון","What is the main idea of the article?",["A town recovered through cooperation and determination","A factory made big profits","Energy companies left the town"],0],
+  ["פרט","What new jobs did the project bring?",["A substantial number of jobs","Only a few jobs","No jobs"],0],
+  ["מילה","'endure' in sentence 2 means...",["to survive hard times","to enjoy a rest","to travel far"],0],
+  ["הסקה","Why does the writer call the story 'a legacy of hope'?",["Other towns can learn from it","It ended sadly","It is very old"],0]
  ]},
 {id:"e13a",w:13,type:"essay",t:"The Ubiquitous Illusion of Control",he:"אשליית השליטה הנמצאת בכל מקום",
  gl:{ubiquitous:"נמצא בכל מקום",fallacy:"כשל לוגי",trivial:"זניח",oblivious:"לא מודע",volatile:"תנודתי",precarious:"רעוע, מסוכן",elusive:"חמקמק",indispensable:"הכרחי, שאין בלעדיו"},

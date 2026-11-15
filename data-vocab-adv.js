@@ -1,7 +1,9 @@
 /* אוצר המילים של חמש התחנות המתקדמות, בגרסה מורחבת ועם רמה עולה (נבנה ב-15.11.2026).
    כל תחנה: כ-80 מילים, בלי מילים שחוזרות בין תחנות.
-   f1 יום-יום: B1-B2   f2 טקסט מסביר: B2   f3 בגרות: C1   f4 אקדמית: C1-C2   f5 פסיכומטרי: C2
-   (הרמות הן הערכה לפי רשימות CEFR מוכרות, לא רשימה רשמית אחת.)
+   הרמות נבדקו מול רשימות Oxford 3000 ו-Oxford 5000 לפי רמות CEFR (oxfordlearnersdictionaries.com, הורדה מ-github.com/ittuann/The-Oxford-5000-Word-Lists):
+   f2 טקסט מסביר: כל 80 המילים B2 לפי Oxford.   f3 בגרות: כל 80 המילים C1 לפי Oxford.   f4 אקדמית: כל 80 המילים C1 לפי Oxford.
+   f5 פסיכומטרי: 80 מילים שאינן ברשימת Oxford 5000 (מעל C1, כלומר C2; ל-Oxford אין רשימת C2).
+   f1 יום-יום: 70 מילים יומיומיות (B1 ומעלה, או מילים יומיומיות מובהקות שחסרות ב-Oxford).
    נטען אחרי data-advanced.js: חלק מהמילים מהרשימות הישנות נשארות (נלקחות משם עם הפירוש והמשפט שלהן), והשאר חדשות.
    פורמט שורה: מילה | פירוש | משפט דוגמה שהמילה מופיעה בו בדיוק. */
 (function(){
@@ -298,13 +300,116 @@ wane|לדעוך|Interest in the show began to wane.
 zealous|להוט, קנאי|A zealous fan, he attended every match.
 `);
 
+  const C1_F3 = parse(`
+absurd|מופרך, אבסורדי|It is absurd to expect a result without any effort.
+accessible|נגיש|The new library is accessible to people with disabilities.
+accomplishment|הישג|Finishing the marathon was a great accomplishment.
+accountable|אחראי, נושא באחריות|Leaders must be held accountable for their decisions.
+adhere|לדבוק, להישמר|All members must adhere to the rules.
+alert|ערני, להתריע|The guard stayed alert all night.
+appealing|מושך, אטרקטיבי|The offer sounded very appealing to young people.
+aspire|לשאוף|Many students aspire to study at a top university.
+authentic|אותנטי, מקורי|We visited a restaurant that serves authentic Italian food.
+autonomy|אוטונומיה, עצמאות|Teenagers need a certain degree of autonomy.
+breakthrough|פריצת דרך|Scientists announced a breakthrough in cancer research.
+burden|נטל, עול|The debt became a heavy burden on the family.
+capability|יכולת|The new phone has an impressive camera capability.
+cautious|זהיר|Be cautious when you cross a busy road.
+clarity|בהירות, צלילות|The lawyer explained the contract with great clarity.
+clash|עימות, להתנגש|There was a clash between the two groups of fans.
+collaborate|לשתף פעולה|The two schools collaborate on a science project.
+compelling|משכנע, מרתק|She made a compelling case for change.
+competent|מוכשר, מיומן|We need a competent manager for this project.
+compromise|פשרה, להתפשר|After a long talk, they reached a compromise.
+consensus|הסכמה כללית, קונצנזוס|The committee reached a consensus on the new plan.
+constraint|מגבלה, אילוץ|Lack of time was the main constraint.
+credible|אמין, מהימן|The witness gave a credible account of the events.
+curiosity|סקרנות|Curiosity is the first step to learning.
+dedicated|מסור|She is a dedicated teacher who loves her work.
+dignity|כבוד, כבוד עצמי|Every person deserves to be treated with dignity.
+eager|להוט, נלהב|The children were eager to open their gifts.
+endure|לשאת, להחזיק מעמד|They had to endure a long winter without heating.
+equality|שוויון|The law promotes equality between men and women.
+fragile|שביר, עדין|Handle the glass with care, it is very fragile.
+heritage|מורשת תרבותית|The old city is part of our cultural heritage.
+immense|עצום|The project needs an immense amount of work.
+injustice|עוול|The protesters spoke out against injustice.
+inspiration|השראה|Nature is a source of inspiration for many artists.
+legacy|מורשת, מה שנשאר אחרי|The teacher left a legacy of kindness.
+loyalty|נאמנות|The dog showed great loyalty to its owner.
+meaningful|בעל משמעות|Volunteering gave her life a more meaningful purpose.
+`);
+  const C1_F4 = parse(`
+adaptation|הסתגלות, עיבוד|The adaptation of the species took millions of years.
+adverse|שלילי, מזיק|The drug had adverse effects on some patients.
+aesthetic|אסתטי|The building has great aesthetic value.
+analogy|אנלוגיה, השוואה|The teacher used an analogy to explain the idea.
+articulate|לבטא בבהירות|She can articulate her views clearly.
+assert|לטעון בתוקף|The author asserts that technology improves education.
+boundary|גבול|The river forms a boundary between the two regions.
+classification|סיווג|The classification of animals is based on shared features.
+cognitive|קוגניטיבי, שכלי|Reading improves cognitive skills in children.
+collective|קולקטיבי, משותף|The decision was a collective effort.
+comparable|בר-השוואה|The two cities are comparable in size.
+complexity|מורכבות|The complexity of the problem surprised everyone.
+consistency|עקביות|Consistency is important for good results.
+contradiction|סתירה|There is a contradiction between his words and his actions.
+correlate|להיות מתואם|Height and weight often correlate.
+correlation|מתאם, קשר|The study found a correlation between sleep and grades.
+density|צפיפות|The density of the population is highest in the city.
+dimension|ממד|The project added a new dimension to the debate.
+distinction|הבחנה, הבדל|There is a clear distinction between fact and opinion.
+distinctive|ייחודי, מובחן|The bird has a distinctive red mark on its head.
+ecological|אקולוגי|The oil spill caused an ecological disaster.
+efficiency|יעילות|The new system improved the efficiency of the office.
+elevate|להעלות, להגביה|Education can elevate people out of poverty.
+embed|לשבץ, לשלב|The expert embedded the sensor in the wall.
+enrich|להעשיר|Travel can enrich your understanding of other cultures.
+entity|ישות, גוף|The company is a separate legal entity.
+equation|משוואה|Solve the equation to find the value of x.
+formulate|לנסח|Scientists must formulate a clear question first.
+hierarchy|היררכיה|The army has a strict hierarchy of ranks.
+ideology|אידיאולוגיה|The movement was based on a strong ideology.
+imminent|קרוב ובא, מיידי|Experts warned that a storm was imminent.
+indicator|אינדיקטור, מדד|Unemployment is a key indicator of the economy.
+induce|לגרום, לעורר|Some medicines induce sleep.
+inhibit|לעכב, לדכא|Fear can inhibit learning.
+interference|התערבות, הפרעה|The match was stopped because of outside interference.
+linear|לינארי, קווי|The story follows a linear timeline.
+logic|היגיון, לוגיקה|There is no logic in his argument.
+magnitude|עוצמה, גודל|The magnitude of the earthquake was seven.
+methodology|מתודולוגיה, שיטת מחקר|The study's methodology was carefully explained.
+migration|הגירה, נדידה|The migration of birds begins in the autumn.
+minimal|מזערי|The repairs caused only minimal damage.
+motive|מניע|The police could not find a motive for the crime.
+parameter|פרמטר, גבול|We must define the parameters of the experiment.
+partial|חלקי|The results offer only a partial answer.
+philosophical|פילוסופי|They had a long philosophical discussion about freedom.
+precedent|תקדים|The court's decision set a precedent for future cases.
+precision|דיוק|The machine works with great precision.
+prevalence|שכיחות, התפשטות|The prevalence of the disease is rising.
+reasoning|הנמקה, חשיבה|His reasoning was clear and logical.
+relevance|רלוונטיות|The relevance of this law today is unclear.
+rhetoric|רטוריקה|The politician used strong rhetoric to win votes.
+simulate|לדמות|The program can simulate a flight in space.
+stimulus|גירוי|A loud noise is a stimulus that makes us react.
+synthesis|סינתזה, שילוב|The paper is a synthesis of earlier research.
+systematic|שיטתי|The police carried out a systematic search.
+theoretical|תיאורטי|This is a purely theoretical question.
+variable|משתנה|Temperature is the main variable in the experiment.
+verify|לאמת, לוודא|Please verify the information before you publish it.
+validity|תוקף|The validity of the test results was questioned.
+`);
+  /* כל הערכים שנכתבו עד עכשיו, לפי מילה: מכאן בונים את הרשימות */
+  const ALL = Object.assign({}, OLD);
+  [F1_NEW, F2_NEW, F3_NEW, F4_NEW, F5_NEW, C1_F3, C1_F4].forEach(arr => arr.forEach(v => { ALL[v[0]] = v; }));
+  const pick = str => str.split(/[\s,]+/).filter(Boolean).map(w => { if(!ALL[w]) console.warn("vocab-adv: חסרה מילה", w); return ALL[w]; }).filter(Boolean);
+
   window.VOCAB = {
-    f1: take("appointment receipt schedule ingredient recipe crowded nervous grocery").concat(F1_NEW),
-    f2: take("decrease research rare species habitat recycle waste measure observe evidence therefore moreover provide survive method " +
-             "benefit challenge encourage establish express failure generation independent influence involve participate prevent purpose recognize reduce require responsible society tradition unique variety volunteer effort equal freedom community").concat(F2_NEW),
-    f3: take("abundant acknowledge adequate apparent comprehensive considerable deliberate eliminate fundamental inevitable initial obstacle precise pursue sustain tendency thorough reveal " +
-             "consequence emerge enhance exceed distinct").concat(F3_NEW),
-    f4: take("analyze consist constant contribute crucial decline emphasize estimate evaluate hypothesis imply interpret maintain obtain phenomenon principle relevant rely sufficient valid whereas nevertheless thus hence subsequent ultimately controversy conclude framework acquire").concat(F4_NEW),
-    f5: take("advocate ambiguous arbitrary attribute conceal contradict conventional deteriorate diminish elaborate explicit feasible fluctuate hostile inherent notion obscure perceive plausible prominent reluctant resemble rigid scarce skeptical subtle superficial undermine vulnerable persistent").concat(F5_NEW)
+    f1: pick("appointment receipt schedule ingredient grocery landlord tenant deposit wardrobe appliance neighborhood utilities renovate lease leak refund warranty discount budget afford bargain purchase deliver cashier invoice symptom prescription dizzy allergic pharmacy recover treatment reservation itinerary baggage delay departure destination commute accommodation souvenir customs deadline resign promotion embarrassed grateful disappointed jealous relieved curious annoyed thrilled awkward generous stubborn apologize postpone deserve refuse leftovers ripe spicy bland seasoning password battery install subscribe notification"),
+    f2: pick("decrease species habitat observe moreover challenge establish failure unique equal freedom adapt ancestor bacteria carbon conduct demand distribute fossil gradually issue rural urban shortage widespread tropical acknowledge adequate apparent comprehensive considerable deliberate eliminate fundamental inevitable initial obstacle precise pursue tendency thorough reveal emerge enhance exceed distinct accommodate aspect assess associate capacity circumstance collapse demonstrate discourage distinguish dominate dramatic ensure exploit illustrate incentive inhabitant integrate overcome perspective prospect reinforce reputation retain stimulate transform negotiate embrace implement initiative undergo controversial constant contribute"),
+    f3: pick("sustain compensate constitute dilemma eligible enforce flourish interfere mandatory mutual neglect prevail profound scope strive substantial suppress tackle thrive tolerate empower viable attain disclose advocate arbitrary attribute conceal deteriorate diminish elaborate explicit hostile inherent prominent reluctant resemble subtle undermine vulnerable persistent amend harvest").concat(C1_F3),
+    f4: pick("accumulate allocate discourse dispute domain empirical integrity manipulate predominantly premise rational scrutiny simultaneously stability threshold underlying yield coincide ratio reside trigger").concat(C1_F4),
+    f5: pick("ambiguous contradict feasible fluctuate obscure plausible rigid scarce skeptical superficial alleviate ambivalent analogous arduous astute austere candid circumvent coerce condone cogent cryptic dwindle eccentric elusive ephemeral exacerbate exemplify fallacy fastidious futile gratuitous hinge impartial impede impending inadvertently incessant indifferent indispensable lucid meticulous mundane nuance oblivious pragmatic precarious prudent reconcile redundant repercussion scrupulous tenacious trivial ubiquitous unanimous verbose volatile wane zealous outweigh cumulative deduce erode intrinsic mitigate paradigm paradox peripheral refute resilient tangible validate versatile corroborate mediate abundant hinder withstand coherent")
   };
 })();
