@@ -363,6 +363,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-advanced.js"></script>
 <script src="data-texts3.js"></script>
 <script src="data-texts4.js"></script>
+<script src="data-texts5.js"></script>
 <script src="data-vocab.js"></script>
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
@@ -370,6 +371,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-vocab-adv.js"></script>
 <script src="data-pairs.js"></script>
 <script src="data-station-fix.js"></script>
+<script src="data-station-more.js"></script>
 <script src="data-phonemes.js"></script>
 <script src="audio/en/map.js"></script>
 <script>
@@ -3710,6 +3712,11 @@ if(location.protocol==="file:"){
   const RW=window.LEVEL_REWRITE||{}; LEVELS.forEach(L=>{ const r=RW[L.id]; if(r){ const {irreg,...rest}=r; Object.assign(L,rest); if(irreg){ L.irreg=Object.assign({},L.irreg||{},irreg); Object.assign(IRREG,irreg); } } });
   // החלפת מילים בודדות בשלבים (data-station-fix.js): מילים שחזרו בין תחנות מוחלפות במילים חדשות
   Object.entries(window.WORD_PATCH||{}).forEach(([id,map])=>{ const L=LEVELS.find(x=>x.id===id); if(!L||!L.words) return; L.words=L.words.map(w=>map[w[0]]||w); });
+  Object.entries(window.WSND_PATCH||{}).forEach(([id,m])=>{ const L=LEVELS.find(x=>x.id===id); if(L) L.wsnd=Object.assign({},L.wsnd||{},m); });
+  // מילים שנוספו לשלבים (data-station-more.js), רק אם עוד לא היו בשלב
+  Object.entries(window.WORD_ADD||{}).forEach(([id,add])=>{ const L=LEVELS.find(x=>x.id===id); if(!L||!L.words) return; add.forEach(w=>{ if(!L.words.some(x=>x[0]===w[0])) L.words.push(w); }); });
+  // משפטים ופסקאות שנבנו מחדש לתחנות התנועות (data-station-fix.js)
+  Object.entries(window.SENT_REWRITE||{}).forEach(([id,o])=>{ const L=LEVELS.find(x=>x.id===id); if(L) Object.assign(L,o); });
   Object.entries(window.MORE_SENT_HE||{}).forEach(([k,v])=>{ if(!SENT_HE[k]) SENT_HE[k]=v; });
   (window.MORE_PAIRS||[]).forEach(g=>{ if(!PAIRS.some(p=>p.join()===g.join())) PAIRS.push(g); });
   Object.entries(window.MORE_TWIN||{}).forEach(([k,v])=>{ if(!TWIN_HE[k]) TWIN_HE[k]=v; });
