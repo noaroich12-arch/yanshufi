@@ -228,3 +228,13 @@
   const f = T("w0f");
   if (f && f.s[2] && f.s[2][2]) f.s[2][2] = ["אל מי הגור קופץ?",["אל החתול","אל הדג","אל הצב"],0];
 })();
+/* גם בטקסטים של התחנות המתקדמות כבר אין "into" (המשפט מנוסח בלעדיה) */
+(function(){
+  const T = id => (window.TEXTS||[]).find(x => x.id === id);
+  const fixS = (id,i,s) => { const t=T(id); if(t&&t.s[i]){ const old=t.s[i]; t.s[i]=[s[0],s[1]].concat(old.slice(2)); } };
+  fixS("a9b",5,["Make four small holes / in the sauce / and crack an egg / in each hole.","עושים ארבעה גומות ברוטב ושוברים ביצה בכל גומה."]);
+  fixS("a13c",3,["At first, / small clay tokens / represented / specific objects; / later, / these were replaced / by marks / pressed on / clay tablets.","בהתחלה, אסימוני חימר קטנים ייצגו חפצים מסוימים; מאוחר יותר הם הוחלפו בסימנים שנלחצו על לוחות חימר."]);
+  fixS("c11a",0,["Two brothers / had farmed / side by side / for forty years, / until a small quarrel / became / a long silence.","שני אחים עיבדו אדמה זה לצד זה ארבעים שנה, עד שמריבה קטנה הפכה לשתיקה ארוכה."]);
+  fixS("c11b",2,["The main reason / is that / water flows in, / mainly from the Jordan River, / but it has / no outlet.","הסיבה העיקרית היא שמים זורמים פנימה, בעיקר מנהר הירדן, אבל אין לו מוצא."]);
+  fixS("e11a",7,["Otherwise, / the law / may deteriorate / and become / an empty rule.","אחרת החוק עלול להידרדר ולהפוך לכלל ריק."]);
+})();
