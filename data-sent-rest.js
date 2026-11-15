@@ -111,3 +111,5 @@ Object.assign(window.SENT_REWRITE, {
     para:[["Sam and Pam have a dog.","לסאם ולפאם יש כלב."],["The dog was in the pond.","הכלב היה בבריכה."],["What a mess!","איזה בלגן!"],["Beth said: Do you have a rag?","בת׳ אמרה: יש לכם סמרטוט?"],["They rub the dog with the rag.","הם משפשפים את הכלב עם הסמרטוט."],["Your dog is not wet, said Beth.","״הכלב שלכם כבר לא רטוב״, אמרה בת׳."]]
   }
 });
+/* סולם שלב o: "mom" מוחלפת ב-"mop" (גם בתחנת התנועות הקצרות לא נשארת "אמא") */
+if (window.SENT_REWRITE.o) window.SENT_REWRITE.o.ladder = ["rat","rot","rob","mob","mop"];
