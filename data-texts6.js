@@ -183,3 +183,32 @@
   fix("w5d",3,["Paul: / It costs / twelve coins.","פול: היא עולה שנים עשר מטבעות."]);
   fix("w5d",5,["Paul: / You can choose / a toy / for ten, / or save / and come back / next week.","פול: אתה יכול לבחור צעצוע בעשרה, או לחסוך ולחזור בשבוע הבא."]);
 })();
+/* "Mom", "into" והמילה העברית "איתו" מוסרות מטקסטים של תחנות הצמדים, הצירופים, הסיומות, ההברות והאותיות השקטות.
+   בטקסטים של התנועות הקצרות (עולם 0) Mom היא מילה של התחנה ונשארת. */
+(function(){
+  const T = id => (window.TEXTS||[]).find(x => x.id === id);
+  const fixS = (id,i,s) => { const t=T(id); if(t&&t.s[i]){ const old=t.s[i]; t.s[i]=[s[0],s[1]].concat(old.slice(2)); } };
+  const fixQ = (id,i,q) => { const t=T(id); if(t&&t.q[i]) t.q[i]=q; };
+  fixS("w1a",2,["One day / a duck / gets in the shop.","יום אחד ברווז נכנס לחנות."]);
+  fixQ("w1a",2,["פרט","מה הברווז לקח?",["צדף","דג","פעמון"],0]);
+  fixS("w1b",5,["We will sit / on the bench / with Beth.","נשב על הספסל עם בת׳."]);
+  fixQ("w1b",0,["רעיון","מה סת׳ מבקש מג׳וש?",["להביא אוכל","לבוא לתחנה","להתקשר לבת׳"],0]);
+  fixQ("w1b",1,["פרט","עם מי סת׳ בתחנה?",["עם ריץ׳","עם בת׳","לבד"],0]);
+  fixS("w1d",0,["Beth: / Jack, / I can not get my ring!","בת׳: ג׳ק, אני לא מוצאת את הטבעת שלי!"]);
+  fixS("w1d",2,["Beth: / No. / I did check.","בת׳: לא. בדקתי."]);
+  fixS("w1d",4,["Beth: / No.","בת׳: לא."]);
+  fixS("w1d",5,["Jack: / Look, Beth! / The cat has a thing / in his sock!","ג׳ק: תראי, בת׳! לחתול יש משהו בגרב!"]);
+  fixS("w1d",6,["Beth: / That is my ring! / Thank you, Jack!","בת׳: זו הטבעת שלי! תודה, ג׳ק!"]);
+  fixQ("w1d",2,["הסקה","איך בת׳ מרגישה בסוף?",["שמחה ואסירת תודה","כועסת","עצובה"],0]);
+  fixS("w1e",5,["A duck / sits on her eggs.","ברווזה יושבת על הביצים שלה."]);
+  fixS("b2c",0,["Dear Gran and Gramps,","סבתא וסבא היקרים,"]);
+  fixS("w2a",6,["A kid / held the cup / and let the frog / slip in the pond.","ילד אחז בכוס ונתן לצפרדע להחליק לבריכה."]);
+  fixS("w6b",3,["Drop / the seed / in the hole / and cover it / gently.","מפילים את הזרע לחור ומכסים אותו בעדינות."]);
+  fixS("b7b",0,["Deep beneath / the surface / of the Earth, / it is so hot / that rock / melts / and becomes / a liquid / called magma.","עמוק מתחת לפני כדור הארץ חם כל כך שסלע נמס והופך לנוזל שנקרא מאגמה."]);
+  fixQ("w3b",2,["פרט","מי היא גרייס?",["חברה של רוז","הדודה","המורה"],0]);
+  fixQ("w5a",4,["הפניה","במשפט 'Carl found her', מי זו her?",["פרל","הרועה","הסערה"],0]);
+  fixQ("w5c",3,["רעיון","למי מיועד המכתב?",["לראש העיר","לחברה","לרופא"],0]);
+  fixQ("w5d",1,["הסקה","מה רוי החליט?",["לחסוך ולחכות","לקנות צעצוע אחר","לבקש מפול הנחה"],0]);
+  fixQ("w6d",1,["פרט","מי היא גברת פרקר?",["מנהלת המקלט","המורה","הרופאה"],0]);
+  fixS("b8b",3,["When light / passes / from air / to water, / it bends / slightly.","כשאור עובר מאוויר למים, הוא מתכופף מעט."]);
+})();

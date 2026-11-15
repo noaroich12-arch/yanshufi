@@ -103,3 +103,11 @@ Object.assign(window.SENT_REWRITE = window.SENT_REWRITE || {}, {
     para:[["Ken has a knife.","לקן יש סכין."],["The ghost has a trophy.","לרוח הרפאים יש גביע."],["The dolphin has a picture.","לדולפין יש תמונה."],["The station has a question.","לתחנה יש שאלה."],["Ben has bread and water.","לבן יש לחם ומים."],["The calf is calm.","העגל רגוע."]]
   }
 });
+
+/* הסרת "Mom" ו"איתו" מתחנות שאינן תחנת התנועות הקצרות (שם Mom היא מילה של התחנה) - שלב "מילים שזוכרים 1" */
+Object.assign(window.SENT_REWRITE, {
+  heart1:{
+    reads:[["a cup of hot milk","כוס חלב חם"],["They are in the tent.","הם באוהל."],["What do you have?","מה יש לך?"],["Your hat was wet.","הכובע שלך היה רטוב."],["Beth said: Get in bed!","בת׳ אמרה: תיכנס למיטה!"]],
+    para:[["Sam and Pam have a dog.","לסאם ולפאם יש כלב."],["The dog was in the pond.","הכלב היה בבריכה."],["What a mess!","איזה בלגן!"],["Beth said: Do you have a rag?","בת׳ אמרה: יש לכם סמרטוט?"],["They rub the dog with the rag.","הם משפשפים את הכלב עם הסמרטוט."],["Your dog is not wet, said Beth.","״הכלב שלכם כבר לא רטוב״, אמרה בת׳."]]
+  }
+});
