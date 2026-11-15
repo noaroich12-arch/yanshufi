@@ -14,7 +14,9 @@ window.WORD_PATCH = {
   ck:{ cup:["rack","מדף"] },
   cg:{ ice:["dance","ריקוד"] },
   ph:{ phone:["paragraph","פסקה"], elephant:["phantom","רוח רפאים"] },
-  open:{ robot:["hero","גיבור","ˈhe·ro"], music:["yoga","יוגה","ˈyo·ga"] },
+  open:{ robot:["hero","גיבור","ˈhe·ro"], music:["yoga","יוגה","ˈyo·ga"], tulip:["video","וידאו","ˈvi·de·o"], bonus:["menu","תפריט","ˈme·nu"] },
+  r2b:{ cats:["frost","כפור"], boxes:["plant","צמח"], gifts:["stand","לעמוד"] },
+  ful:{ kindness:["hopeless","חסר תקווה","ˈhope·less"], sadness:["fearless","חסר פחד","ˈfear·less"], darkness:["loudly","בקול רם","ˈloud·ly"], illness:["boldly","באומץ","ˈbold·ly"] },
   schwa:{ lemon:["vanilla","וניל"] },
   stress:{ banana:["guitar","גיטרה"], pencil:["police","משטרה"], table:["window","חלון"], hamburger:["tomorrow","מחר"] }
 };
