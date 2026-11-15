@@ -23,7 +23,7 @@ window.WORD_PATCH = {
    כל מילה מרכזית במשפט מכילה צמד תנועות שכבר למדו בתחנה (או שמות עם צמד: Jean, Dean, Kay...).
    רק מילות הדקדוק הכי קטנות (the, a, is, in, to, it...) נשארות. בלי Mom, Tom, pet, sat וכדומה.
    נבדק אוטומטית בסקריפט check_sent.py. */
-window.SENT_REWRITE = {
+window.SENT_REWRITE = Object.assign(window.SENT_REWRITE || {}, {
   pv0:{
     reads:[["a goat in a boat","עז בסירה"],["rain on the road","גשם על הכביש"],["Jean can eat a leaf.","ג׳ין יכולה לאכול עלה."],["Dean can see a seal.","דין יכול לראות כלב ים."],["Pay Gail for the soap.","שלמי לגייל על הסבון."]],
     para:[["Jean has a goat.","לג׳ין יש עז."],["The goat is in a boat.","העז בתוך סירה."],["The boat is on the sea.","הסירה על הים."],["Rain, rain, rain!","גשם, גשם, גשם!"],["The goat can eat a leaf in the rain.","העז יכולה לאכול עלה בגשם."],["Jean sees the seal. The day is neat!","ג׳ין רואה את כלב הים. היום מסודר!"]]
@@ -93,7 +93,7 @@ window.SENT_REWRITE = {
     reads:[["a goat on a road","עז על כביש"],["a hook and a coat","וו ומעיל"],["Joan paints the boat.","ג׳ואן צובעת את הסירה."],["The crow flew to the roof.","העורב עף לגג."],["Keep the boat in the sea.","שמרי את הסירה בים."]],
     para:[["Dean and Joan go to the beach.","דין וג׳ואן הולכים לחוף."],["They see a goat by the road.","הם רואים עז ליד הכביש."],["The goat chews on a weed.","העז לועסת עשב שוטה."],["Joan feeds the goat a few oats.","ג׳ואן מאכילה את העז בקצת שיבולת שועל."],["The goat bleats.","העז פועה."],["Dean and Joan play on the beach.","דין וג׳ואן משחקים בחוף."]]
   }
-};
+});
 
 /* צליל פר-מילה: בשלב oo הצמד קצר (אֻ) במילים האלה. ברירת המחדל של השלב היא אוּ ארוכה */
 window.WSND_PATCH = {
