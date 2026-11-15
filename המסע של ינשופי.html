@@ -377,6 +377,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-sent-vowels.js"></script>
 <script src="data-sent-short.js"></script>
 <script src="data-sent-rest.js"></script>
+<script src="data-units-pattern.js"></script>
 <script src="data-phonemes.js"></script>
 <script src="audio/en/map.js"></script>
 <script>
@@ -1271,7 +1272,9 @@ function twinsOf(w){
 }
 function vowelLine(x){ const m=x.match(/[aeiou]/); if(!m||!ANCHOR[m[0]]) return ""; return `, עם <bdi>${m[0]}</bdi> כמו ב-<bdi>${ANCHOR[m[0]][0]}</bdi>`; }
 function twinBox(w){
-  const t=twinsOf(w); if(!t.length) return "";
+  // ביחידה של צירוף אותיות (ai, sh, ou...) מציגים רק מילה דומה שגם היא מכילה את הצירוף של היחידה
+  const fits=x=>!CUR_L || !Array.isArray(CUR_L.focus) || CUR_L.focus.some(f=>x.includes(f));
+  const t=twinsOf(w).filter(o=>fits(o.x)); if(!t.length) return "";
   return `<div class="twin">⭐ <b>שימי לב!</b> יש גם מילים שנראות ונשמעות כמעט אותו דבר:
     ${t.map(o=>`<div class="twinrow"><button class="anc" onclick="speak('${w}',0.55,()=>setTimeout(()=>speak('${o.x}',0.55),500))">🔊 <bdi>${hlWord(w,"[aeiouy]")}</bdi> מול <bdi>${hlWord(o.x,"[aeiouy]")}</bdi></button>
       <span><bdi>${o.x}</bdi>${o.he?" = "+o.he:""}${o.note?". "+o.note:vowelLine(o.x)}</span> ${bankBtn(o.x)} ${pairBtn(w,o.x)}</div>`).join("")}
