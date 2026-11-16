@@ -91,6 +91,32 @@
           P4:["Sue: It is a newt, and it is new!","סו: זה טריטון, והוא חדש!"], P5:["Drew and Sue are in the news!","דרו וסו בחדשות!"]},
     heart2: {P1:["Jean went to her room, but the glove was gone.","ג׳ין הלכה לחדר שלה, אבל הכפפה נעלמה."], P4:["There was the glove, by the dog!","שם הייתה הכפפה, ליד הכלב!"]}
   });
+  // תחנה f1 מכוונת ל-B1 עד B2. שבע מילים ברשימה שלה הן C1 לפי אוקספורד, ולכן הוחלפו במילים יומיומיות ברמה המתאימה
+  const F1 = {
+    landlord:["rent","שכר דירה","The rent goes up a little every year."],
+    tenant:["mortgage","משכנתא","They took a mortgage to buy their first flat."],
+    utilities:["heating","חימום","The heating in our flat does not work well in winter."],
+    leak:["flood","הצפה, להציף","After the storm, there was a flood in the basement."],
+    prescription:["pill","כדור, גלולה","Take one pill in the morning and one at night."],
+    thrilled:["delighted","שמח מאוד","She was delighted with her birthday present."],
+    postpone:["cancel","לבטל","We had to cancel the trip because I was sick."]
+  };
+  if(window.VOCAB && VOCAB.f1) VOCAB.f1 = VOCAB.f1.map(v => F1[v[0]] || v);
+  const TT = id => (window.TEXTS||[]).find(t => t.id === id);
+  const SS = (id, i, en, he, chk) => { const t = TT(id); if(t && t.s[i]) t.s[i] = [en, he].concat(chk === undefined ? t.s[i].slice(2) : (chk ? [chk] : [])); };
+  const e9a = TT("e9a"); if(e9a){ e9a.gl = {owner:"בעל הבית", deposit:"פיקדון", lease:"חוזה שכירות", neighborhood:"שכונה", rent:"שכר דירה", afford:"להרשות לעצמך", budget:"תקציב", renovate:"לשפץ", drip:"טפטוף"};
+    e9a.q[1] = ["פרט","What does the rent include?",["The bills","Furniture","Breakfast"],0];
+    e9a.q[3] = ["הסקה","What will the writer do about the drip?",["Ask the owner to fix it","Ignore it","Move out"],0]; }
+  SS("e9a", 1, "The owner / asked for / a deposit / and a two-year lease.", "בעל הבית ביקש פיקדון וחוזה שכירות לשנתיים.");
+  SS("e9a", 2, "The neighborhood / is quiet, / and the shops / are close.", "השכונה שקטה, והחנויות קרובות.", ["What did the owner ask for?", ["A deposit and a lease", "A bargain", "A refund"], 0]);
+  SS("e9a", 5, "There is also / a small drip / under the sink.", "יש גם טפטוף קטן מתחת לכיור.");
+  SS("e9a", 6, "I will ask / the owner / to fix it / before I move in.", "אבקש מבעל הבית לתקן אותו לפני שאעבור.", ["What problem is there?", ["A drip under the sink", "A broken door", "A loud neighbor"], 0]);
+  const c9b = TT("c9b"); if(c9b) c9b.gl = {ceiling:"תקרה", repair:"לתקן", plumber:"שרברב", drops:"טיפות"};
+  SS("c9b", 2, "For the past week, / water / has been dripping / from the bathroom ceiling.", "בשבוע האחרון מים מטפטפים מתקרת חדר הרחצה.");
+  const g9a = TT("g9a"); if(g9a){ g9a.gl = {appointment:"תור, פגישה", pill:"כדור, גלולה", pharmacy:"בית מרקחת", receipt:"קבלה", warranty:"אחריות על מוצר", appliance:"מכשיר חשמלי ביתי", leftovers:"שאריות אוכל", relieved:"נרגעה, שמחה שזה נגמר"};
+    g9a.q[2] = ["מילה","מה פירוש relieved?",["נרגעת, שמחה שזה נגמר","כועסת","עייפה"],0]; }
+  SS("g9a", 1, "She said / it was only / a mild symptom / of my allergy / and gave me / some pills.", "היא אמרה שזה רק תסמין קל של האלרגיה שלי ונתנה לי כדורים.", ["מה הרופאה נתנה?", ["כדורים", "חשבונית", "סיסמה"], 0]);
+  SS("g9a", 2, "The pharmacy / near my house / was closed, / so I had to / cancel my plans / and start the treatment / on Tuesday.", "בית המרקחת ליד הבית שלי היה סגור, אז נאלצתי לבטל את התוכניות שלי ולהתחיל את הטיפול ביום שלישי.");
   // wanted: ה-a נשמעת אחרת אחרי w, וזה נלמד רק בתחנה האחרונה. ביחידת ed ובחזרה שלה היא מוחלפת
   const WP = window.WORD_PATCH = window.WORD_PATCH || {};
   WP.ed = Object.assign(WP.ed || {}, {wanted:["printed","הדפיס"]});
