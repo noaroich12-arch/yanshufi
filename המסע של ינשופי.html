@@ -366,6 +366,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-texts5.js"></script>
 <script src="data-texts6.js"></script>
 <script src="data-texts7.js"></script>
+<script src="data-texts8-fit.js"></script>
 <script src="data-vocab.js"></script>
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
@@ -1613,7 +1614,21 @@ function pyramidPool(){
     (L.words||[]).forEach(w=>ok.add(w[0].toLowerCase())); (L.ladder||[]).forEach(w=>ok.add(w)); (L.listen||[]).forEach(q=>q[1].forEach(w=>ok.add(w)));
     (L.reads||[]).concat(L.para||[]).forEach(r=>r[0].toLowerCase().replace(/[^a-z' ]/g," ").split(/\s+/).forEach(w=>{ if(w) ok.add(w.replace(/'s$/,"")); }));
   });
-  return PYRAMIDS.filter(p=>p.l[p.l.length-1].toLowerCase().replace(/[^a-z' ]/g," ").split(/\s+/).filter(Boolean).every(w=>ok.has(w.replace(/'s$/,""))||isCVC(w)));
+  const base=PYRAMIDS.filter(p=>p.l[p.l.length-1].toLowerCase().replace(/[^a-z' ]/g," ").split(/\s+/).filter(Boolean).every(w=>ok.has(w.replace(/'s$/,""))||isCVC(w)));
+  return base.concat(stationPyramids(SCOPE_W));
+}
+// פירמידות נוספות מתוך הטקסטים של התחנה עצמה (16.11.2026): כל משפט של 3 עד 6 חלקים נבנה חלק אחרי חלק.
+// הטקסטים של כל תחנה נבדקו שהם בנויים רק מצלילים שכבר נלמדו, ולכן גם הפירמידות מתאימות לרמה.
+function stationPyramids(w){
+  const out=[], seen=new Set();
+  (window.TEXTS||[]).filter(t=>t.w===w).forEach(t=>(t.s||[]).forEach(s=>{
+    const parts=s[0].split("/").map(x=>x.trim()).filter(Boolean);
+    if(parts.length<3 || parts.length>6 || /:$/.test(parts[0]) || seen.has(s[0])) return;
+    seen.add(s[0]);
+    const l=parts.map((_,i)=>parts.slice(0,i+1).join(" ").replace(/[,;:]$/,""));
+    out.push({l, cue:s[0], he:s[1]});
+  }));
+  return out;
 }
 const chantFits = c => SCOPE_W===null || c.w===SCOPE_W || (SCOPE_W===0.5 && c.w===4);
 // האם המשחק מתאים לתחנה הזאת? (אם אין מספיק מילים או תמונות מהתחנה, המשחק לא מוצג בה, וממשיך להיות בגן המשחקים)
@@ -1638,8 +1653,9 @@ function gameFits(id, w){
 }
 function learnedWords(){
   const s=new Set();
-  // בתוך תחנה: רק המילים של התחנה עצמה (בלי מילים מבלבלות מתרגילי ההקשבה והסולם)
-  learnedLevels().forEach(L=>{ L.words.forEach(w=>s.add(w[0])); if(SCOPE_W===null){ (L.ladder||[]).forEach(w=>s.add(w)); (L.listen||[]).forEach(q=>q[1].forEach(w=>s.add(w))); } });
+  // בתוך תחנה: המילים של היחידות בתחנה, וגם מילות ההקשבה והסולם שלהן (מאז 16.11.2026 כולן עונות לחוק של היחידה).
+  // יחידות "מילים שזוכרים בעל פה" לא נכנסות, כי בשאלות שלהן יש בכוונה מילים להשוואה מתחנות אחרות.
+  learnedLevels().forEach(L=>{ L.words.forEach(w=>s.add(w[0])); if(SCOPE_W===null || !/^heart/.test(L.id)){ (L.ladder||[]).forEach(w=>s.add(w)); (L.listen||[]).forEach(q=>q[1].forEach(w=>s.add(w))); } });
   return s;
 }
 const isCVC = w => /^[^aeiou][aeiou][^aeiouy]$/.test(w);
