@@ -367,7 +367,6 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-texts6.js"></script>
 <script src="data-texts7.js"></script>
 <script src="data-texts8-fit.js"></script>
-<script src="data-zz-games-fit.js"></script>
 <script src="data-vocab.js"></script>
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
@@ -380,6 +379,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-sent-short.js"></script>
 <script src="data-sent-rest.js"></script>
 <script src="data-units-pattern.js"></script>
+<script src="data-zz-games-fit.js"></script>
 <script src="data-phonemes.js"></script>
 <script src="audio/en/map.js"></script>
 <script>
@@ -3757,6 +3757,9 @@ if(location.protocol==="file:"){
   Object.entries(window.WORD_ADD||{}).forEach(([id,add])=>{ const L=LEVELS.find(x=>x.id===id); if(!L||!L.words) return; add.forEach(w=>{ if(!L.words.some(x=>x[0]===w[0])) L.words.push(w); }); });
   // משפטים ופסקאות שנבנו מחדש לתחנות התנועות (data-station-fix.js)
   Object.entries(window.SENT_REWRITE||{}).forEach(([id,o])=>{ const L=LEVELS.find(x=>x.id===id); if(L) Object.assign(L,o); });
+  // משפט בודד ביחידה (data-zz-games-fit.js): R<מספר> = משפט קצר, P<מספר> = משפט בפסקה
+  Object.entries(window.SENT_PATCH||{}).forEach(([id,m])=>{ const L=LEVELS.find(x=>x.id===id); if(!L) return;
+    Object.entries(m).forEach(([k,v])=>{ const arr=k[0]==="R"?L.reads:L.para, i=+k.slice(1); if(arr&&arr[i]) arr[i]=[v[0],v[1]].concat(arr[i].slice(2)); }); });
   Object.entries(window.MORE_SENT_HE||{}).forEach(([k,v])=>{ if(!SENT_HE[k]) SENT_HE[k]=v; });
   (window.MORE_PAIRS||[]).forEach(g=>{ if(!PAIRS.some(p=>p.join()===g.join())) PAIRS.push(g); });
   Object.entries(window.MORE_TWIN||{}).forEach(([k,v])=>{ if(!TWIN_HE[k]) TWIN_HE[k]=v; });

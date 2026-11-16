@@ -269,6 +269,43 @@
   S("b7c", 3, "Last summer, / I volunteered / at a children's camp, / where I read stories / to little campers / every afternoon.", "בקיץ שעבר התנדבתי במחנה ילדים, שם הקראתי סיפורים לחניכים קטנים בכל אחר צהריים.");
   S("b7c", 6, "Thank you / for considering / my request.", "תודה ששקלת את הבקשה שלי.");
 
+  /* ---------- סבב אחרון: מילים חריגות (w שמשנה את התנועה, ea קצרה, would/should, hour) שנשארו לפני התחנה שמלמדת אותן ---------- */
+  S("w2c", 1, "Dad: / What pet / do you wish for?", "אבא: איזו חיה אתה רוצה?");
+  SET("w2e", {gl:{trip:"טיול", ducks:"ברווזים", snack:"חטיף", crust:"קרום, קצה של לחם"}});
+  S("w2e", 1, "Last week / I went / to the pond / with Gran.", "בשבוע שעבר הלכתי לבריכה עם סבתא.");
+  S("w2e", 3, "Six ducks / swam past us.", "שישה ברווזים שחו לידנו.", ["כמה ברווזים היו?", ["שישה", "שניים", "עשרה"], 0]);
+  S("w2e", 4, "I had / a crust / and a duck / got it / in its bill!", "החזקתי קצה של לחם, וברווז לקח אותו במקור!");
+  Q("w2e", 1, ["סדר", "מה קרה אחרי שהברווז לקח את הלחם?", ["הכותב נפל לבוץ", "הם הלכו הביתה", "סבתא בכתה"], 0]);
+  Q("w2e", 3, ["מילה", "מה זה crust?", ["קצה של לחם", "ברווז", "בוץ"], 0]);
+  S("w5a", 9, "That night, / the storm roars, / but all the cows / are dry / and safe.", "באותו לילה הסערה שואגת, אבל כל הפרות יבשות ובטוחות.");
+  S("w5b", 2, "An owl / can not / turn its eyes, / so it turns / its face / far round.", "ינשוף לא יכול להזיז את העיניים, אז הוא מסובב את הפנים הרבה מסביב.", ["מה הינשוף מסובב במקום העיניים?", ["את הפנים", "את הכנפיים", "את הזנב"], 0]);
+  SET("w5d", {gl:{choose:"לבחור", coins:"מטבעות", save:"לחסוך", horn:"צופר"}});
+  S("w5d", 0, "Roy: / I have / ten coins. / I wish for / a toy.", "רוי: יש לי עשרה מטבעות. אני רוצה צעצוע.");
+  S("w5d", 6, "Roy: / I will save. / That car / is the best!", "רוי: אני אחסוך. המכונית הזאת הכי טובה!");
+  S("w6a", 1, "This / was the busiest day / of the year.", "זה היה היום הכי עמוס בשנה.");
+  S("w6a", 3, "In class, / we painted / a huge map / of our land.", "בכיתה ציירנו מפה ענקית של הארץ שלנו.");
+  S("w6d", 5, "The dogs / and cats / at the shelter / now sleep / on soft, snug beds.", "הכלבים והחתולים במקלט ישנים עכשיו על מיטות רכות ונעימות.");
+  S("w6e", 4, "Nurse: / I think / it is a cold. / Drink / lots of hot tea / and rest / for three days.", "אחות: אני חושבת שזו הצטננות. תשתי הרבה תה חם ותנוחי שלושה ימים.");
+  S("w7b", 0, "Maya / grew up / in a little town / near the desert.", "מאיה גדלה בעיירה קטנה ליד המדבר.");
+  S("w7b", 3, "Maya / made up her mind / to solve this problem.", "מאיה החליטה לפתור את הבעיה הזו.");
+  S("w7b", 5, "Her first ten tries / failed.", "עשרת הניסיונות הראשונים שלה נכשלו.");
+  S("w7b", 7, "Finally, / the lamp / did its job / perfectly.", "לבסוף המנורה עשתה את העבודה שלה מצוין.");
+  S("w7c", 6, "Experts / suggest / turning off screens / sixty minutes / before bed.", "מומחים ממליצים לכבות מסכים שישים דקות לפני השינה.");
+  S("w7e", 6, "Kids / need to bring / a full bottle / and a hat.", "ילדים צריכים להביא בקבוק מלא וכובע.");
+  S("w4a", 2, "It is / a gray day.", "זה יום אפור.");
+  S("pt2", 0, "Lee and Dean / go to the sea.", "לי ודין הולכים לים.");
+  S("b5c", 5, "Bring / a thick coat / and a pen. / Bird glasses / are good / if you have them.", "הביאו מעיל עבה ועט. משקפת לציפורים טובה, אם יש לכם.");
+  SET("b6b", {gl:{shiver:"לרעוד", muscles:"שרירים", heat:"חום", damp:"לח"}});
+  S("b6b", 3, "The moving muscles / make heat / and heat us up.", "השרירים שזזים מייצרים חום ומחממים אותנו.");
+  S("b6b", 4, "When we are / too hot, / our skin / gets damp.", "כשחם לנו מדי, העור שלנו נעשה לח.");
+  S("b6b", 5, "As the damp skin / dries, / it cools / the body.", "כשהעור הלח מתייבש, הוא מקרר את הגוף.");
+  Q("b6b", 1, ["פרט", "מה קורה כשחם לנו מדי?", ["העור נעשה לח (מזיעים)", "רועדים", "נרדמים"], 0]);
+  Q("b6b", 2, ["פרט", "מה מקרר את הגוף?", ["העור הלח כשהוא מתייבש", "השרירים", "המים שאנחנו שותים"], 0]);
+  S("b7a", 1, "They noticed / a traveler / walking / along the road / in a thick coat.", "הם הבחינו במטייל שהלך לאורך הדרך במעיל עבה.");
+  S("b7a", 4, "Then / the Sun / began to shine, / gentle / and bright.", "ואז השמש התחילה לזרוח, עדינה ובהירה.");
+  S("b7c", 2, "I have always loved / books, / and I will be happy / to help / others / enjoy them / too.", "תמיד אהבתי ספרים, ואשמח לעזור גם לאחרים ליהנות מהם.");
+  S("b7c", 4, "I am responsible, / organized, / and comfortable / using computers.", "אני אחראי, מאורגן, ומרגיש בנוח להשתמש במחשבים.");
+
   /* ---------- טקסט חדש לכל תחנה מתקדמת, בנוי על מילים של התחנה שעוד לא הופיעו באף טקסט שלה ---------- */
   const ADD = [
 {id:"g9a", w:9, type:"diary", t:"A Week Full of Errands", he:"שבוע מלא בסידורים",

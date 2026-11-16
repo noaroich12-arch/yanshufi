@@ -48,6 +48,52 @@
   add(4, "Most participants improved; ___, the control group showed no change.", ["meanwhile","furthermore","thereby","hence"], "<b>meanwhile</b> כאן = ובאותו זמן, לעומת זאת.");
   add(4, "The author ignores economic factors. ___, the argument is incomplete.", ["Accordingly","Conversely","Albeit","Whereby"], "<b>Accordingly</b> = בהתאם לכך, לכן.");
   add(4, "___ the first trial, the second included adults.", ["Unlike","Despite","Hence","Thus"], "<b>Unlike</b> = בשונה מ.");
+  // תוספת כדי שבכל תחנה יהיו לפחות 24 שאלות (3 סבבים מלאים בלי חזרה)
+  add(1, "The shop was closed, ___ we went home.", ["so","but","or","because"], "<b>so</b> = לכן: התוצאה.");
+  add(1, "I can't come today ___ I am sick.", ["because","so","or","then"], "<b>because</b> = כי.");
+  add(1, "He is tired ___ happy after the trip.", ["but","or","so","if"], "<b>but</b> = אבל: שני רגשות שונים.");
+  add(1, "We can walk ___ take a taxi.", ["or","because","so","but"], "<b>or</b> = או.");
+  add(1, "Call me ___ you get home.", ["when","but","or","because"], "<b>when</b> = כאשר.");
+  add(1, "I bought bread ___ milk.", ["and","or","but","so"], "<b>and</b> = ו-.");
+  add(1, "___ it rains, we will stay inside.", ["If","But","And","So"], "<b>If</b> = אם.");
+  add(1, "I need fruit, ___ apples and bananas.", ["for example","because","but","or"], "<b>for example</b> = למשל.");
+  add(2, "The tickets were sold out. ___, we watched the game at home.", ["Instead","Moreover","Although","Despite"], "<b>Instead</b> = במקום זה.");
+  add(2, "___ he was nervous, he gave a great speech.", ["Although","Because","Therefore","Moreover"], "<b>Although</b> = למרות ש.");
+  add(2, "Bring water ___ you get thirsty.", ["in case","although","however","despite"], "<b>in case</b> = למקרה ש.");
+  add(2, "He listened to music ___ he cleaned the kitchen.", ["while","therefore","despite","unless"], "<b>while</b> = בזמן ש.");
+  add(2, "The bus was late. ___, I missed the first lesson.", ["As a result","However","Instead","Although"], "<b>As a result</b> = כתוצאה מכך.");
+  add(2, "The phone is cheap. ___, it has a great camera.", ["Moreover","However","Instead","Unless"], "<b>Moreover</b> = יתרה מזאת.");
+  add(2, "The road was icy. ___, the race was cancelled.", ["Therefore","However","Although","For instance"], "<b>Therefore</b> = לכן.");
+  add(2, "You won't get in ___ you have a ticket.", ["unless","because","so","moreover"], "<b>unless</b> = אלא אם כן.");
+  add(3, "The first chapter is slow; ___, the ending is brilliant.", ["nevertheless","consequently","similarly","so that"], "<b>nevertheless</b> = אף על פי כן.");
+  add(3, "Some students prefer mornings, ___ others study best at night.", ["whereas","since","so that","due to"], "<b>whereas</b> = בעוד ש.");
+  add(3, "The factory closed. ___, hundreds of workers lost their jobs.", ["Consequently","Whereas","Provided that","In spite of"], "<b>Consequently</b> = כתוצאה מכך.");
+  add(3, "The flight was delayed ___ heavy fog.", ["due to","even though","so that","whereas"], "<b>due to</b> = בגלל, ואחריה שם עצם.");
+  add(3, "___ she was the youngest, she led the team.", ["Even though","Due to","So that","Similarly"], "<b>Even though</b> = אף על פי ש.");
+  add(3, "Plants need light to grow. ___, they need water and minerals.", ["In addition","Whereas","Unless","Even though"], "<b>In addition</b> = בנוסף.");
+  add(4, "The hypothesis was rejected; ___, further research is needed.", ["hence","albeit","whereas","notwithstanding"], "<b>hence</b> = לכן.");
+  add(4, "The policy succeeded, ___ only partially.", ["albeit","thus","whereby","hence"], "<b>albeit</b> = אם כי.");
+  add(4, "Higher prices reduce demand; ___, lower prices increase it.", ["conversely","furthermore","thereby","albeit"], "<b>conversely</b> = להפך.");
+  add(4, "The report is detailed. ___, it offers clear recommendations.", ["Furthermore","Conversely","Notwithstanding","Albeit"], "<b>Furthermore</b> = יתרה מזאת.");
+  add(4, "Trees absorb carbon, ___ reducing the effects of pollution.", ["thereby","whereas","albeit","conversely"], "<b>thereby</b> = ובכך.");
+  add(4, "The two groups differed in age. ___, their results were similar.", ["Nonetheless","Hence","Thereby","Whereby"], "<b>Nonetheless</b> = אף על פי כן (רשמי).");
+  add(4, "The questionnaire was translated ___ ensure that all participants understood it.", ["so as to","whereby","albeit","hence"], "<b>so as to</b> = כדי ל-.");
+  add(4, "___ previous studies, this one followed participants for ten years.", ["In contrast to","Hence","Thus","Albeit"], "<b>In contrast to</b> = בניגוד ל-.");
   window.CONNECT_LV = {f1:1, f2:2, f3:3, f4:4};
+  // משפטים בודדים ביחידות שהיה בהם צליל שעוד לא נלמד (rest, jumps, play, each, statue, rescue, knew, looked, under)
+  window.SENT_PATCH = Object.assign(window.SENT_PATCH || {}, {
+    e:   {P4:["Jen lets the hen nap.","ג׳ן נותנת לתרנגולת לנמנם."], P5:["The hen is fed.","התרנגולת שבעה."]},
+    u:   {P2:["The pup runs in the mud.","הגור רץ בבוץ."]},
+    pay: {P4:["Ray and the jay sit by the bay.","ריי והעורבני יושבים ליד המפרץ."]},
+    pea: {P5:["The seal and Jean meet day by day.","כלב הים וג׳ין נפגשים יום אחרי יום."]},
+    ew:  {R1:["a blue screw","בורג כחול"], R2:["Sue grew it.","סו גידלה את זה."], R3:["Drew can chew stew.","דרו יכול ללעוס תבשיל."],
+          P1:["Drew and Sue go to the zoo.","דרו וסו הולכים לגן החיות."], P3:["Drew: Is it true?","דרו: זה נכון?"],
+          P4:["Sue: It is a newt, and it is new!","סו: זה טריטון, והוא חדש!"], P5:["Drew and Sue are in the news!","דרו וסו בחדשות!"]},
+    heart2: {P1:["Jean went to her room, but the glove was gone.","ג׳ין הלכה לחדר שלה, אבל הכפפה נעלמה."], P4:["There was the glove, by the dog!","שם הייתה הכפפה, ליד הכלב!"]}
+  });
+  // wanted: ה-a נשמעת אחרת אחרי w, וזה נלמד רק בתחנה האחרונה. ביחידת ed ובחזרה שלה היא מוחלפת
+  const WP = window.WORD_PATCH = window.WORD_PATCH || {};
+  WP.ed = Object.assign(WP.ed || {}, {wanted:["printed","הדפיס"]});
+  WP.r6 = Object.assign(WP.r6 || {}, {wanted:["rested","נח"]});
   (window.RESTATE || []).forEach((q, i) => { q.st = i % 2 ? "f5" : "f4"; });
 })();
