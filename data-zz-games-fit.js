@@ -122,4 +122,47 @@
   WP.ed = Object.assign(WP.ed || {}, {wanted:["printed","הדפיס"]});
   WP.r6 = Object.assign(WP.r6 || {}, {wanted:["rested","נח"]});
   (window.RESTATE || []).forEach((q, i) => { q.st = i % 2 ? "f5" : "f4"; });
-})();
+  // פירוש לכל מילה בטקסטים המתקדמים שאינה ברשימות אוקספורד ואינה במילים של התחנה (נבדק בסקריפט adv_gloss.py)
+  const GL_ADD = {"a9c": {"caf": "קפה (בית קפה, café)", "weekday": "יום חול (לא סוף שבוע)"}, "a10a": {"sunlight": "אור שמש"}, "a10c": {"fist": "אגרוף (יד קפוצה)"}, "a11a": {"grammar": "דקדוק"}, "a11b": {"classmates": "חברים לכיתה"}, "a11c": {"banned": "נאסר", "banning": "איסור", "learners": "לומדים", "wellbeing": "רווחה, הרגשה טובה"}, "a11d": {"bakeries": "מאפיות", "hedgehogs": "קיפודים"}, "a12a": {"relied": "הסתמכו", "ineffective": "לא יעיל", "learners": "לומדים", "quizzes": "בחנים קצרים"}, "a12b": {"conditioners": "מזגנים (air conditioners)", "endanger": "לסכן", "sunlight": "אור שמש"}, "a12c": {"bilingualism": "דו-לשוניות", "replicate": "לשחזר (ניסוי)"}, "a13a": {"shoppers": "קונים", "prone": "נוטה ל-"}, "a13b": {"adolescence": "גיל ההתבגרות", "hormone": "הורמון"}, "a13c": {"livestock": "בעלי חיים במשק (פרות, כבשים)"}, "c9b": {"dripping": "מטפטף"}, "c10a": {"carrier": "נשא, מעביר"}, "c10b": {"preview": "תצוגה מקדימה", "inactive": "לא פעיל"}, "c10c": {"faithfully": "בנאמנות"}, "c10d": {"dripping": "מטפטף", "drips": "טפטופים"}, "c11b": {"evaporates": "מתאדה"}, "c12a": {"wellbeing": "רווחה, הרגשה טובה"}, "c12b": {"rainfall": "כמות גשם", "galaxies": "גלקסיות", "telescopes": "טלסקופים"}, "c12c": {"refocus": "למקד מחדש", "multitask": "לעשות כמה דברים בבת אחת", "multitaskers": "אנשים שעושים כמה דברים בבת אחת"}, "c12d": {"reefs": "שוניות", "microscopic": "זעיר, נראה רק במיקרוסקופ", "expel": "לגרש, להוציא", "resistant": "עמיד", "overfishing": "דיג יתר"}, "c12e": {"carried": "נשא, העביר", "trader": "סוחר", "kilometers": "קילומטרים"}, "c12f": {"forgotten": "נשכח", "unimportant": "לא חשוב"}, "c12g": {"planners": "מתכננים, יומני תכנון", "nutrients": "חומרי הזנה"}, "c13a": {"fatigue": "עייפות", "proven": "הוכח"}, "c13b": {"millimeters": "מילימטרים", "unclear": "לא ברור", "microplastics": "חלקיקי פלסטיק זעירים", "particles": "חלקיקים"}, "c13c": {"magpies": "עורבנים (ציפורים)", "modified": "שונה, עבר שינוי", "scent": "ריח"}, "c13d": {"occurred": "קרה", "eyewitness": "עד ראייה"}, "c13f": {"fifteenth": "חמישה עשר (המאה ה-15)", "movable": "נייד, שאפשר להזיז"}, "c13g": {"vertebrates": "בעלי חוליות", "contagion": "הידבקות"}, "e11b": {"doomed": "נידון לכישלון"}, "e13a": {"streak": "רצף", "overestimate": "להעריך יותר מדי"}, "e13b": {"impartiality": "חוסר משוא פנים", "neutrality": "ניטרליות", "crises": "משברים", "respectful": "מכבד"}, "e10a": {"pigeons": "יונים"}, "e12b": {"resilient": "עמיד, גמיש נפשית"}, "g9a": {"allergy": "אלרגיה", "technician": "טכנאי"}, "g11a": {"rigidly": "בנוקשות", "admitting": "להודות"}, "g12a": {"methodological": "מתודולוגי, של שיטת המחקר", "measurable": "שאפשר למדוד"}, "g13a": {"hardship": "קושי, מצוקה", "resilience": "חוסן", "willpower": "כוח רצון"}};
+  Object.entries(GL_ADD).forEach(([id,m])=>{ const t=TT(id); if(t) t.gl=Object.assign({}, t.gl||{}, m); });
+  // שאלות נוספות למילות קישור, מתוך הטקסטים של כל תחנה (16.11.2026): משפט מהטקסט עם מקום ריק במקום מילת הקישור.
+  // רק מילות קישור של הרמה של התחנה, והתשובות השגויות מאותה רמה.
+  const CW = {1:["because","but","so","for example"], 2:["however","although","therefore","moreover","instead","while","unless","despite","as a result","for instance","in case"],
+    3:["nevertheless","consequently","whereas","on the other hand","similarly","even though","so that","due to","provided that","in spite of","in addition","yet"],
+    4:["hence","thus","albeit","conversely","furthermore","whereby","thereby","notwithstanding","in contrast","accordingly","nonetheless","meanwhile","that said"]};
+  const TY = {because:"S",although:"S",while:"S",unless:"S","even though":"S","so that":"S","provided that":"S","in case":"S",whereas:"S",whereby:"S",albeit:"P",
+    but:"C",so:"C",yet:"C", despite:"P","due to":"P","in spite of":"P",notwithstanding:"P"};
+  const CAT = {but:"contrast",however:"contrast",although:"contrast",nevertheless:"contrast",yet:"contrast",whereas:"contrast","even though":"contrast","on the other hand":"contrast",despite:"contrast","in spite of":"contrast",conversely:"contrast","in contrast":"contrast",nonetheless:"contrast",albeit:"contrast",notwithstanding:"contrast","that said":"contrast",
+    so:"result",therefore:"result","as a result":"result",consequently:"result",hence:"result",thus:"result",accordingly:"result",thereby:"result",
+    moreover:"add","in addition":"add",furthermore:"add",similarly:"add","for example":"example","for instance":"example",because:"cause","due to":"cause",
+    unless:"cond","provided that":"cond","in case":"cond","so that":"purpose",while:"time",meanwhile:"time",instead:"alt",whereby:"means"};
+  const XP = {}; C.forEach(q => { const k=q.o[q.a].toLowerCase(); if(!XP[k]) XP[k]=q.x; });
+  const have = new Set(C.map(q => q.s));
+  const cap = (w, up) => up ? w[0].toUpperCase() + w.slice(1) : w;
+  [1,2,3,4].forEach(lv => {
+    const words = CW[lv].slice().sort((a,b) => b.length - a.length);
+    (window.TEXTS||[]).filter(t => ({1:[9],2:[9,10],3:[10,11],4:[11,12,13]})[lv].includes(t.w)).forEach(t => (t.s||[]).forEach(s0 => {
+      const txt = s0[0].replace(/\s*\/\s*/g, " ").replace(/\s+/g, " ").trim();
+      if(txt.length > 150) return;
+      for(const w of words){ if(!txt) break;
+        const m = txt.match(new RegExp("(^|[^A-Za-z])(" + w + ")(?![A-Za-z])", "i"));
+        if(!m) continue;
+        const at = m.index + m[1].length, up = at === 0;
+        const s = txt.slice(0, at) + "___" + txt.slice(at + w.length);
+        if(have.has(s)) return; have.add(s);
+        // סוג דקדוקי: S = לפני משפט שלם (although), A = מילה עם פסיק (however,), P = לפני שם עצם (despite), C = מחבר (but)
+        const ty = x => TY[x] || "A", T0 = ty(w), after = txt.slice(at + w.length);
+        if(T0 === "A" && !/^,/.test(after)) continue;          // מילה כזו באה עם פסיק אחריה
+        if(T0 === "P" && /^,/.test(after)) continue;
+        if(T0 === "C" && at > 0 && !/,\s*$/.test(txt.slice(0, at))) continue;   // but/so/yet רק כשהן מחברות שני משפטים, אחרי פסיק
+        const okT = {S:["A","P"], A:["S","P"], P:["S","A","C"], C:["A","P"]}[T0];
+        const sameCat = x => CAT[x] && CAT[x] === CAT[w];
+        let pool = CW[lv].filter(x => x !== w && okT.includes(ty(x)) && !sameCat(x));
+        if(pool.length < 3) pool = pool.concat([].concat(CW[lv-1]||[], lv===1 ? CW[2] : []).filter(x => x !== w && okT.includes(ty(x)) && !sameCat(x) && !pool.includes(x)));
+        if(pool.length < 3) continue;
+        const others = pool.slice(0, 12).sort(() => Math.random() - .5).slice(0, 3);        C.push({s, o:[cap(w, up)].concat(others.map(x => cap(x, up))), a:0, lv, src:t.id,
+                x:(XP[w] || "<b>" + w + "</b>") + " (המשפט מתוך הטקסט <bdi>" + (t.t||"") + "</bdi>)"});
+        return;
+      }
+    }));
+  });})();
