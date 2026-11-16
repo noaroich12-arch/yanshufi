@@ -219,21 +219,23 @@
   S("w6e", 6, "Nurse: / Not this week. / When you feel well, / you can dance / once more.", "אחות: לא השבוע. כשתרגישי טוב, תוכלי לרקוד שוב.");
   Q("w6e", 0, ["פרט", "מה האחות ממליצה?", ["לשתות תה חם ולנוח", "לרקוד", "ללכת לבית הספר"], 0]);
   Q("w6e", 1, ["הסקה", "איך בת׳ מרגישה כשהיא שומעת שאין חוג השבוע?", ["כנראה מאוכזבת", "שמחה מאוד", "כועסת על האחות"], 0]);
-  SET("b6a", {gl:{peacock:"טווס", boastful:"רברבן", tail:"זנב", useful:"שימושי"}});
-  S("b6a", 0, "A peacock / walked up and down / the yard, / showing off / his bright tail.", "טווס הלך הלוך ושוב בחצר והשוויץ בזנב הצבעוני שלו.");
+  SET("b6a", {t:"The Boastful Jay", he:"העורבני הרברבן", gl:{jay:"עורבני (ציפור כחולה)", boastful:"רברבן", tail:"זנב", useful:"שימושי"}});
+  S("b6a", 0, "A blue jay / walked up and down / the yard, / showing off / his bright tail.", "עורבני כחול הלך הלוך ושוב בחצר והשוויץ בזנב הצבעוני שלו.");
+  S("b6a", 4, "The jay / tried / and jumped, / but he only reached / the top / of the fence.", "העורבני ניסה וקפץ, אבל הגיע רק לראש הגדר.", ["לאן הגיע העורבני?", ["לראש הגדר", "מעל העננים", "לגג"], 0]);
   S("b6a", 1, "Look at me! / I am the finest / of all the birds!", "תסתכלו עליי! אני הציפור הכי יפה מכל הציפורים!");
   S("b6a", 3, "Your tail / is lovely, / said the crane, / but can you fly / up past the clouds?", "הזנב שלך יפה, אמר העגור, אבל אתה יכול לעוף אל מעבר לעננים?");
-  S("b6a", 6, "A fine tail / is nice, / the peacock said softly, / but useful wings / count too.", "זנב יפה זה נחמד, אמר הטווס בשקט, אבל גם כנפיים שימושיות חשובות.");
+  S("b6a", 6, "A fine tail / is nice, / the jay said softly, / but useful wings / count too.", "זנב יפה זה נחמד, אמר העורבני בשקט, אבל גם כנפיים שימושיות חשובות.");
   S("b6b", 0, "Our bodies / do best / when they stay / near 37 degrees.", "הגוף שלנו עובד הכי טוב כשהוא נשאר קרוב ל-37 מעלות.");
   S("b6b", 3, "The moving muscles / make heat / and warm us up.", "השרירים שזזים מייצרים חום ומחממים אותנו.");
+  Q("b6a", 2, ["הסקה", "מה העורבני הבין בסוף?", ["שגם תועלת חשובה, לא רק יופי", "שהוא יודע לעוף", "שהעגור מכוער"], 0]);
   S("b6b", 4, "When we are / too hot, / we start sweating.", "כשחם לנו מדי, אנחנו מתחילים להזיע.");
-  S("b6b", 6, "Both / are smart tricks / the body / uses / to keep itself safe.", "שתיהן דרכים חכמות שהגוף משתמש בהן כדי לשמור על עצמו.");
+  S("b6b", 6, "Both / are smart tricks / to keep / the body safe.", "שתיהן דרכים חכמות לשמור על הגוף.");
   Q("b6b", 1, ["פרט", "מה קורה כשחם לנו מדי?", ["מתחילים להזיע", "רועדים", "נרדמים"], 0]);
   SET("b6c", {gl:{trusted:"סמכת", kind:"אדיב", scared:"מפוחד", braver:"אמיצה יותר"}});
   S("b6c", 1, "This note / is to thank you / for the best year / I have had.", "המכתב הזה הוא כדי להודות לך על השנה הכי טובה שהייתה לי.");
   S("b6c", 2, "At the start, / I was scared / and hated / reading out loud.", "בהתחלה פחדתי ושנאתי לקרוא בקול.");
   S("b6c", 3, "You were / kind / and never rushed me.", "היית אדיב ואף פעם לא האצת בי.", ["איך המורה התנהג?", ["באדיבות ובלי לחץ", "בכעס", "בחוסר עניין"], 0]);
-  S("b6c", 4, "You trusted me / when I did not / trust myself.", "סמכת עליי כשאני לא סמכתי על עצמי.");
+  S("b6c", 4, "You trusted me / when I did not.", "סמכת עליי, גם כשאני לא סמכתי.");
   S("b6c", 5, "Now / I am reading / my third book / this month, / and I feel / much braver.", "עכשיו אני קוראת את הספר השלישי שלי החודש, ואני מרגישה הרבה יותר אמיצה.");
   Q("b6c", 1, ["סדר", "איך לילי הרגישה בהתחלה?", ["מפוחדת", "בטוחה בעצמה", "משועממת"], 0]);
   Q("b6c", 2, ["הסקה", "מה עזר ללילי יותר מכל?", ["האדיבות והאמון של המורה", "ספרים קלים", "שיעורי בית"], 0]);
@@ -266,4 +268,91 @@
   S("b7c", 2, "I have always loved / books, / and I would be happy / to help / others / enjoy them / too.", "תמיד אהבתי ספרים, ואשמח לעזור גם לאחרים ליהנות מהם.");
   S("b7c", 3, "Last summer, / I volunteered / at a children's camp, / where I read stories / to little campers / every afternoon.", "בקיץ שעבר התנדבתי במחנה ילדים, שם הקראתי סיפורים לחניכים קטנים בכל אחר צהריים.");
   S("b7c", 6, "Thank you / for considering / my request.", "תודה ששקלת את הבקשה שלי.");
+
+  /* ---------- טקסט חדש לכל תחנה מתקדמת, בנוי על מילים של התחנה שעוד לא הופיעו באף טקסט שלה ---------- */
+  const ADD = [
+{id:"g9a", w:9, type:"diary", t:"A Week Full of Errands", he:"שבוע מלא בסידורים",
+ gl:{appointment:"תור, פגישה", prescription:"מרשם", pharmacy:"בית מרקחת", receipt:"קבלה", warranty:"אחריות על מוצר", appliance:"מכשיר חשמלי ביתי", leftovers:"שאריות אוכל", relieved:"נרגעה, שמחה שזה נגמר"},
+ s:[
+  ["On Monday / I felt dizzy / all morning, / so I made / an appointment / with my doctor.", "ביום שני הרגשתי סחרחורת כל הבוקר, אז קבעתי תור אצל הרופאה שלי."],
+  ["She said / it was only / a mild symptom / of my allergy / and gave me / a prescription.", "היא אמרה שזה רק תסמין קל של האלרגיה שלי ונתנה לי מרשם.", ["מה הרופאה נתנה?", ["מרשם", "חשבונית", "סיסמה"], 0]],
+  ["The pharmacy / near my house / was closed, / so I had to / postpone / the treatment / until Tuesday.", "בית המרקחת ליד הבית שלי היה סגור, אז נאלצתי לדחות את הטיפול עד יום שלישי."],
+  ["On Wednesday / our old fridge / stopped working.", "ביום רביעי המקרר הישן שלנו הפסיק לעבוד."],
+  ["Luckily, / I still had / the receipt, / and the appliance / was under warranty.", "למזל, עוד הייתה לי הקבלה, והמכשיר היה באחריות.", ["למה התיקון לא עלה כסף?", ["המקרר היה באחריות", "השכן שילם", "הם קנו מקרר חדש"], 0]],
+  ["A technician / came / to install / a new part / for free.", "טכנאי הגיע להתקין חלק חדש בחינם."],
+  ["Meanwhile, / we ate / leftovers / from the weekend: / bland rice / and very spicy soup.", "בינתיים אכלנו שאריות מסוף השבוע: אורז תפל ומרק חריף מאוד."],
+  ["By Friday / I had recovered, / the fridge / was working, / and I was / so relieved.", "עד יום שישי התאוששתי, המקרר עבד, והרגשתי הקלה גדולה."]],
+ q:[["רעיון","על מה היומן?",["שבוע עם בעיות קטנות שנפתרו","טיול לחו״ל","מסיבת יום הולדת"],0],
+    ["סדר","מה קרה לפני שהמקרר התקלקל?",["היא קיבלה מרשם","הטכנאי הגיע","היא התאוששה"],0],
+    ["מילה","מה פירוש postpone?",["לדחות למועד מאוחר","לבטל לגמרי","להקדים"],0]]},
+{id:"g10a", w:10, type:"article", t:"How One Village Saved Its River", he:"איך כפר אחד הציל את הנהר שלו",
+ gl:{rural:"כפרי", inhabitant:"תושב", initiative:"יוזמה", obstacle:"מכשול", incentive:"תמריץ", thorough:"יסודי", reveal:"לחשוף", reinforce:"לחזק"},
+ s:[
+  ["Ten years ago, / the river / near a small rural village / was full of rubbish / and bacteria.", "לפני עשר שנים, הנהר ליד כפר קטן היה מלא זבל וחיידקים."],
+  ["Most inhabitants / considered / the situation / inevitable / and did nothing.", "רוב התושבים חשבו שהמצב בלתי נמנע ולא עשו דבר."],
+  ["Then / a local teacher / launched / an initiative / to establish / a weekly cleaning group.", "ואז מורה מקומית יזמה יוזמה להקים קבוצת ניקיון שבועית.", ["מי התחילה את היוזמה?", ["מורה מקומית", "ראש העיר", "חברה גדולה"], 0]],
+  ["The initial / response / was disappointing, / and the group / faced / one obstacle / after another.", "התגובה הראשונית הייתה מאכזבת, והקבוצה נתקלה במכשול אחרי מכשול."],
+  ["To overcome / this challenge, / the village / offered / a small incentive: / free meals / for every volunteer.", "כדי להתגבר על האתגר הזה, הכפר הציע תמריץ קטן: ארוחות חינם לכל מתנדב."],
+  ["Scientists / conducted / a thorough study / of the water / every month.", "מדענים ערכו בדיקה יסודית של המים בכל חודש."],
+  ["The results / revealed / a dramatic decrease / in pollution / within two years.", "התוצאות חשפו ירידה חדה בזיהום תוך שנתיים.", ["מה הבדיקות הראו?", ["ירידה חדה בזיהום", "שהנהר התייבש", "שאין שינוי"], 0]],
+  ["Moreover, / fish / that had disappeared / began to emerge / again.", "יתרה מזאת, דגים שנעלמו התחילו להופיע שוב."],
+  ["The project / reinforced / the village's reputation / and transformed / the way people / see their river.", "הפרויקט חיזק את המוניטין של הכפר ושינה מהותית את האופן שבו אנשים רואים את הנהר שלהם."]],
+ q:[["רעיון","מה הרעיון המרכזי?",["יוזמה קטנה שינתה את מצב הנהר","כפר שעזב את הנהר","נהר שהתייבש"],0],
+    ["הסקה","למה הכפר נתן ארוחות חינם?",["כדי לעודד אנשים להתנדב","כי היה להם הרבה אוכל","כדי למכור מסעדה"],0],
+    ["מילה","מה פירוש Moreover?",["יתרה מזאת","לעומת זאת","לכן"],0]]},
+{id:"g11a", w:11, type:"opinion", t:"Why Curiosity Deserves a Place in School", he:"למה לסקרנות מגיע מקום בבית הספר",
+ gl:{curiosity:"סקרנות", neglect:"להזניח", flourish:"לשגשג", reluctant:"מסויג, לא מתלהב", vulnerable:"פגיע", tolerate:"לסבול, להכיל", breakthrough:"פריצת דרך", inspiration:"השראה"},
+ s:[
+  ["Schools / often neglect / one of the most valuable / qualities / a student has: / curiosity.", "בתי ספר מזניחים לעתים קרובות את אחת התכונות החשובות ביותר שיש לתלמיד: סקרנות."],
+  ["When the scope / of a lesson / is too rigidly defined, / eager questions / are quietly suppressed.", "כשההיקף של שיעור מוגדר בנוקשות רבה מדי, שאלות נלהבות מדוכאות בשקט.", ["What happens to students' questions?", ["They are suppressed", "They are rewarded", "They are written down"], 0]],
+  ["Many pupils / become reluctant / to speak, / because / admitting confusion / makes them feel / vulnerable.", "תלמידים רבים נעשים מסויגים מלדבר, כי ההודאה בבלבול גורמת להם להרגיש פגיעים."],
+  ["Yet / the history of science / suggests / that curiosity / is often / the source / of every breakthrough.", "ועם זאת, תולדות המדע מרמזות שהסקרנות היא לעתים קרובות המקור של כל פריצת דרך."],
+  ["Teachers / who tolerate / a little uncertainty / allow / their students / to flourish.", "מורים שמוכנים לסבול מעט אי-ודאות מאפשרים לתלמידים שלהם לשגשג."],
+  ["A persistent question, / even an absurd one, / can be / a powerful inspiration.", "שאלה עיקשת, אפילו מופרכת, יכולה להיות השראה חזקה."],
+  ["Of course, / curiosity / must adhere / to some structure; / otherwise / lessons / would lose / their clarity.", "כמובן, הסקרנות צריכה להישמר בתוך מבנה מסוים; אחרת השיעורים יאבדו את הבהירות שלהם."],
+  ["Still, / the most compelling / argument / is simple: / students / who ask / are students / who learn.", "ועדיין, הטיעון המשכנע ביותר הוא פשוט: תלמידים ששואלים הם תלמידים שלומדים.", ["What is the writer's main claim?", ["Students who ask questions learn", "Schools should have no rules", "Science is too difficult"], 0]]],
+ q:[["רעיון","What is the writer's opinion?",["Schools should make room for curiosity","Curiosity disturbs learning","Teachers ask too many questions"],0],
+    ["הסקה","Why does the writer mention structure?",["To show the idea has limits","To reject curiosity","To describe a building"],0],
+    ["מילה","'neglect' means...",["to fail to give attention to","to praise","to measure"],0]]},
+{id:"g12a", w:12, type:"academic", t:"Measuring Happiness: A Methodological Problem", he:"למדוד אושר: בעיה מתודולוגית",
+ gl:{methodology:"שיטת מחקר", variable:"משתנה", correlation:"מתאם", indicator:"מדד", validity:"תוקף", dispute:"לערער על", synthesis:"שילוב", systematic:"שיטתי"},
+ s:[
+  ["Researchers / who study happiness / face / a fundamental / methodological problem.", "חוקרים שחוקרים אושר ניצבים מול בעיה מתודולוגית יסודית."],
+  ["Happiness / is not / a variable / that can be measured / with the precision / of temperature or density.", "אושר אינו משתנה שאפשר למדוד בדיוק של טמפרטורה או צפיפות."],
+  ["Most studies / therefore / rely on / self-reports, / which serve / as an indicator / of well-being.", "לכן רוב המחקרים מסתמכים על דיווח עצמי, המשמש מדד לרווחה."],
+  ["However, / critics / dispute / the validity / of this approach, / since answers / may be distorted / by mood / or social pressure.", "עם זאת, מבקרים מערערים על התוקף של גישה זו, מפני שהתשובות עלולות להיות מעוותות בגלל מצב רוח או לחץ חברתי.", ["Why do critics doubt self-reports?", ["Mood and social pressure can distort them", "They are too expensive", "They measure temperature"], 0]],
+  ["Another difficulty / is the distinction / between correlation / and cause.", "קושי נוסף הוא ההבחנה בין מתאם לבין סיבה."],
+  ["Income / and happiness / correlate, / but this relationship / is not linear: / beyond a certain point, / more money / adds minimal / satisfaction.", "הכנסה ואושר נמצאים במתאם, אבל הקשר הזה אינו לינארי: מעבר לנקודה מסוימת, יותר כסף מוסיף סיפוק מזערי.", ["What happens beyond a certain income?", ["Extra money adds little satisfaction", "Happiness doubles", "People stop working"], 0]],
+  ["A more systematic approach / combines / surveys, / behaviour / and biological data / in a single synthesis.", "גישה שיטתית יותר משלבת סקרים, התנהגות ונתונים ביולוגיים לסינתזה אחת."],
+  ["Such work / cannot verify / happiness / directly, / but it can / reduce / the complexity / of the question / to measurable parameters.", "עבודה כזו לא יכולה לאמת אושר ישירות, אבל היא יכולה לצמצם את מורכבות השאלה לפרמטרים מדידים."]],
+ q:[["רעיון","What is the main idea of the passage?",["Happiness is hard to measure reliably","Money always brings happiness","Surveys are perfect tools"],0],
+    ["מבנה","What is the role of the word 'However' in sentence 4?",["It introduces a criticism","It gives an example","It ends the argument"],0],
+    ["מילה","'linear' in this context means...",["changing at a steady, constant rate","very fast","unclear"],0]]},
+{id:"g13a", w:13, type:"essay", t:"The Paradox of Resilience", he:"הפרדוקס של החוסן",
+ gl:{resilient:"עמיד, גמיש נפשית", paradox:"פרדוקס", mundane:"שגרתי", exacerbate:"להחמיר", mitigate:"למתן", tenacious:"נחוש, עקשן", cumulative:"מצטבר", candid:"גלוי לב"},
+ s:[
+  ["Resilience / is often / portrayed / as a dramatic quality, / yet / its roots / are surprisingly / mundane.", "חוסן מתואר לעתים קרובות כתכונה דרמטית, אך שורשיו שגרתיים להפתיע."],
+  ["Herein / lies / a paradox: / those who seem / most resilient / are rarely / the most rigid.", "כאן טמון פרדוקס: מי שנראים העמידים ביותר הם לעתים רחוקות הנוקשים ביותר.", ["What is the paradox?", ["The most resilient people are not the most rigid", "Rigid people never fail", "Resilience is always dramatic"], 0]],
+  ["Rigidity / may help a person / withstand / a single blow, / but under / incessant pressure / it tends to / exacerbate / the damage.", "נוקשות עשויה לעזור לאדם לעמוד במכה אחת, אבל תחת לחץ בלתי פוסק היא נוטה להחמיר את הנזק."],
+  ["Flexibility, / by contrast, / allows / the effects / of hardship / to dwindle / over time.", "גמישות, לעומת זאת, מאפשרת להשפעות הקושי להצטמצם עם הזמן."],
+  ["The benefits / are cumulative: / small, / tangible habits, / such as sleep / or a candid conversation, / mitigate / stress / more than / grand gestures do.", "התועלות מצטברות: הרגלים קטנים ומוחשיים, כמו שינה או שיחה גלויה, ממתנים לחץ יותר ממחוות גדולות.", ["According to the passage, what reduces stress most?", ["Small, regular habits", "Grand gestures", "Avoiding all people"], 0]],
+  ["It would be / superficial, / however, / to deduce / that resilience / is merely / a matter of willpower.", "עם זאת, יהיה זה שטחי להסיק שחוסן הוא רק עניין של כוח רצון."],
+  ["Circumstances / matter: / a person / facing / scarce resources / may be / tenacious / and still struggle.", "הנסיבות חשובות: אדם שמשאביו מועטים יכול להיות נחוש ועדיין להתקשות."],
+  ["A lucid account / of resilience / must therefore / reconcile / individual effort / with the conditions / that make / such effort / feasible.", "תיאור צלול של חוסן חייב אפוא ליישב בין מאמץ אישי לבין התנאים שמאפשרים מאמץ כזה."]],
+ q:[["רעיון","What is the author's central argument?",["Resilience depends on flexibility, habits and circumstances","Resilience is only willpower","Rigid people recover fastest"],0],
+    ["הסקה","Why does the author mention scarce resources?",["To show that effort alone is not enough","To praise poverty","To change the subject"],0],
+    ["מילה","'dwindle' is closest in meaning to...",["gradually decrease","suddenly explode","stay the same"],0],
+    ["מילה","'exacerbate' is the opposite of...",["mitigate","deduce","withstand"],0]]}
+  ];
+  window.TEXTS = (window.TEXTS||[]).filter(t => !ADD.some(a => a.id === t.id)).concat(ADD);
+
+  /* ---------- תחנות מתקדמות f1-f2: מילים שאוקספורד מסמנת C1 הוחלפו, חוץ ממילות הדירה (landlord, leak, deposit, lease) שהן אוצר המילים של f1 ---------- */
+  S("c9a", 4, "A woman / on a seat / said: / Call the bus company. / Drivers / often find things.", "אישה שישבה על מושב אמרה: תתקשרי לחברת האוטובוסים. נהגים מוצאים דברים לעיתים קרובות.");
+  S("e9a", 3, "The rent / includes the bills, / so I can afford it / on my budget.", "השכירות כוללת את החשבונות, אז אני יכולה להרשות לעצמי את זה בתקציב שלי.");
+  S("a10b", 0, "Three years ago, / the small town / of Bayport, / by the sea, / decided / to ban plastic bags.", "לפני שלוש שנים העיירה הקטנה ביי-פורט, שעל שפת הים, החליטה לאסור שקיות פלסטיק.");
+  S("a10c", 1, "Its main job / is to move blood / around the body.", "התפקיד העיקרי שלו הוא להזרים דם לכל הגוף.");
+  S("a10c", 4, "Then / the blood returns / to the heart, / which pushes it out / again / to the rest of the body.", "אחר כך הדם חוזר ללב, שדוחף אותו שוב החוצה לשאר הגוף.");
+  S("c10b", 4, "It contains / a weak / or inactive form / of the germ, / or just / a small part of it.", "יש בו גרסה חלשה או לא פעילה של החיידק, או רק חלק קטן ממנו.");
+  S("c10d", 3, "Surprisingly, / a dripping toilet / can waste / hundreds of liters / a day / without anyone noticing.", "באופן מפתיע, אסלה שמטפטפת יכולה לבזבז מאות ליטרים ביום בלי שאף אחד ישים לב.", ["מה מבזבז מים בלי שמרגישים?", ["אסלה שמטפטפת", "מכונת כביסה", "מקלחת קצרה"], 0]);
+  S("c10d", 5, "Taking / shorter showers, / fixing drips / quickly, / and running / the washing machine / only when it is full / can reduce / consumption / by up to thirty percent.", "מקלחות קצרות יותר, תיקון מהיר של טפטופים והפעלת מכונת הכביסה רק כשהיא מלאה, יכולים להפחית את הצריכה עד שלושים אחוז.");
 })();

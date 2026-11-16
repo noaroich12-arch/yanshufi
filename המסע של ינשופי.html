@@ -367,6 +367,7 @@ img,svg,video,canvas{max-width:100%}
 <script src="data-texts6.js"></script>
 <script src="data-texts7.js"></script>
 <script src="data-texts8-fit.js"></script>
+<script src="data-zz-games-fit.js"></script>
 <script src="data-vocab.js"></script>
 <script src="data-vocab2.js"></script>
 <script src="data-vocab3.js"></script>
@@ -1842,6 +1843,7 @@ const SISTERS = {
         וגם אז מה שהיה בסיבוב האחרון לא חוזר מיד. נשמר בין פתיחות של המשחק ---- */
 function freshPick(key, pool, n, idf){
   idf = idf || (x=>typeof x==="string"?x:JSON.stringify(x));
+  if(typeof SCOPE_W!=="undefined" && SCOPE_W!==null) key=key+"@"+SCOPE_W; // לכל תחנה זיכרון נפרד של מה שכבר הוצג
   save.seen=save.seen||{}; const seen=save.seen[key]||[];
   const fresh=pool.filter(x=>!seen.includes(idf(x)));
   if(fresh.length>=n){
@@ -3523,15 +3525,18 @@ function startComplete(set){
       opts:[v[0],...pickN(V.filter(x=>x!==v).map(x=>x[0]),3)],ans:0,en:true,x:`<bdi class="en">${v[0]}</bdi> = ${v[1]}`,sayAfter:v[2]}; });
   startQZ({title:"🧩 השלמת משפט",sis:"dikduka",again:`startComplete('${set}')`,back:"goMap()",items,intro:"כמו בפסיכומטרי: משפט עם מילה חסרה, וארבע אפשרויות. קוראים את כל המשפט, ומנסים להבין מה <b>ההקשר</b> דורש לפני שמסתכלים על התשובות."});
 }
-function startConnect(){
-  const items=freshPick("connect",window.CONNECT||[],8,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.6em;text-align:center;line-height:1.8">${q.s.replace("___",'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')}</p><p>איזו מילת קישור מתאימה?</p>`,
+function startConnect(st){
+  // בתחנה: רק מילות הקישור של הרמה שלה (data-zz-games-fit.js). בלי תחנה: הכול
+  const lv=st&&window.CONNECT_LV?CONNECT_LV[st]:0, pool=(window.CONNECT||[]).filter(q=>!lv||q.lv===lv);
+  const items=freshPick("connect"+(lv?"_"+lv:""),pool,8,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.6em;text-align:center;line-height:1.8">${q.s.replace("___",'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')}</p><p>איזו מילת קישור מתאימה?</p>`,
     opts:q.o,ans:q.a,en:true,x:q.x,sayAfter:q.s.replace("___",q.o[q.a])}));
-  startQZ({title:"🔗 מילות קישור",sis:"dikduka",again:"startConnect()",back:"goMap()",items,intro:"מילות קישור הן <b>שלטי הדרכים</b> של הטקסט: <bdi class='en'>but, so, because, however, although</bdi>. הן אומרות אם בא עכשיו ניגוד, סיבה, תוצאה או דוגמה. מי שמזהה אותן, מבין טקסט ארוך הרבה יותר בקלות."});
+  startQZ({title:"🔗 מילות קישור",sis:"dikduka",again:"startConnect("+(st?JSON.stringify(st):"")+")",back:"goMap()",items,intro:"מילות קישור הן <b>שלטי הדרכים</b> של הטקסט: <bdi class='en'>but, so, because, however, although</bdi>. הן אומרות אם בא עכשיו ניגוד, סיבה, תוצאה או דוגמה. מי שמזהה אותן, מבין טקסט ארוך הרבה יותר בקלות."});
 }
-function startRestate(){
-  const items=freshPick("restate",window.RESTATE||[],6,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.5em;text-align:center;line-height:1.8"><b>${q.s}</b></p><p>איזה משפט אומר <b>אותו דבר</b> במילים אחרות?</p>`,
+function startRestate(st){
+  const pool=(window.RESTATE||[]).filter(q=>!st||!q.st||q.st===st);
+  const items=freshPick("restate"+(st?"_"+st:""),pool,6,q=>q.s).map(q=>({show:`<p class="en" style="font-size:1.5em;text-align:center;line-height:1.8"><b>${q.s}</b></p><p>איזה משפט אומר <b>אותו דבר</b> במילים אחרות?</p>`,
     opts:q.o,ans:q.a,en:true,x:q.x}));
-  startQZ({title:"🔁 ניסוח מחדש",sis:"zichrona",again:"startRestate()",back:"goMap()",items,intro:"כמו בפסיכומטרי: משפט אחד, וארבעה ניסוחים. רק אחד אומר <b>בדיוק</b> את אותו הדבר. טיפ: שימי לב למילים קטנות שמשנות הכול: <bdi class='en'>not, only, few, never, unless</bdi>."});
+  startQZ({title:"🔁 ניסוח מחדש",sis:"zichrona",again:"startRestate("+(st?JSON.stringify(st):"")+")",back:"goMap()",items,intro:"כמו בפסיכומטרי: משפט אחד, וארבעה ניסוחים. רק אחד אומר <b>בדיוק</b> את אותו הדבר. טיפ: שימי לב למילים קטנות שמשנות הכול: <bdi class='en'>not, only, few, never, unless</bdi>."});
 }
 // משחקים חדשים בגן המשחקים
 GAMES.push(
@@ -3546,8 +3551,8 @@ const XGAMES=[
  {id:"cards",e:"🃏",name:"כרטיסיות מילים",run:"startCards('$C')",d:"מילה, משפט, ולהפוך. מה שידעת חוזר בעוד כמה ימים."},
  {id:"meaning",e:"🔤",name:"מה פירוש המילה?",run:"startMeaning('$C')",d:"מילה במשפט, ובוחרים את הפירוש."},
  {id:"complete",e:"🧩",name:"השלמת משפט",run:"startComplete('$C')",d:"משפט עם מילה חסרה וארבע אפשרויות, כמו בפסיכומטרי."},
- {id:"connect",e:"🔗",name:"מילות קישור",run:"startConnect()",d:"but, so, however, although: מה מחבר נכון?"},
- {id:"restate",e:"🔁",name:"ניסוח מחדש",run:"startRestate()",d:"איזה משפט אומר אותו דבר? כמו בפסיכומטרי."},
+ {id:"connect",e:"🔗",name:"מילות קישור",run:"startConnect('$C')",d:"but, so, however, although: מה מחבר נכון?"},
+ {id:"restate",e:"🔁",name:"ניסוח מחדש",run:"startRestate('$C')",d:"איזה משפט אומר אותו דבר? כמו בפסיכומטרי."},
  {id:"chants",e:"🎵",name:"שירי קריאה",run:"showChants()",d:"חרוזים לקריאת הד ולקריאה יחד."},
  {id:"tuli",e:"🐛",name:"הפינה של טולי",run:"startTuliQuiz()",d:"שאלות על חוקי הקריאה."}
 ];
