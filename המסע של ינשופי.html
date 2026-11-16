@@ -999,6 +999,8 @@ function sylHTML(s){
 function wordHTML(L, w){ // הברות למילה ארוכה, אחרת פירוק לצלילים
   const e=(L.words||[]).find(x=>x[0]===w);
   if(e && e[2]) return sylHTML(e[2]) + (IRREG[w]?`<div class="hint">⚠️ ${IRREG[w]}</div>`:"");
+  const sx=(window.SYL_EXTRA||{})[w];
+  if(sx && (L.words||[]).some(x=>x[2])) return sylHTML(sx);
   return chunksHTML(w, L.focus, true);
 }
 function hlWord(w, focus){ try{ return w.replace(new RegExp(hlRe(focus),"gi"), m=>`<span class="focus">${m}</span>`); }catch(e){ return w; } }
@@ -1102,7 +1104,7 @@ function render(){
   }
   else if(st.t==="ladder"){
     S.li2=0;
-    h+=`<div class="card">${owlSay("<b>סולם מילים.</b> בכל שלב משתנה רק <b>אות אחת</b>. קראי כל מילה בקול ושימי לב מה השתנה בצליל.")}
+    h+=`<div class="card">${owlSay(ladIsLetter(S.L)?"<b>סולם מילים.</b> בכל שלב משתנה רק <b>אות אחת</b>. קראי כל מילה בקול ושימי לב מה השתנה בצליל.":"<b>סולם מילים.</b> בכל שלב משתנה רק <b>חלק אחד</b> מהמילה (מסומן בצבע): אות, הברה או סיומת. קראי כל מילה בקול ושימי לב מה השתנה בצליל.")}
       <div class="ladder" id="lad"></div>
       <div id="ladw"></div>
       <div class="row">${micBtn("micLadder()","אני אומרת")}
@@ -1188,15 +1190,24 @@ function pickListen(b,o,t){
   else { b.classList.add("wrong"); bad(); if(!S.tries) score(false); S.tries++; setMsg(`זו <span class="en">${o}</span>. הקשיבי שוב 🔊`,"soft"); speak(t,0.5); }
 }
 /* ============ סולם ============ */
+/* מסמן את החלק שהשתנה לעומת המילה הקודמת: אות אחת, או הברה/תחילית/סיומת שלמה במילים ארוכות */
+function ladDiff(prev,w){
+  if(prev.length===w.length){ const d=[...w].filter((c,j)=>c!==prev[j]).length; if(d<=1) return [...w].map((c,j)=>c!==prev[j]?`<span class="focus">${c}</span>`:c).join(""); }
+  let a=0; while(a<w.length && a<prev.length && w[a]===prev[a]) a++;
+  let b=0; while(b<w.length-a && b<prev.length-a && w[w.length-1-b]===prev[prev.length-1-b]) b++;
+  const mid=w.slice(a,w.length-b);
+  return w.slice(0,a)+(mid?`<span class="focus">${mid}</span>`:"")+w.slice(w.length-b);
+}
+function ladIsLetter(L){ return (L.ladder||[]).every((w,i)=>{ if(!i) return true; const p=L.ladder[i-1]; if(p.length===w.length) return [...w].filter((c,j)=>c!==p[j]).length===1; return Math.abs(p.length-w.length)===1 && (w.startsWith(p)||p.startsWith(w)||w.endsWith(p)||p.endsWith(w)); }); }
 function drawLadder(){
   const L=S.L;
   document.getElementById("lad").innerHTML = L.ladder.map((w,i)=>{
     const prev=L.ladder[i-1]; let shown=w;
-    if(prev){ shown=[...w].map((c,j)=>c!==prev[j]?`<span class="focus">${c}</span>`:c).join(""); }
+    if(prev){ shown=ladDiff(prev,w); }
     return (i?`<span class="arr">→</span>`:"")+`<span class="rung ${i===S.li2?'cur':(i<S.li2?'done':'')}">${shown}</span>`;
   }).join("");
   const lw=L.ladder[S.li2], lhe=heOf(lw);
-  document.getElementById("ladw").innerHTML = chunksHTML(lw,L.focus,true)
+  document.getElementById("ladw").innerHTML = wordHTML(L,lw)
     + `<div class="mean">${meanBtn(lw)} ${bankBtn(lw)}</div>`
     + twinBox(lw);
 }
